@@ -8,7 +8,7 @@
     <!-- Use the title from a page's frontmatter if it has one -->
     <title><%= current_page.data.title || "Middleman" %></title>
     <%= stylesheet_link_tag "site" %>
-    <%= javascript_include_tag "site" %>
+    <%= javascript_include_tag "main" %>
   </head>
   <body>
     <%= yield %>

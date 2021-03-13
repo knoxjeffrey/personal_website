@@ -1,0 +1,31 @@
+{
+  "name": "personal-website",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "start": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --mode development --env.development --watch --progress --color",
+    "build": "./node_modules/webpack/bin/webpack.js --mode production --env.production --bail -p"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/knoxjeffrey/personal_website"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/knoxjeffrey/personal_website/issues"
+  },
+  "homepage": "https://github.com/knoxjeffrey/personal_website#readme",
+  "devDependencies": {
+    "@babel/core": "^7.13.10",
+    "@babel/preset-env": "^7.13.10",
+    "babel-loader": "^8.2.2",
+    "terser-webpack-plugin": "^4.2.2",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.2"
+  },
+  "dependencies": {}
+}

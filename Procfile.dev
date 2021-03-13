@@ -1,0 +1,1 @@
+web: bundle exec middleman serve -p 3000
