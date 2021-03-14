@@ -611,10 +611,6 @@ select:-webkit-autofill:focus {
   border: 1px solid var(--secondary-color);
 }
 
-figure > img {
-  padding: 0;
-}
-
 .terminal-avatarholder {
   width: calc(var(--global-space) * 5);
   height: calc(var(--global-space) * 5);
@@ -622,16 +618,6 @@ figure > img {
 
 .terminal-avatarholder img {
   padding: 0;
-}
-
-figure {
-  margin: 0;
-}
-
-figure > figcaption {
-  color: var(--secondary-color);
-  margin-top: var(--global-space);
-  text-align: center;
 }
 
 .hljs {

@@ -1,0 +1,13 @@
+figure > img {
+  padding: 0;
+}
+
+figure {
+  margin: 0;
+}
+
+figure > figcaption {
+  color: var(--secondary-color);
+  margin-top: var(--global-space);
+  text-align: center;
+}
