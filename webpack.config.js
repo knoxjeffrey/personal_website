@@ -1,3 +1,4 @@
+const glob = require("glob");
 const path = require("path");
 const TerserPlugin = require("terser-webpack-plugin");
 
@@ -12,7 +13,8 @@ module.exports = function (env) {
     },
 
     entry: {
-      main: path.resolve(__dirname, "./source/assets/javascripts/main.js")
+      main: path.resolve(__dirname, "./source/assets/javascripts/main.js"),
+      components: glob.sync(path.resolve(__dirname, "./components/**/*.js"))
     },
 
     output: {

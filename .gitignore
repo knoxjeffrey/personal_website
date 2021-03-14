@@ -1,4 +1,5 @@
 .bundle
+.byebug_history
 .cache
 .DS_Store
 .sass-cache
