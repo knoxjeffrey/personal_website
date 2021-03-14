@@ -450,127 +450,6 @@ table tbody td:first-child {
   color: var(var(--secondary-color));
 }
 
-.form {
-  width: 100%;
-}
-
-fieldset {
-  border: 1px solid var(--font-color);
-  padding: 1em;
-}
-
-label {
-  font-size: 1em;
-  color: var(--font-color);
-}
-
-input[type="email"],
-input[type="text"],
-input[type="number"],
-input[type="password"],
-input[type="search"] {
-  border: 1px var(--input-style) var(--font-color);
-  width: 100%;
-  padding: 0.7em 0.5em;
-  font-size: 1em;
-  font-family: var(--font-stack);
-  -webkit-appearance: none;
-  border-radius: 0;
-}
-
-input[type="email"]:active,
-input[type="text"]:active,
-input[type="number"]:active,
-input[type="password"]:active,
-input[type="search"]:active,
-input[type="email"]:focus,
-input[type="text"]:focus,
-input[type="number"]:focus,
-input[type="password"]:focus,
-input[type="search"]:focus {
-  outline: none;
-  -webkit-appearance: none;
-  border: 1px solid var(--font-color);
-}
-
-input[type="text"]:not(:placeholder-shown):invalid,
-input[type="email"]:not(:placeholder-shown):invalid,
-input[type="password"]:not(:placeholder-shown):invalid,
-input[type="search"]:not(:placeholder-shown):invalid,
-input[type="number"]:not(:placeholder-shown):invalid {
-  border-color: var(--error-color);
-}
-
-input,
-textarea {
-  color: var(--font-color);
-  background-color: var(--background-color);
-}
-
-input::placeholder,
-textarea::placeholder {
-  color: var(--secondary-color) !important;
-  opacity: 1;
-}
-
-textarea {
-  height: auto;
-  width: 100%;
-  resize: none;
-  border: 1px var(--input-style) var(--font-color);
-  padding: 0.5em;
-  font-size: 1em;
-  font-family: var(--font-stack);
-  -webkit-appearance: none;
-  border-radius: 0;
-}
-
-textarea:focus {
-  outline: none;
-  -webkit-appearance: none;
-  border: 1px solid var(--font-color);
-}
-
-textarea:not(:placeholder-shown):invalid {
-  border-color: var(--error-color);
-}
-
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus textarea:-webkit-autofill,
-textarea:-webkit-autofill:hover textarea:-webkit-autofill:focus,
-select:-webkit-autofill,
-select:-webkit-autofill:hover,
-select:-webkit-autofill:focus {
-  border: 1px solid var(--font-color);
-  -webkit-text-fill-color: var(--font-color);
-  box-shadow: 0 0 0 1000px var(--invert-font-color) inset;
-  -webkit-box-shadow: 0 0 0 1000px var(--invert-font-color) inset;
-  transition: background-color 5000s ease-in-out 0s;
-}
-
-.form-group {
-  margin-bottom: var(--global-line-height);
-  overflow: auto;
-}
-
-@media screen and (max-width: 960px) {
-  label {
-    display: block;
-    width: 100%;
-  }
-
-  pre::-webkit-scrollbar {
-    height: 3px;
-  }
-}
-
-@media screen and (max-width: 480px) {
-  form {
-    width: 100%;
-  }
-}
-
 .terminal-media:not(:last-child) {
   margin-bottom: 1.25rem;
 }
@@ -696,17 +575,7 @@ select:-webkit-autofill:focus {
   grid-template-columns: auto;
   grid-template-rows: auto;
 }
-.image-grid {
-  display: grid;
-  grid-template-rows: auto;
-  display: grid;
-  grid-gap: 1em;
-  grid-template-rows: auto;
-  grid-template-columns: repeat(
-    auto-fit,
-    minmax(calc(var(--page-width) / 12), 1fr)
-  );
-}
+
 @media only screen and (min-width: 70em) {
   .components-grid {
     grid-template-columns: 3fr 9fr;
