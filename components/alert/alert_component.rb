@@ -7,14 +7,17 @@ module Components
 
       helpers do
         def alert(opts)
-          content_tag(:div, opts[:text], class: build_alert_class(opts))
+          content_tag(:div, opts[:text], build_alert_html(opts))
         end
         
         private
         
-        def build_alert_class(opts)
-          additional_classes = opts.has_key?(:class) ? " #{opts[:class]}" : ""
-          "#{alert_type(opts[:type])}#{additional_classes}"
+        def build_alert_html(opts)
+          additional_classes = opts.dig(:html, :class) ? " #{opts[:html][:class]}" : ""
+          combined_classes = "#{alert_type(opts[:type])}#{additional_classes}"
+          opts[:html] ||= {}
+          opts[:html][:class] = combined_classes
+          opts[:html]
         end
         
         def alert_type(type)

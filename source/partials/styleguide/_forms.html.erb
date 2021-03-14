@@ -1,0 +1,45 @@
+<section>
+  <header>
+    <h2 id="Forms">Forms</h2>
+  </header>
+  <% form_tag "#" do %>
+    <% form_fieldset legend: "Form legend" do %>
+      <% form_group do %>
+        <%= label_tag :email, caption: "Email input:" %>
+        <%= email_field_tag :email, required: true, minlength: "5", placeholder: "jeffreyknox@hey.com" %>
+      <% end %>
+      <% form_group do %>
+        <%= label_tag :text, caption: "Text input:" %>
+        <%= text_field_tag :text, required: true, minlength: "5", placeholder: "test" %>
+      <% end %>
+      <% form_group do %>
+        <%= label_tag :itext, caption: "Invalid input (min-length 10):" %>
+        <%= text_field_tag :itext, minlength: "10" %>
+      <% end %>
+      <% form_group do %>
+        <%= label_tag :pw, caption: "Password input:" %>
+        <%= password_field_tag :pw, minlength: "10" %>
+      <% end %>
+      <% form_group do %>
+        <%= label_tag :radio, caption: "Radio input:" %>
+        <%= radio_button_tag :radio %>
+      <% end %>
+      <% form_group do %>
+        <%= label_tag :check, caption: "Checkbox input:" %>
+        <%= check_box_tag :check %>
+      <% end %>
+      <% form_group do %>
+        <%= label_tag :select, caption: "Select field:" %>
+        <%= select_tag :select, options: [ "Option 01", "Option 02" ], selected: "Option 02" %>
+      <% end %>
+      <% form_group do %>
+        <%= label_tag :tarea, caption: "Textarea:" %>
+        <%= text_area_tag :tarea, value: "Textarea text", cols: 30, rows: 5 %>
+      <% end %>
+      <% form_group do %>
+        <%= label_tag :submit, caption: "Input Button:" %>
+        <%= button text: "Submit", type: :default, html: { name: "submit", type: "submit", role: "button", id: "submit" } %>
+      <% end %>
+    <% end %>
+  <% end %>
+</section>

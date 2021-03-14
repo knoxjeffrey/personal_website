@@ -7,7 +7,7 @@ module Components
 
       helpers do
         def button(opts)
-          content_tag(:button, opts[:text], class: build_button_class(opts))
+          content_tag(:button, opts[:text], build_button_html(opts))
         end
       
         def button_group(&block)
@@ -16,9 +16,12 @@ module Components
       
         private
       
-        def build_button_class(opts)
-          additional_classes = opts.has_key?(:class) ? " #{opts[:class]}" : ""
-          "#{button_type(opts[:type])}#{ghost?(opts[:ghost])}#{block?(opts[:block])}#{additional_classes}"
+        def build_button_html(opts)
+          additional_classes = opts.dig(:html, :class) ? " #{opts[:html][:class]}" : ""
+          combined_classes = "#{button_type(opts[:type])}#{ghost?(opts[:ghost])}#{block?(opts[:block])}#{additional_classes}"
+          opts[:html] ||= {}
+          opts[:html][:class] = combined_classes
+          opts[:html]
         end
       
         def button_type(type)
