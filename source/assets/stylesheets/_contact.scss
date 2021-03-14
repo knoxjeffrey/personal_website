@@ -1,0 +1,34 @@
+.contact {
+  display: flex;
+}
+
+.contact a,
+.contact .contact__icon {
+  margin-right: calc(var(--global-space) * 2);
+}
+
+.contact a:last-child {
+  margin-right: calc(var(--global-space) * 2);
+}
+
+.contact.contact--social > a {
+  color: var(--font-color);
+}
+
+.contact.contact--social > a:hover {
+  background-color: inherit;
+}
+
+.contact .social__icon,
+.contact .contact__icon { 
+  flex-shrink: 0;
+  stroke-width: 1;
+  text-decoration: none;
+}
+
+.contact .social__icon:hover,
+.contact .contact__icon:hover {
+  color: var(--secondary-color);
+  cursor: pointer;
+  stroke-width: 1.5;
+}

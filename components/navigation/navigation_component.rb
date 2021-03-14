@@ -6,12 +6,12 @@ module Components
       end
 
       helpers do
-        def main_navigation(props, &block)
+        def main_navigation(opts, &block)
           concat(
             content_tag(:div, class: "terminal-nav") do 
               content_tag(:header, class: "terminal-logo") do
-                content_tag(:div, class: "logo.terminal-prompt") do
-                  link_to props[:title], props[:link], class: "no-style"
+                content_tag(:div, class: "logo terminal-prompt") do
+                  link_to opts[:title], opts[:link], class: "no-style"
                 end
               end +
               content_tag(:nav, class: "terminal-menu") do
@@ -21,6 +21,25 @@ module Components
               end
             end
           )
+        end
+
+        def main_footer(&block)
+          concat(
+            tag(:hr) +
+            content_tag(:footer) do
+              capture_html(&block)
+            end +
+            tag(:hr)
+          )
+        end
+
+        def navigation_list_item(opts)
+          active = opts[:active] || current_page.data.path == current_page.url
+          active = active ? " active" : ""
+          
+          content_tag(:li) do
+            link_to opts[:text], opts[:link], class: "menu-item#{active}"
+          end
         end
       end
     end

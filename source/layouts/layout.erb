@@ -4,9 +4,13 @@
   <body class="terminal">
     <div class="container">
       <% main_navigation link: "/", title: "Jeff Knox" do %>
-        <li>hi</li>
+        <%= navigation_list_item link: "/cv", text: "CV" %>
       <% end %>
     </div>
-    <%= yield %>
+
+    <div class="container">
+      <%= yield %>
+      <%= partial "partials/footer" %>
+    </div>    
   </body>
 </html>
