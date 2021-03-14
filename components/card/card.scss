@@ -1,0 +1,14 @@
+.terminal-card {
+  border: 1px solid var(--secondary-color);
+}
+
+.terminal-card > header {
+  color: var(--invert-font-color);
+  text-align: center;
+  background-color: var(--secondary-color);
+  padding: 0.5em 0;
+}
+
+.terminal-card > div:first-of-type {
+  padding: var(--global-space);
+}

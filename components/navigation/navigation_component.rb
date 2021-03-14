@@ -34,7 +34,7 @@ module Components
         end
 
         def navigation_list_item(opts)
-          active = opts[:active] || current_page.data.path == current_page.url
+          active = opts[:active] == true || opts[:link] == current_page.url
           active = active ? " active" : ""
           
           content_tag(:li) do

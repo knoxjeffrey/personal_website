@@ -10,7 +10,11 @@
     </div>
 
     <div class="container">
-      <%= yield %>
+      <hr/>
+      <div class="components components-grid">
+        <%= partial "partials/styleguide/aside" %>
+        <main><%= yield %></main>
+      </div>
       <%= partial "partials/footer" %>
     </div>    
   </body>

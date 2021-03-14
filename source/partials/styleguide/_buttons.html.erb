@@ -1,0 +1,24 @@
+<section>
+  <header>
+    <h2 id="Buttons">Buttons</h2>
+  </header>
+  <div class="flex-column flex-column--start">
+    <%= button text: "Default", type: :default, class: "margin-bottom--s" %>
+    <%= button text: "Primary", type: :primary, class: "margin-bottom--s" %>
+    <%= button text: "Error", type: :error, class: "margin-bottom--s" %>
+    <%= button text: "Default Ghost", type: :default, ghost: true, class: "margin-bottom--s" %>
+    <%= button text: "Primary Ghost", type: :primary, ghost: true, class: "margin-bottom--s" %>
+    <%= button text: "Error Ghost", type: :error, ghost: true, class: "margin-bottom--s" %>
+    <%= button text: "Default Block", type: :default, block: true, class: "margin-bottom--s" %>
+    <%= button text: "Default Ghost Block", type: :default, ghost: true, block: true, class: "margin-bottom--l" %>
+  </div>
+
+  <header>
+    <h2>Button group</h2>
+  </header>
+  <% button_group do %>
+    <%= button text: "Left", type: :default, ghost: true %>
+    <%= button text: "Middle", type: :default, ghost: true %>
+    <%= button text: "Right", type: :default, ghost: true %>
+  <% end %>
+</section>

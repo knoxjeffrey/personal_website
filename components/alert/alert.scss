@@ -1,0 +1,16 @@
+.terminal-alert {
+  color: var(--font-color);
+  padding: 1em;
+  border: 1px dotted var(--font-color);
+  margin-bottom: var(--global-space);
+}
+
+.terminal-alert-error {
+  color: var(--error-color);
+  border-color: var(--error-color);
+}
+
+.terminal-alert-primary {
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
