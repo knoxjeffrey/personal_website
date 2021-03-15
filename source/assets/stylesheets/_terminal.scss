@@ -269,36 +269,6 @@ ul ul {
   margin-bottom: 0;
 }
 
-ol.terminal-toc li {
-  border-bottom: 1px dotted var(--secondary-color);
-  padding: 0;
-  margin-bottom: 15px;
-}
-
-ol.terminal-toc li a {
-  margin: 4px 4px 4px 0;
-  background: var(--background-color);
-  position: relative;
-  top: 6px;
-  text-align: left;
-  padding-right: 4px;
-}
-
-ol.terminal-toc li::before {
-  content: counters(item, ".") ". ";
-  counter-increment: item;
-  position: absolute;
-  right: 0;
-  background: var(--background-color);
-  padding: 4px 0 4px 4px;
-  bottom: -8px;
-}
-
-ol.terminal-toc li a:hover {
-  background: var(--primary-color);
-  color: var(--invert-font-color);
-}
-
 hr {
   position: relative;
   overflow: hidden;

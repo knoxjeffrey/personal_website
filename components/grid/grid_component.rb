@@ -7,7 +7,7 @@ module Components
 
       helpers do
         def grid(&block)
-          content_tag(:div, class: 'image-grid', &block)
+          content_tag(:div, class: "image-grid", &block)
         end
       end
     end
