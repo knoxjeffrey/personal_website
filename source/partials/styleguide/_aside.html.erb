@@ -1,29 +1,27 @@
 <aside id=menu">
   <h2>Components</h2>
-  <nav>
-    <ul>
-      <li><%= link_to "Alerts", "#Alerts" %></li>
-      <li><%= link_to "Buttons", "#Buttons" %></li>
-      <li><%= link_to "Cards", "#Cards" %></li>
-      <li><%= link_to "Image with caption", "#Figure" %></li>
-      <li><%= link_to "Forms", "#Forms" %></li>
-      <li><%= link_to "Grid System", "#GridSystem" %></li>
-      <li><%= link_to "Highlight.js", "#Hhighlightjs" %></li>
-      <li><%= link_to "Lists", "#Lists" %></li>
-      <li><%= link_to "Navigation", "#Navigation" %></li>
-      <li><%= link_to "Navigation List", "#NavigationList" %></li>
-      <li><%= link_to "Progress Bar", "#Progress" %></li>
-      <li><%= link_to "Special Elements", "#SpecialElements" %>
-        <ul>
-          <li><%= link_to "Blockquote", "#Blockquote" %></li>
-          <li><%= link_to "Misc", "#Misc" %></li>
-        </ul>
-      </li>
-      <li><%= link_to "Tables", "#Tables" %></li>
-      <li><%= link_to "Timeline", "#Timeline" %></li>
-      <li><%= link_to "Typography", "#Typography" %></li>
-    </ul>
-  </nav>
+  <% navigation_list do %>
+    <li><%= link_to "Alerts", "#Alerts" %></li>
+    <li><%= link_to "Buttons", "#Buttons" %></li>
+    <li><%= link_to "Cards", "#Cards" %></li>
+    <li><%= link_to "Image with caption", "#Figure" %></li>
+    <li><%= link_to "Forms", "#Forms" %></li>
+    <li><%= link_to "Grid System", "#GridSystem" %></li>
+    <li><%= link_to "Highlight.js", "#Hhighlightjs" %></li>
+    <li><%= link_to "Lists", "#Lists" %></li>
+    <li><%= link_to "Navigation", "#Navigation" %></li>
+    <li><%= link_to "Navigation List", "#NavigationList" %></li>
+    <li><%= link_to "Progress Bar", "#Progress" %></li>
+    <li><%= link_to "Special Elements", "#SpecialElements" %>
+      <ul>
+        <li><%= link_to "Blockquote", "#Blockquote" %></li>
+        <li><%= link_to "Misc", "#Misc" %></li>
+      </ul>
+    </li>
+    <li><%= link_to "Tables", "#Tables" %></li>
+    <li><%= link_to "Timeline", "#Timeline" %></li>
+    <li><%= link_to "Typography", "#Typography" %></li>
+  <% end %>
   <h2>Documentation</h2>
   <nav>
     <ul>

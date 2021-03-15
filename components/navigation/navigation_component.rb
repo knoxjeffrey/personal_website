@@ -33,6 +33,16 @@ module Components
           )
         end
 
+        def navigation_list(&block)
+          concat(
+            content_tag(:nav) do
+              content_tag(:ul) do
+                capture_html(&block)
+              end
+            end
+          )
+        end
+
         def navigation_list_item(opts)
           active = opts[:active] == true || opts[:link] == current_page.url
           active = active ? " active" : ""

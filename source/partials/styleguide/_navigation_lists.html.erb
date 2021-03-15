@@ -1,0 +1,17 @@
+<section>
+  <header>
+    <h2 id="NavigationList">Navigation Lists</h2>
+  </header>
+
+  <% navigation_list do %>
+    <%= navigation_list_item link: "#", text: "Dashboard" %>
+    <%= navigation_list_item link: "#", text: "Members", active: true %>
+    <%= navigation_list_item link: "#", text: "Settings" %>
+    <%= navigation_list_item link: "#", text: "Profile" %>
+    <ul>
+      <%= navigation_list_item link: "#", text: "Account" %>
+      <%= navigation_list_item link: "#", text: "Billing" %>
+      <%= navigation_list_item link: "#", text: "Logout" %>
+    </ul>
+  <% end %>
+</section>

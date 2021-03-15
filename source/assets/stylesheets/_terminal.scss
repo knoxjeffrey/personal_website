@@ -223,10 +223,6 @@ li > ul > li {
   padding-left: calc(var(--global-space) * 2);
 }
 
-nav > ul > li {
-  padding-left: 0;
-}
-
 li::after {
   position: absolute;
   top: 0;
@@ -235,10 +231,6 @@ li::after {
 
 ul > li::after {
   content: "-";
-}
-
-nav ul > li::after {
-  content: "";
 }
 
 ol li::before {

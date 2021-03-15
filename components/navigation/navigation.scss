@@ -1,3 +1,11 @@
+nav > ul > li {
+  padding-left: 0;
+}
+
+nav ul > li::after {
+  content: "";
+}
+
 .terminal-nav {
   display: flex;
   flex-direction: column;
