@@ -6,7 +6,7 @@ module Components
       end
 
       helpers do
-        def main_navigation(opts, &block)
+        def navigation_main(opts, &block)
           concat(
             content_tag(:div, class: "terminal-nav") do 
               content_tag(:header, class: "terminal-logo") do
@@ -23,7 +23,7 @@ module Components
           )
         end
 
-        def main_footer(&block)
+        def navigation_main_footer(&block)
           concat(
             tag(:hr) +
             content_tag(:footer) do
