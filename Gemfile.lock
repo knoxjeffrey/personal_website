@@ -118,7 +118,7 @@ GEM
       rubocop (~> 0.87)
       rubocop-ast (>= 0.7.1)
     ruby-progressbar (1.11.0)
-    sassc (2.4.0)
+    sassc (2.1.0)
       ffi (~> 1.9)
     servolux (0.13.0)
     temple (0.8.2)
@@ -142,6 +142,7 @@ DEPENDENCIES
   rubocop (~> 0.92.0)
   rubocop-performance
   rubocop-rspec
+  sassc (= 2.1.0)
   tzinfo-data
   wdm (~> 0.1)
 
