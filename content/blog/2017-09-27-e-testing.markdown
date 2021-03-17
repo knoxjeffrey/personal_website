@@ -1,0 +1,27 @@
+---
+layout: post
+title:  "e-testing"
+date:   2017-09-27 00:00:00
+categories: Work
+banner_image: "/media/etesting.jpg"
+featured: true
+comments: true
+---
+
+e-testing is a privately owned and self-funded provider of software testing services, serving a range of clients, from start-ups to blue chip multinationals and everything in between.
+
+<!--more-->
+
+## Website
+
+[https://www.etesting.com](https://www.etesting.com)
+
+## Technology
+
+Ruby on Rails, LocomotiveCMS, PostgreSQL, mongoDB, jQuery, SCSS
+
+## My involvement
+
+Although I had some front end involvement towards the end of the project, my main focus was on building the training part of the website that would allow e-testing to sell their training courses online with payments made through [Sage Pay](https://www.sagepay.co.uk/).
+
+Courses, locations, course dates and more are managed by staff through an Active Admin backend interface. Careful attention was spent optimising the backend scopes to work with [Filterrific](http://filterrific.clearcove.ca/) for the front end filters on the training site.

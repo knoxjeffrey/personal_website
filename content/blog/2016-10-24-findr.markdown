@@ -1,0 +1,31 @@
+---
+layout: post
+title:  "Findr"
+date:   2016-10-24 00:00:00
+categories: Work
+banner_image: "/media/findr.png"
+featured: true
+comments: true
+---
+
+Findr provide direct access to thousands of photographers on a single platform. Photographers who can be trusted to create exactly the work you need, when and where you need them.
+
+<!--more-->
+
+## Website
+
+[https://findr.me](https://findr.me)
+
+## Technology
+
+Ruby on Rails, PostgreSQL, Elastic Beanstalk, React, Redux, jQuery, SCSS
+
+## My involvement
+
+Findr had already been working with Primate for several years to help develop a MVP with the aim of getting funding to take the project further.  I got involved at the point when a funding round had been secured.  At this point I was firstly tasked with improving the test suite for the site which would make changes easier to implement and also help findr when we hand over to their new development team. Based on user feedback, we also moved the search away from a map based interface to an image based interface with multiple filters. This involved rebuilding the home page and search page with React and Redux.
+
+An addition to search, I also implemented a booking engine to allow users to book photographers through the site. This also required hooking up to a custom calendar API so that photographers could manage their availability through findr.
+
+Lastly, findr wanted to move off our Linode servers and onto AWS so I setup their staging and production environments on Elastic Beanstalk.
+
+For more, see the case study at [Primate](https://www.primate.co.uk/clients/findr).
