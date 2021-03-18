@@ -3,7 +3,7 @@ layout: post
 title:  "Amazon Beanstalk and Rails Setup"
 date:   2016-04-18 23:15:00
 categories: Rails
-banner_image: "/media/amazon_web_services.png"
+banner_image: "amazon_web_services.png"
 featured: true
 comments: true
 ---

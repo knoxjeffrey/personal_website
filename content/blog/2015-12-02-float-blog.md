@@ -3,7 +3,7 @@ layout: post
 title:  "Float"
 date:   2015-12-02 00:00:00
 categories: Work
-banner_image: "/media/Float.jpg"
+banner_image: "Float.jpg"
 featured: true
 comments: true
 ---

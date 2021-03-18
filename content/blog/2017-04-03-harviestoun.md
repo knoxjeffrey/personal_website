@@ -3,7 +3,7 @@ layout: post
 title:  "Harviestoun Brewery"
 date:   2017-04-03 00:00:00
 categories: Work
-banner_image: "/media/harviestoun.jpg"
+banner_image: "harviestoun.jpg"
 featured: true
 comments: true
 ---

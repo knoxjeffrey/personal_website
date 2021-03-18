@@ -3,7 +3,7 @@ layout: post
 title:  "Tealeaf Academy Course Two/Week Three - Voting"
 date:   2015-01-20 15:30:00
 categories: Tealeaf Academy
-banner_image: "/media/thumbs_up.jpg"
+banner_image: "thumbs_up.jpg"
 featured: true
 comments: true
 ---

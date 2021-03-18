@@ -3,7 +3,7 @@ layout: post
 title:  "Children’s Hospices Across Scotland"
 date:   2017-11-01 00:00:00
 categories: Work
-banner_image: "/media/chas.jpg"
+banner_image: "chas.jpg"
 featured: true
 comments: true
 ---

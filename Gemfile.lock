@@ -26,6 +26,7 @@ GEM
     fast_blank (1.0.0)
     fastimage (2.2.3)
     ffi (1.15.0)
+    front_matter_parser (1.0.0)
     haml (5.2.1)
       temple (>= 0.8.0)
       tilt
@@ -118,6 +119,7 @@ GEM
       rubocop (~> 0.87)
       rubocop-ast (>= 0.7.1)
     ruby-progressbar (1.11.0)
+    ruby_matter (0.9.8)
     sassc (2.1.0)
       ffi (~> 1.9)
     servolux (0.13.0)
@@ -135,6 +137,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  front_matter_parser
   middleman (~> 4.2)
   middleman-autoprefixer (~> 2.7)
   pry-byebug
@@ -142,6 +145,7 @@ DEPENDENCIES
   rubocop (~> 0.92.0)
   rubocop-performance
   rubocop-rspec
+  ruby_matter
   sassc (= 2.1.0)
   tzinfo-data
   wdm (~> 0.1)

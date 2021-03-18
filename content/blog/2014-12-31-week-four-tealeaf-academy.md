@@ -3,7 +3,7 @@ layout: post
 title:  "Tealeaf Academy Week Four"
 date:   2014-12-31 09:49:00
 categories: Tealeaf Academy
-banner_image: "/media/sinatra.gif"
+banner_image: "sinatra.gif"
 featured: true
 comments: true
 ---

@@ -3,7 +3,7 @@ layout: post
 title:  "Distinction Armagnac"
 date:   2018-01-31 00:00:00
 categories: Work
-banner_image: "/media/distinction.jpg"
+banner_image: "distinction.jpg"
 featured: true
 comments: true
 ---

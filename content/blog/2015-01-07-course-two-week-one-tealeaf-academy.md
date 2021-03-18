@@ -3,7 +3,7 @@ layout: post
 title:  "Tealeaf Academy Course Two/Week One"
 date:   2015-01-07 13:38:49
 categories: Tealeaf Academy
-banner_image: "/media/rails.jpg"
+banner_image: "rails.jpg"
 featured: true
 comments: true
 ---

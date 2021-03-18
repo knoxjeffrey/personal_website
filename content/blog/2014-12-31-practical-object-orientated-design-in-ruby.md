@@ -3,7 +3,7 @@ layout: post
 title:  "Practical Object-Orientated Design In Ruby"
 date:   2014-12-31 11:23:00
 categories: Ruby
-banner_image: "/media/book.jpg"
+banner_image: "book.jpg"
 featured: true
 comments: true
 ---

@@ -3,7 +3,7 @@ layout: post
 title:  "Tealeaf Academy Course Two/Week Three - Authentication"
 date:   2015-01-16 16:10:00
 categories: Tealeaf Academy
-banner_image: "/media/password.jpg"
+banner_image: "password.jpg"
 featured: true
 comments: true
 ---

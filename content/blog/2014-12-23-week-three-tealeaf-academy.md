@@ -3,7 +3,7 @@ layout: post
 title:  "Tealeaf Academy Week Three"
 date:   2014-12-23 14:38:49
 categories: Tealeaf Academy
-banner_image: "/media/laptop.jpg"
+banner_image: "laptop.jpg"
 featured: true
 comments: true
 ---

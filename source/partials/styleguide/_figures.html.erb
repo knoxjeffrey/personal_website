@@ -1,10 +1,20 @@
 <section>
   <header>
-    <h2 id="Figure">Image with caption</h2>
+    <h2 id="Figure">Images</h2>
   </header>
-  <%= figure caption: "Image with caption",
-             media: image_tag(
-               "https://picsum.photos/1000/600?random&imageWithCaption", alt: "Image with caption", title: "Image with caption"
+
+  <h3>Image</h3>
+  <%= figure media: image_tag(
+    "https://picsum.photos/1000/600?random", alt: "Image with caption", title: "Image with caption"
+             
+  ) %>
+
+  <br />
+
+  <h3 class="margin-top--s">Image with Caption</h3>
+  <%= figure_with_caption caption: "Image with caption",
+                          media: image_tag(
+                            "https://picsum.photos/1000/600?random&imageWithCaption", alt: "Image with caption", title: "Image with caption"
   ) %>
 
 </section>

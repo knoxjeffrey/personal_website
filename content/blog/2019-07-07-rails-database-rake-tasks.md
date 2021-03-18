@@ -3,6 +3,7 @@ layout: post
 title:  "Rails database rake tasks"
 date:   2019-07-07 00:00:00
 categories: Rails
+banner_image: ""
 featured: false
 comments: true
 ---

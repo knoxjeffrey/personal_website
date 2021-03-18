@@ -3,7 +3,7 @@ layout: post
 title:  "Cruise Loch Ness"
 date:   2016-02-10 00:00:00
 categories: Work
-banner_image: "/media/cruise-loch-ness.jpg"
+banner_image: "cruise-loch-ness.jpg"
 featured: true
 comments: true
 ---

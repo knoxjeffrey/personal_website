@@ -3,7 +3,7 @@ layout: post
 title:  "The Bulba Handbook"
 date:   2016-11-18 00:00:00
 categories: Work
-banner_image: "/media/bulba.jpg"
+banner_image: "bulba.jpg"
 featured: true
 comments: true
 ---

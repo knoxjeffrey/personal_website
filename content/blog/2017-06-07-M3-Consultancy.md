@@ -3,7 +3,7 @@ layout: post
 title:  "M3 Consultancy"
 date:   2017-06-07 00:00:00
 categories: Work
-banner_image: "/media/m3.jpg"
+banner_image: "m3.jpg"
 featured: true
 comments: true
 ---

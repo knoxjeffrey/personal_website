@@ -3,7 +3,7 @@ layout: post
 title:  "Student Accommodation UHI"
 date:   2016-04-14 00:00:00
 categories: Work
-banner_image: "/media/uhi.jpg"
+banner_image: "uhi.jpg"
 featured: true
 comments: true
 ---

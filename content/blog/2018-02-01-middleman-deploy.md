@@ -3,6 +3,7 @@ layout: post
 title:  "Middleman Deploy"
 date:   2018-02-01 00:00:00
 categories: Ruby
+banner_image: ""
 featured: false
 comments: true
 ---

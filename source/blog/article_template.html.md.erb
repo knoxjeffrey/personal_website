@@ -1,0 +1,7 @@
+<% unless frontmatter["banner_image"].empty? %>
+  <%= figure caption: "Image with caption",
+            media: image_tag(frontmatter["banner_image"]),
+            html: { class: "margin-bottom--l" } %>
+<% end %>
+
+<%= content %>

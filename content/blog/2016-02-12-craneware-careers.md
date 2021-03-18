@@ -3,7 +3,7 @@ layout: post
 title:  "Craneware Careers"
 date:   2016-02-12 00:00:00
 categories: Work
-banner_image: "/media/craneware_logo.jpg"
+banner_image: "craneware_logo.jpg"
 featured: true
 comments: true
 ---
