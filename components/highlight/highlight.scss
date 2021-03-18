@@ -23,6 +23,7 @@ pre {
   background-color: var(--background-color);
   border: 1px solid var(--secondary-color);
   padding: var(--global-space);
+  margin: calc(var(--global-space) * 3) 0;
   white-space: pre-wrap;
   white-space: -moz-pre-wrap;
   white-space: -pre-wrap;
