@@ -19,7 +19,7 @@ Pathname.new("./components").children.each do |entry|
 end
 
 Dir.each_child(BLOG_PATH) do |filename|
-  loader = ->(string) { YAML.load(string) }
+  loader = FrontMatterParser::Loader::Yaml.new(allowlist_classes: [Time])
   parsed = FrontMatterParser::Parser.parse_file("#{BLOG_PATH}/#{filename}", loader: loader)
   
   path = filename.match /\d{4}-\d{2}-\d{2}-(?<name>.*).md/

@@ -3,5 +3,7 @@
             media: image_tag(frontmatter["banner_image"]),
             html: { class: "margin-bottom--l" } %>
 <% end %>
+## A title
 
-<%= content %>
+<%= button text: "Default", type: :default, html: { class: "margin-bottom–s" } %>
+<%= render_erb_from_string(content) %>
