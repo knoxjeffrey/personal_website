@@ -18,16 +18,23 @@ Pathname.new("./components").children.each do |entry|
   activate "#{entry.basename.to_s}_component".to_sym
 end
 
-Dir.each_child(BLOG_PATH) do |filename|
-  loader = FrontMatterParser::Loader::Yaml.new(allowlist_classes: [Time])
-  parsed = FrontMatterParser::Parser.parse_file("#{BLOG_PATH}/#{filename}", loader: loader)
-  
-  path = filename.match /\d{4}-\d{2}-\d{2}-(?<name>.*).md/
-  proxy "/blog/#{path[:name]}/index.html",
-        "/blog/article_template.html",
-        locals: { frontmatter: parsed.front_matter, content: parsed.content },
-        ignore: true
+activate :blog do |blog|
+  blog.prefix = "blog"
+  blog.name = "blog"
+  blog.sources = "/{year}-{month}-{day}-{title}.html"
+  blog.permalink = "{title}.html"
+  blog.layout = "layouts/layout"
+  # blog.tag_template = "proxy_ignorable/practice-portal/blog/tag.html"
+  # blog.taglink = "category/{tag}.html"
+  blog.paginate = true
+  blog.per_page = 30
+  blog.publish_future_dated = true
+  blog.generate_month_pages = false
+  blog.generate_day_pages = false
+  blog.generate_year_pages = false
 end
+
+activate :directory_indexes
 
 activate :external_pipeline,
          name: :webpack,

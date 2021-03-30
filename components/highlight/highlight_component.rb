@@ -10,7 +10,7 @@ module Components
           concat(
             content_tag(:pre) do
               content_tag(:code, class: "hljs #{opts[:code]}") do
-                capture_html(&block)
+                CGI.escapeHTML(capture_html(&block))
               end
             end
           )
