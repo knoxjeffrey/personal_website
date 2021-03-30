@@ -162,7 +162,7 @@ You can see that I have created instance variables in the methods and this allow
 
 If a user requests a url of say http://somuchtolearn.com/posts, this will be handled by the index method of the PostsController. In order to render this url, the controller requires a folder called posts under the views folder and within that folder there needs to be an index.html.erb file.  The template for this could be as follows:
 
-    <p class'lead'>
+    <p class='lead'>
         All Posts
         <hr/>
     </p>
@@ -170,8 +170,8 @@ If a user requests a url of say http://somuchtolearn.com/posts, this will be han
     <%% @posts.each do |post| %>
       <div class='row'>
         <div class="span8 well">
-          <%% post.categories.each do |category|
-            <span class='badge'><%= category.name %></span>
+          <%% post.categories.each do |category| %>
+            <span class='badge'><%%= category.name %></span>
           <%% end %>
           <h4><%%= link_to post.title, post.url %></h4>
           <p><%%= post.description %></p>
@@ -192,14 +192,14 @@ Note my use of @posts in this template which is the instance variable created in
 
 Partials are an excellent way to extract code from my template that will be used repeatedly throughout my application - DRY springs to mind again!  For example, a lot of my views will use a header similar to the All Posts header above so I need to extract this code into a partial.  For this I can create a new folder called shared which indicates that the partial will be shared across all resources.  The file name for partials must begin with an underscore and in this case it could be _content_title.html.erb which would look as follows:
 
-    <p class'lead'>
+    <p class='lead'>
       <%%= title %>
       <hr/>
     </p>
     
 My index.html.erb code at the top could now be changed to:
 
-```<%= render 'shared/content_title', title: "All Posts"%>```
+```<%%= render 'shared/content_title', title: "All Posts"%>```
 
 In order to call the partial I must use the render command and also note that in this case I do not need to use the underscore for the file name.  The title variable in index is then passed into the title variable in the partial with value "All Posts".  This makes it very flexible and allows me to pass in any information as long as there are matching title variables.
 
@@ -215,12 +215,12 @@ Another piece of code that I might be using again throughout my application is t
 
 To access the relevant partial I again need to use the render keyword but Rails has a specific convention of where it will look for the partial file in this case.  This code...
 
-```<%%%= render post.categories %>``` 
+```<%%= render post.categories %>``` 
 
 ...is the equivalent to the following Ruby code:
 
-    <%% post.categories.each do |category|
-      <%= render 'categories/category', category: category %>
+    <%% post.categories.each do |category| %>
+      <%%= render 'categories/category', category: category %>
     <%% end %>
     
 This is another example of the power of conventions in rails.  Note that it will look for the partial in a folder called categories and the file name would be _category.html.erb.  The code in the partial would then be as follows (again note the matching variable names):
