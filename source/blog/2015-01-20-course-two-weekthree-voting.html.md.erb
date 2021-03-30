@@ -65,13 +65,13 @@ Note that I don't need to make any more changes to the database.  That's all the
 As an example of a simple implementation of adding votes to my posts I can do the following in my _post.html.erb partial:
 
     <div class="span0 well text-center'>
-      <%= link_to '' do %>
+      <%%= link_to '' do %>
         <i class="icon-arrow-up"></i>
-      <% end %>
+      <%% end %>
 
-      <%= link_to '' do %>
+      <%%= link_to '' do %>
         <i class="icon-arrow-down"></i>
-      <% end %>
+      <%% end %>
     </div>
     
 Looking at this it's now obvious that I have to implement POST routes in order for the up and down votes to hit the database.  I can either do this like so:
@@ -90,7 +90,7 @@ I can also do exactly the same thing, except as a block:
     
 This will expose a POST route, /posts/3/vote, for example and I can add this to my link with a named route like so:
 
-    <%= link_to vote_post_path(post), method: 'post' do %>
+    <%%= link_to vote_post_path(post), method: 'post' do %>
 
 The ```method``` syntax calls some built in javascript in rails that generates a form on the fly and actually submits the form with any parameters that I add.  Pretty handy!
 
@@ -98,11 +98,11 @@ In this case I need a true/false parameter to show if its an up or down vote.  T
 
 For the up arrow I can make it:
 
-    <%= link_to vote_post_path(post, vote: true), method: 'post' do %>
+    <%%= link_to vote_post_path(post, vote: true), method: 'post' do %>
 
 and for the down arrow:
 
-    <%= link_to vote_post_path(post, vote: false), method: 'post' do %>
+    <%%= link_to vote_post_path(post, vote: false), method: 'post' do %>
     
 I now will need an action in PostsController to handle the route:
 
@@ -135,7 +135,7 @@ I also want to display the total number of votes between the up/down arrows.  Th
     
 Then in the html between the arrows simply add:
 
-    <%= post.total_votes %>
+    <%%= post.total_votes %>
 
 If I want to display the post in the order of number of votes I can do this in PostsController by adding to the index method:
 
