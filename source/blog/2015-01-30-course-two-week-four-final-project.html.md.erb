@@ -30,16 +30,16 @@ The PostIt! application allowed me to vote on posts and comments but there was n
 
 The code was fairly similar for creating a form on the fly and then submitting with Ajax but I had to add in logic to decide if the user had already voted:
 
-    <span id="like_button_<%= post.slug %>">
-      <% if post.already_voted_by_user?(current_user) %>
-        <%= link_to post_vote_path(post, post.vote_object(current_user)), method: 'delete', remote: true do %>
-          <span class="fa fa-heart" aria-hidden="true"> <%= post.votes.size %></span>
-          <% end %>
-      <% else %>
-        <%= link_to post_votes_path(post), method: 'post', remote: true do %>
-          <span class="fa fa-heart-o" aria-hidden="true"> <%= post.votes.size %></span>
-        <% end %>
-      <% end %>
+    <span id="like_button_<%%= post.slug %>">
+      <%% if post.already_voted_by_user?(current_user) %>
+        <%%= link_to post_vote_path(post, post.vote_object(current_user)), method: 'delete', remote: true do %>
+          <span class="fa fa-heart" aria-hidden="true"> <%%= post.votes.size %></span>
+          <%% end %>
+      <%% else %>
+        <%%= link_to post_votes_path(post), method: 'post', remote: true do %>
+          <span class="fa fa-heart-o" aria-hidden="true"> <%%= post.votes.size %></span>
+        <%% end %>
+      <%% end %>
     </span>
     
 This needed some logic to pull the info out of the posts table and I added this in post.rb
@@ -64,7 +64,7 @@ This needed some logic to pull the info out of the posts table and I added this 
 
 Handling the Ajax requests were fairly simple in the PostIt! application because I only had to get a handle on the number of votes to change it.  In this case I had to use Ajax to reload the whole block of code associated with the like button as seen above.  I was able to to get the heart image to change without any problems and that would hit the database but the problem would occur when I hit the button again.  Say I had issued a POST request on the first button press, it would then expect a DELETE request on the second button press but that code hadn't changed and so it was just staying as a POST request.  That's why I had to reload the whole block.  I have to admit I had some help with this from a Rails developer here in Edinburgh!  What I did in the end was move my like_button code into a ```_like_button.html.erb``` partial and then handled it in a ``change.js.erb``` file:
 
-    $('#like_button_<%= @post.slug %>').replaceWith("<%= escape_javascript render('posts/like_button', post: @post) %>");
+    $('#like_button_<%%= @post.slug %>').replaceWith("<%%= escape_javascript render('posts/like_button', post: @post) %>");
     
 My actions in the VotesController looked like this with a call to render the js file:
 
@@ -97,11 +97,11 @@ Now the button works seamlessly!
 
 The idea behind book marking a post is pretty much identical to voting on a post although there was a little more work to do for this.  After a user clicks on the bookmark link they can then look at all their bookmarks in their profile page.  The problem in this case is that when the user decides they no longer want that post to be bookmarked I want it to disappear from the bookmarks page without having to reload the page.  All that currently happens is the image changes to show that it is no longer bookmarked.  Therefore I had to add an extra handler around it just for the bookmarks page:
 
-    <% @user.list_of_user_saved_posts.each do |post| %>
-      <div id='user-profile_<%= post.slug %>' class='item'>
-        <%= render 'posts/post', post: post %>
+    <%% @user.list_of_user_saved_posts.each do |post| %>
+      <div id='user-profile_<%%= post.slug %>' class='item'>
+        <%%= render 'posts/post', post: post %>
       </div>
-    <% end %>
+    <%% end %>
     
 and then I handled this in a js file:
 
@@ -146,13 +146,13 @@ To improve the look of the application I wanted to add some images and I found a
 
 In my HTML I added code above the rest of the post to display the image:
 
-    <% url = generate_url_attributes_preview(post.url) %>
+    <%% url = generate_url_attributes_preview(post.url) %>
 
-    <% if !url.empty? %>
-      <%= image_tag(url, class: "post-box-images") %>
+    <%% if !url.empty? %>
+      <%%= image_tag(url, class: "post-box-images") %>
       <br>
       <br>
-    <% end %>
+    <%% end %>
     
 and then in ```application_helper.rb``` I implemented the methods:
 

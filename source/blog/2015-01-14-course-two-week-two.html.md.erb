@@ -21,55 +21,55 @@ As an example in my application, to create a new post my controller method would
     
 My ```new.html.erb``` view file then has a form to allow the user to fill in the post which could look like:
 
-    <%= form_for @post do |f| %>
+    <%%= form_for @post do |f| %>
 
-      <%= render 'shared/errors', controller_object: @post %>
+      <%%= render 'shared/errors', controller_object: @post %>
 
       <div class="control-group">
-        <%= f.label :title %>
-        <%= f.text_field :title %>
+        <%%= f.label :title %>
+        <%%= f.text_field :title %>
       </div>
 
       <div class="control-group">
-        <%= f.label :url %>
-        <%= f.text_field :url %>
+        <%%= f.label :url %>
+        <%%= f.text_field :url %>
       </div>
 
       <div class="control-group">
-        <%= f.label :description %>
-        <%= f.text_area :description, rows: 5 %>
+        <%%= f.label :description %>
+        <%%= f.text_area :description, rows: 5 %>
       </div>
 
       <br/>
-      <%= f.submit @post.new_record? ? "Submit Post" : "Update Post", class: "btn btn-primary" %>
-    <% end %>
+      <%%= f.submit @post.new_record? ? "Submit Post" : "Update Post", class: "btn btn-primary" %>
+    <%% end %>
     
 Notice that @post is passed from the controller to the form_for.  The form_for method yields a form builder object (f), and methods to create form controls are called on the form builder object f.  Title, url and description should match the column names that are in my posts table in the database.
 
 Notice the last line:
 
-    <%= f.submit @post.new_record? ? "Submit Post" : "Edit Post", class: "btn btn-primary" %>
+    <%%= f.submit @post.new_record? ? "Submit Post" : "Edit Post", class: "btn btn-primary" %>
     
 In my case I am using this same form for my new and edit views so this is a handy way to decide what text to display on the button depending on whether the post is new or an edit.
 
 Also notice the render at the top:
 
-    <%= render 'shared/errors', controller_object: @post %>
+    <%%= render 'shared/errors', controller_object: @post %>
     
 This is a means to handle form error messages.  Using render holds onto the instance variable @post and the partial will be in a file called _errors.html.erb in the shared folder.  My code for this looks as follows:
 
-    <% if controller_object.errors.any? %>
+    <%% if controller_object.errors.any? %>
       <div class="alert alert-error">
         <h5>
-            <%= pluralize(controller_object.errors.count, 'error') %> in this form:
+            <%%= pluralize(controller_object.errors.count, 'error') %> in this form:
         </h5>
         <ul>
-            <% controller_object.errors.full_messages.each do |msg| %>
-                <li><%= msg %></li>
-            <% end %>
+            <%% controller_object.errors.full_messages.each do |msg| %>
+                <li><%%= msg %></li>
+            <%% end %>
         </ul>
       </div>
-    <% end %>
+    <%% end %>
     
 Errors.any? is a rails method that will return true or false depending on whether there are errors.  errors.full_messages is a handy method to return an array of strings that holds each error message and this is nice and easy to parse in order to display the messages.  I also found this handy pluralize method that in this case will say either error or errors in the error message depending on the number of errors.  Nice little touch because it doesn't look as good when you get a message saying, "1 errors in this form".
 
@@ -94,16 +94,16 @@ In rails you use an array to handle multiple variables:
 
     <div class='row'>
       <div class='span8'>
-        <%= form_for [@post, @comment] do |f| %>
-          <%= render 'shared/errors', controller_object: @comment %>
+        <%%= form_for [@post, @comment] do |f| %>
+          <%%= render 'shared/errors', controller_object: @comment %>
 
           <div class="control-group">
-            <%= f.label :body, "Leave A Comment" %>
-            <%= f.text_area :body, rows: 5, class: 'span6' %>
+            <%%= f.label :body, "Leave A Comment" %>
+            <%%= f.text_area :body, rows: 5, class: 'span6' %>
           </div>
           </br>
-          <%= f.submit "Create Comment", class: "btn btn-primary" %>
-        <% end %>
+          <%%= f.submit "Create Comment", class: "btn btn-primary" %>
+        <%% end %>
       </div>
     </div>
     
@@ -123,9 +123,9 @@ Line 2 is exactly the same as the below code except in a more concise style:
 
 I found checkboxes to be quite tricky to implement and needed quite a bit of studying of the documentation to make sense of how to use them with an object backed form.  In my application I was using them to add categories to a new post or when editing a post and my final code looked like this:
 
-    <%= f.collection_check_boxes(:category_ids, Category.all, :id, :name) do |box| %>
-      <% box.label(class: "checkbox inline") { box.check_box(class: 'checkbox') + box.text } %>
-    <% end %>
+    <%%= f.collection_check_boxes(:category_ids, Category.all, :id, :name) do |box| %>
+      <%% box.label(class: "checkbox inline") { box.check_box(class: 'checkbox') + box.text } %>
+    <%% end %>
     
 To understand this better I'll show the info from the api documentation below:
 

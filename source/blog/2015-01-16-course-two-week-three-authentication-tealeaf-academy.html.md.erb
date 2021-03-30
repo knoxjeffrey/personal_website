@@ -69,20 +69,20 @@ New is the only controller method I need a view for and this uses a non model ba
 
     <div class='row'>
       <div class="span8 well">
-        <%= form_tag '/login' do %>
+        <%%= form_tag '/login' do %>
 
           <div class="control-group">
-            <%= label_tag :username %>
-            <%= text_field_tag :username %>
+            <%%= label_tag :username %>
+            <%%= text_field_tag :username %>
           </div>
 
           <div class="control-group">
-            <%= label_tag :password %>
-            <%= password_field_tag :password %>
+            <%%= label_tag :password %>
+            <%%= password_field_tag :password %>
           </div>
           <br/>
-          <%= submit_tag 'Login', class: "btn btn-primary" %>
-        <% end %>
+          <%%= submit_tag 'Login', class: "btn btn-primary" %>
+        <%% end %>
       </div>
     </div>
     
@@ -90,18 +90,18 @@ There are a couple of things to note from the other methods in the SessionsContr
 
 Throughout the application I want to keep track of whether the user is logged in or out and display the relevant buttons in the navigation bar so the best place to do this is in the navigation bar itself:
 
-    <% if logged_in? %>
+    <%% if logged_in? %>
       <div class='nav_item'>
-        <%= link_to 'New Post', new_post_path, class: "btn btn-success btn-small" %>
+        <%%= link_to 'New Post', new_post_path, class: "btn btn-success btn-small" %>
       </div>
       <div class='nav_item'>
-        <%= link_to 'Log Out', logout_path, class: "btn btn-small" %>
+        <%%= link_to 'Log Out', logout_path, class: "btn btn-small" %>
       </div>
     <% else %>
       <div class='nav_item'>
-        <%= link_to 'Log In', login_path, class: "btn btn-small" %>
+        <%%= link_to 'Log In', login_path, class: "btn btn-small" %>
       </div>
-    <% end %>
+    <%% end %>
 
 Notice this is wrapped in a logged_in? if statement and this is used to display buttons depending on whether or not the user is logged in.  This is a helper method that will actually be added to application_controller.rb because it will also be used by a controller, not just the view.  This requires a helper_method to be added to application_controller to make it available to the views and my complete code looks like so:
 
@@ -183,11 +183,11 @@ These routes were added so I could edit the user profile and also have a page th
 
 The first thing was the ability to turn on/off sections of a partial and this was needed in my comments partial to allow more detail to be shown on the :show route for the user.  The code for the partial was:
 
-    <%= render 'comments/comment', comment: comment, show_post: true %>
+    <%%= render 'comments/comment', comment: comment, show_post: true %>
     
 At the end I've passed in a boolean show_post and to handle this I can wrap a ```<% if show_post %>``` around the sections I want the boolean to apply to.  However, in cases where it is false I don't have to explicitly pass this in by using the following code at the start of the partial:
 
-    <% show_post ||= false %>
+    <%% show_post ||= false %>
     
 The final thing was to block off the ability for a logged in user to edit the profile of another user by adding a before action in the UsersController:
 

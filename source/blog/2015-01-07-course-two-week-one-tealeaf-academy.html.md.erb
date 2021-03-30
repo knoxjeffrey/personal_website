@@ -167,24 +167,24 @@ If a user requests a url of say http://somuchtolearn.com/posts, this will be han
         <hr/>
     </p>
 
-    <% @posts.each do |post| %>
+    <%% @posts.each do |post| %>
       <div class='row'>
         <div class="span8 well">
-          <% post.categories.each do |category|
+          <%% post.categories.each do |category|
             <span class='badge'><%= category.name %></span>
-          <% end %>
-          <h4><%= link_to post.title, post.url %></h4>
-          <p><%= post.description %></p>
+          <%% end %>
+          <h4><%%= link_to post.title, post.url %></h4>
+          <p><%%= post.description %></p>
           <p>
-            <span class='quiet'>posted by </span><%= post.creator.username %>
-            <small>at <%= post.created_at %></small>
+            <span class='quiet'>posted by </span><%%= post.creator.username %>
+            <small>at <%%= post.created_at %></small>
           </p>
           <span>
-            <%= link_to("#{post.comments.size} comments", post_path(post))%>
+            <%%= link_to("#{post.comments.size} comments", post_path(post))%>
           </span>
         </div>
       </div>
-    <% end %>
+    <%% end %>
 
 Note my use of @posts in this template which is the instance variable created in the index method of the PostsContoller class.  Given what I have defined so far in my controller class I would also need a show.html.erb view file but I don't need to go through that here.
 
@@ -193,7 +193,7 @@ Note my use of @posts in this template which is the instance variable created in
 Partials are an excellent way to extract code from my template that will be used repeatedly throughout my application - DRY springs to mind again!  For example, a lot of my views will use a header similar to the All Posts header above so I need to extract this code into a partial.  For this I can create a new folder called shared which indicates that the partial will be shared across all resources.  The file name for partials must begin with an underscore and in this case it could be _content_title.html.erb which would look as follows:
 
     <p class'lead'>
-      <%= title %>
+      <%%= title %>
       <hr/>
     </p>
     
@@ -205,27 +205,27 @@ In order to call the partial I must use the render command and also note that in
 
 Another piece of code that I might be using again throughout my application is the category for badges as shown by this code:
 
-    <% post.categories.each do |category|
-      <span class='badge'><%= category.name %></span>
-    <% end %>
+    <%% post.categories.each do |category| %>
+      <span class='badge'><%%= category.name %></span>
+    <%% end %>
     
 ```post.categories``` will return an array of categories associated with that post and the code above iterates through the array to print out each category.  The code above could be replaced with:
 
-    <%= render post.categories %>
+    <%%= render post.categories %>
 
 To access the relevant partial I again need to use the render keyword but Rails has a specific convention of where it will look for the partial file in this case.  This code...
 
-```<%= render post.categories %>``` 
+```<%%%= render post.categories %>``` 
 
 ...is the equivalent to the following Ruby code:
 
-    <% post.categories.each do |category|
+    <%% post.categories.each do |category|
       <%= render 'categories/category', category: category %>
-    <% end %>
+    <%% end %>
     
 This is another example of the power of conventions in rails.  Note that it will look for the partial in a folder called categories and the file name would be _category.html.erb.  The code in the partial would then be as follows (again note the matching variable names):
 
-    <span class='badge'><%= category.name %></span>
+    <span class='badge'><%%= category.name %></span>
     
 ##Done...Finally!
 

@@ -111,21 +111,21 @@ as well as implement the login_user!(user) method because this will be used seve
       
   and then create a pin.html.erb file for the user to enter their pin:
   
-      <%= render 'shared/content_title', title: "Enter Your Pin To Log In"%>
+      <%%= render 'shared/content_title', title: "Enter Your Pin To Log In"%>
       <h5>
         Your account is locked.  You will receive a text message with a pin number.
         Enter the pin number to unlock your account and proceed with login.
       </h5>
       <div class="col-sm-8 well">
-          <%= form_tag '/pin' do %>
+          <%%= form_tag '/pin' do %>
 
               <div class="form-group">
-                  <%= label_tag :pin, "Pin Number" %>
-                  <%= text_field_tag :pin, params[:pin] || '', class: "form-control" %>
+                  <%%= label_tag :pin, "Pin Number" %>
+                  <%%= text_field_tag :pin, params[:pin] || '', class: "form-control" %>
               </div>
               <br/>
-              <%= submit_tag 'Unlock your account', class: "btn btn-danger" %>
-          <% end %>
+              <%%= submit_tag 'Unlock your account', class: "btn btn-danger" %>
+          <%% end %>
       </div>
       
   and then then implment the post route for '/pin'

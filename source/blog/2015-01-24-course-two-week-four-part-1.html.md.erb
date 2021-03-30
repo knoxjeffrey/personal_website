@@ -9,7 +9,7 @@ comments: true
 
 Using ajax in rails is similar to how I used ```method: 'post'``` for the vote up/down links in order to generate a form on the fly.  In this case, using ```remote: true``` generates html with a ```date-remote``` call.  Javascript in rails is looking for that ```data-remote``` call and then attaches itself to the element and converts the given link to an ajax call. An example using my code is helpful to explain:
 
-    <%= link_to vote_post_path(post, vote: true), method: 'post', remote: true do %>
+    <%%= link_to vote_post_path(post, vote: true), method: 'post', remote: true do %>
     
 <!--more-->
 
@@ -38,15 +38,15 @@ Any non ajaxified requests will follow the format.html block and the js requests
 
 In order to change the number after a vote is made, I need to get a handle on the number element.  For example in my post partial I currently have 
 
-    <%= post.total_votes %>
+    <%%= post.total_votes %>
     
 so in order to get a handle on it I need to give it an id. This cannot be a hardcoded id because every row returned will need a unique identifier and this can be done like so:
 
-    <span id="post_<%= post.id %>_votes"><%= post.total_votes %></span>
+    <span id="post_<%%= post.id %>_votes"><%%= post.total_votes %></span>
     
 Now in my .js file 
 
-  $("#post_<%= @post.id %>_votes").html("<%= @post.total_votes %>");
+  $("#post_<%%= @post.id %>_votes").html("<%%= @post.total_votes %>");
   
 One important thing to remember is to ensure the post is an instance variable in the vote action within the controller to ensure it flows through to the js file.  The same goes for anything else I want to pass through.
 
@@ -56,7 +56,7 @@ Slugging is a way to hide the database ids to make the url more friendly and des
 
 As an example in my application I have a link to comments on the posts index page that looks like this:
 
-    <%= link_to("#{post.comments.size} comments", post_path(post))%>
+    <%%= link_to("#{post.comments.size} comments", post_path(post))%>
     
 ```post_path(post)``` is actually calling another method behind the scenes in order to return the id and the method that is actually called is ```post_path(post.to_param)```.  to_param is a method of ActiveRecord::Base and will automatically return the id as a string.  Therefore I need to override this method and because it is part of ActiveRecord::Base I have to do this in each of the models where an id would be returned in the url.  This seems to be repeated logic and can instead be moved into a module.
 
@@ -157,15 +157,15 @@ Now need to write the require_admin method in ApplicationController (may need to
   
 I also need to edit the button for adding a category to hide it to everyone except an admin:
 
-    <% if logged_in? && current_user.admin? %>
+    <%% if logged_in? && current_user.admin? %>
       <li class='divider'></li>
       <li>
-        <%= link_to(new_category_path) do %>
+        <%%= link_to(new_category_path) do %>
           <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
           New Category
-        <% end %>
+        <%% end %>
       </li>
-    <% end %>
+    <%% end %>
      
 ## Time zones
 
@@ -194,8 +194,8 @@ followed by rake db:migrate
 On the users form partial I can now add a new label and field
 
     <div class="form-group">
-        <%= f.label :time_zone %>
-        <%= f.time_zone_select :time_zone, nil, {default: "Edinburgh"}, {class: "form-control"} %>
+      <%%= f.label :time_zone %>
+      <%%= f.time_zone_select :time_zone, nil, {default: "Edinburgh"}, {class: "form-control"} %>
     </div>
     
 Need to now add to strong parameters in UsersController
