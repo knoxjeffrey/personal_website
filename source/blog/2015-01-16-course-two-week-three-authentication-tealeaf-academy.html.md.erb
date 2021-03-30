@@ -97,7 +97,7 @@ Throughout the application I want to keep track of whether the user is logged in
       <div class='nav_item'>
         <%%= link_to 'Log Out', logout_path, class: "btn btn-small" %>
       </div>
-    <% else %>
+    <%% else %>
       <div class='nav_item'>
         <%%= link_to 'Log In', login_path, class: "btn btn-small" %>
       </div>
@@ -129,7 +129,7 @@ Notice this is wrapped in a logged_in? if statement and this is used to display 
 
     end
 
-The comments in the code should explain how this all works.  I can now use ```<% if logged_in? %>``` to hide elements on my pages depending on whether the use is logged in like when creating a new post, editing a post, creating a comment, etc.  However this does not stop the path actually being reached if the user typed in something like /posts/new if they're not logged in.  In order to do this I must shut down certain routes with a before_action in my controllers and my posts controller would look like this for example:
+The comments in the code should explain how this all works.  I can now use ```<%% if logged_in? %>``` to hide elements on my pages depending on whether the use is logged in like when creating a new post, editing a post, creating a comment, etc.  However this does not stop the path actually being reached if the user typed in something like /posts/new if they're not logged in.  In order to do this I must shut down certain routes with a before_action in my controllers and my posts controller would look like this for example:
 
     before_action :require_user, except: [:index, :show]
     
@@ -185,7 +185,7 @@ The first thing was the ability to turn on/off sections of a partial and this wa
 
     <%%= render 'comments/comment', comment: comment, show_post: true %>
     
-At the end I've passed in a boolean show_post and to handle this I can wrap a ```<% if show_post %>``` around the sections I want the boolean to apply to.  However, in cases where it is false I don't have to explicitly pass this in by using the following code at the start of the partial:
+At the end I've passed in a boolean show_post and to handle this I can wrap a ```<%% if show_post %>``` around the sections I want the boolean to apply to.  However, in cases where it is false I don't have to explicitly pass this in by using the following code at the start of the partial:
 
     <%% show_post ||= false %>
     
