@@ -10,7 +10,7 @@ per_page: 10
   <div class="margin-bottom--l">
     <% card title: article.title do %>
       <span>Posted on <time datetime="<%= article.date.strftime("%Y-%m-%d") %>"><span style="color: var(--primary-color);"><%= article.date.strftime("%e %b %Y") %></span></time></span>
-      <div class="margin-top--s margin-bottom--l"><%= article.summary %></div>
+      <div class="margin-top--m margin-bottom--l"><%= article.summary %></div>
       <%= button text: "Read more", link: true, href: article.url, type: :default %>
     <% end %>
   </div>
