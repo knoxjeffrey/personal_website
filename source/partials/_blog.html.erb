@@ -1,0 +1,29 @@
+<!-- List articles -->
+<% page_articles.each do |article| %>
+  <div class="margin-bottom--l">
+    <% card title: article.title do %>
+      <% article.tags.each do |tag| %>
+        <span><small><%= link_to "##{tag}", tag_path(tag) %></small></span>
+      <% end %>
+      <div class="margin-top--s">
+        <span>Posted on <time datetime="<%= article.date.strftime("%Y-%m-%d") %>"><span style="color: var(--highlight-color);"><%= article.date.strftime("%e %b %Y") %></span></time></span>
+      </div>
+      <div class="margin-top--m margin-bottom--l"><%= article.summary %></div>
+      <%= button text: "Read more", link: true, href: article.url, type: :primary %>
+    <% end %>
+  </div>
+<% end %>
+
+<!-- Pagination -->
+<% if paginate %>
+  <% if prev_page %>
+    <%= button text: "Previous", link: true, href: prev_page.url, type: :default, html: { class: "margin-top--l", rel: "previous" } %>
+  <% else %>
+    <%= button text: "Previous", type: :default, ghost: true, html: { class: "margin-top--l" } %>
+  <% end %>
+  <% if next_page %>
+    <%= button text: "Next", link: true, href: next_page.url, type: :default, html: { class: "margin-top--l", rel: "next" } %>
+  <% else %>
+    <%= button text: "Next", type: :default, ghost: true, html: { class: "margin-top--l" } %>
+  <% end %>
+<% end %>

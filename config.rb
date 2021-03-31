@@ -24,7 +24,7 @@ activate :blog do |blog|
   blog.sources = "/{year}-{month}-{day}-{title}.html"
   blog.permalink = "{title}.html"
   blog.layout = "layouts/layout"
-  # blog.tag_template = "proxy_ignorable/practice-portal/blog/tag.html"
+  blog.tag_template = "blog/tag.html"
   blog.taglink = "category/{tag}.html"
   blog.paginate = true
   blog.per_page = 10
