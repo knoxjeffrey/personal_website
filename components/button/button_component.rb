@@ -7,6 +7,7 @@ module Components
 
       helpers do
         def button(opts)
+          return link_to(opts[:text], opts[:href], build_button_html(opts)) if opts[:link]
           content_tag(:button, opts[:text], build_button_html(opts))
         end
       

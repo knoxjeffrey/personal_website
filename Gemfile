@@ -3,6 +3,8 @@ source 'https://rubygems.org'
 gem "middleman", "~> 4.2"
 gem "middleman-autoprefixer", "~> 2.7"
 gem "middleman-blog"
+# Required for blog summaries
+gem "nokogiri"
 gem "require_all"
 # Locked to v2.1.0 because of long install times for this gem with later versions
 # Thread here - https://github.com/sass/sassc-ruby/issues/189

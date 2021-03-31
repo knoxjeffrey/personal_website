@@ -27,11 +27,12 @@ activate :blog do |blog|
   # blog.tag_template = "proxy_ignorable/practice-portal/blog/tag.html"
   # blog.taglink = "category/{tag}.html"
   blog.paginate = true
-  blog.per_page = 30
+  blog.per_page = 10
   blog.publish_future_dated = true
   blog.generate_month_pages = false
   blog.generate_day_pages = false
   blog.generate_year_pages = false
+  blog.summary_separator = /<!--more-->/
 end
 
 activate :directory_indexes
