@@ -349,6 +349,10 @@ img {
   grid-template-rows: auto;
 }
 
+.components-grid main {
+  min-width: 0;
+}
+
 @media only screen and (min-width: 70em) {
   .components-grid {
     grid-template-columns: 3fr 9fr;
