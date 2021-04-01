@@ -16,24 +16,22 @@ First up, create a new project with the command ```motion create interface_build
 
 With that done it's time to create a new UIViewController called MasterViewController and here is my completed code for that class:
 
-``` ruby
-class MasterViewController < UIViewController
+    class MasterViewController < UIViewController
 
-  extend IB
+      extend IB
 
-    outlet :title_label, UILabel
-    outlet :text_field, UITextField
-    outlet :button, UIButton
+        outlet :title_label, UILabel
+        outlet :text_field, UITextField
+        outlet :button, UIButton
 
-    def button_pressed(sender)
-      title_label.text = text_field.text
-      text_field.text = ""
+        def button_pressed(sender)
+          title_label.text = text_field.text
+          text_field.text = ""
+        end
+
+      end
+
     end
-
-  end
-
-end
-```
 
 You will see initially that I have added ```extend IB```.  You have no doubt used ```include``` before but you may have not seen ```extend``` so here's a quick explanation.  Include is for adding methods to an instance of a class and extend is for adding class methods as seen [here](http://www.railstips.org/blog/archives/2009/05/15/include-vs-extend-in-ruby/).
 
@@ -73,25 +71,23 @@ Now open up the assistant editor and open the ```Stubs.h``` file. You can ctrl a
 
 That's all for XCode and now back to the app delegte and my code looks as follows:
 
-``` ruby
-class AppDelegate
+    class AppDelegate
 
-  def window
-    @window ||= UIWindow.alloc.initWithFrame(UIScreen.mainScreen.bounds)
-  end
+      def window
+        @window ||= UIWindow.alloc.initWithFrame(UIScreen.mainScreen.bounds)
+      end
 
-  def storyboard
-    @storyboard ||= UIStoryboard.storyboardWithName("Main", bundle: nil)
-  end
+      def storyboard
+        @storyboard ||= UIStoryboard.storyboardWithName("Main", bundle: nil)
+      end
 
-  def application(application, didFinishLaunchingWithOptions:launchOptions)
-    window.rootViewController = storyboard.instantiateInitialViewController
-    window.makeKeyAndVisible
+      def application(application, didFinishLaunchingWithOptions:launchOptions)
+        window.rootViewController = storyboard.instantiateInitialViewController
+        window.makeKeyAndVisible
 
-    true
-  end
-end
-```
+        true
+      end
+    end
 
 Again I've tidied up my methods but the main thing to note is how I instantiate my storyboard and then set it as the root view controller.
 
