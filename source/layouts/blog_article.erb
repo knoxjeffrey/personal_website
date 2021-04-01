@@ -2,5 +2,7 @@
   <% if current_article.data.banner_image %>
     <%= figure media: image_tag(current_article.data.banner_image, alt: "", class: "margin-bottom--m") %>
   <% end %>
+  <h1><%= current_article.title %></h1>
+  <hr/>
   <%= yield %>
 <% end %>

@@ -270,6 +270,10 @@ hr {
   border-bottom: 1px dashed var(--secondary-color);
 }
 
+h1 + hr {
+  margin-top: 0;
+}
+
 p {
   margin: 0 0 var(--global-line-height);
   color: var(--global-font-color);
