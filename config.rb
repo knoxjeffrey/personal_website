@@ -23,7 +23,7 @@ activate :blog do |blog|
   blog.name = "blog"
   blog.sources = "/{year}-{month}-{day}-{title}.html"
   blog.permalink = "{title}.html"
-  blog.layout = "layouts/layout"
+  blog.layout = "layouts/blog_article"
   blog.tag_template = "blog/tag.html"
   blog.taglink = "category/{tag}.html"
   blog.paginate = true

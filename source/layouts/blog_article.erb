@@ -1,0 +1,6 @@
+<% wrap_layout :layout do %>
+  <% if current_article.data.banner_image %>
+    <%= figure media: image_tag(current_article.data.banner_image, alt: "", class: "margin-bottom--m") %>
+  <% end %>
+  <%= yield %>
+<% end %>

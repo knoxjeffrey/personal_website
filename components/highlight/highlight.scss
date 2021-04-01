@@ -24,10 +24,10 @@ pre {
   border: 1px solid var(--secondary-color);
   padding: var(--global-space);
   margin: calc(var(--global-space) * 3) 0;
-  white-space: pre-wrap;
-  white-space: -moz-pre-wrap;
-  white-space: -pre-wrap;
-  white-space: -o-pre-wrap;
+  white-space: pre;
+  white-space: -moz-pre;
+  white-space: -pre;
+  white-space: -o-pre;
 }
 
 pre code {
