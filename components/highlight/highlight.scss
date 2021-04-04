@@ -18,7 +18,7 @@ pre code::before {
 pre {
   display: block;
   word-break: break-all;
-  word-wrap: break-word;
+  word-wrap: normal;
   color: var(--secondary-color);
   background-color: var(--background-color);
   border: 1px solid var(--secondary-color);
