@@ -30,13 +30,19 @@ title: Jeff Knox CV
 <h2>Projects</h2>
 
 <% timeline do %>
-  <%= alert text: "Apr 2019 - present", type: :primary, html: { class: "margin-bottom--s" } %>
+  <%= alert text: "Apr 2019 - Mar 2021", type: :primary, html: { class: "margin-bottom--s" } %>
   <% card title: "Software Engineer for FreeAgent" do %>
-    Joined a small but growing team to help transform the tech stack for the 
-    <%= link_to "FreeAgent website.", "https://www.freeagent.com/" %>
-    The site is currently static and built with Middleman with plans to gradually extract areas of the
-    site into more suitable technology for the needs of the publishing teams and other areas of the
-    business. More to follow!
+    Joined the Marketing Platform team which has responsibility for the FreeAgent
+    <%= link_to "marketing site", "https://www.freeagent.com/" %> as well as supporting multiple
+    teams in the business. During my time I helped setup the PageSpeed Insights API in our Data Warehouse
+    for daily tracking of desktop and mobile scores and setup dashboards in Looker to help track the
+    effects of changes in our codebase. Additionally, I added Perfume.js to the website which pushed Core
+    Web Vitals measurements to our GA account for better oversight of Real User Metrics. I also made 
+    significant improvements in deploy times and helped lead the project to move the static website from
+    our self hosted infrastructure over to Netlify. This infrastructure has enabled our team to  work
+    closely with the Sales team to deliver personalised learning experiences for our accountancy
+    practices by using Netlify functions to gate sections of the static site, login using their FreeAgent
+    credentials and fetch data from Salesforce.
   <% end %>
 
   <%= alert text: "Aug 2018", type: :primary, html: { class: "margin-bottom--s" } %>
