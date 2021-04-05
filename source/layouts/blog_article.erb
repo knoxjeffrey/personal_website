@@ -2,7 +2,7 @@
   <h1><%= current_article.title %></h1>
   <hr/>
   <% if current_article.data.banner_image %>
-    <%= figure media: image_tag(current_article.data.banner_image, alt: "", class: "margin-bottom--m") %>
+    <%= figure media: image_tag(current_article.data.banner_image, loading: :eager, class: "margin-bottom--m") %>
   <% end %>
   <%= yield %>
 <% end %>
