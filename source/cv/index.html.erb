@@ -7,27 +7,36 @@ title: Jeff Knox CV
 
 <h2>Summary</h2>
 
-<p> 
-  I have a degree in Computer and Management Science but upon finishing I had an opportunity to work
-  with an exciting new medical device technology. I re-trained and ran my own clinic for 11 years and
-  combined that with research work on a hand held device for improving spinal biomechanics.
-</p>
-
-<p> 
-  I sold the clinic in February 2015 but had been working with several technologies and programming
-  languages for roughly one year at that point.
+<p>
+  I've been a software engineer for over <%= ((Date.today - Date.new(2015, 8, 1))/365).floor %> years
+  and currently work for <%= link_to "FreeAgent", "https://www.freeagent.com/" %>. This role has
+  required a mix of technical and project management skills to collaborate with multiple departments
+  and deliver projects on time which have driven new business to FreeAgent.
 </p>
 
 <p>
-  With Primate my main focus had been building web applications with Ruby on Rails, React with Redux,
-  CentOS, Chef, AWS, Passenger and NGINX. With FreeAgent I have the opportunity to work across many
-  areas of their business to develop systems that make teams happier and more productive, with the
-  resulting website performant, easy to maintain and simple to evolve.
+  Prior to working with FreeAgent I was Head of Development at
+  <%= link_to "Primate", "http://primate.co.uk/" %> where I worked with dozens of companies to help
+  them unlock their potential. Projects ranged from marketing sites, to applications interfacing with
+  large CMS' and CRMs, to MVPs for startups and large scale organisations.
+</p>
+
+<p> 
+  I started my software engineering journey in 1998, studying for a degree in Computer and Management
+  Science but, after finishing with a 2:1 Honours Degree, I had an opportunity to work with an exciting
+  new medical device technology. I re-trained and ran my own clinic for 11 years and combined that with
+  research work on a hand held medical device for improving spinal biomechanics.
+</p>
+
+<p> 
+  I sold the clinic in February 2015 but had been getting the bug for programming again one year prior
+  to this. I knew this was the direction I wanted to take my career and enrolled in a bootcamp
+  specialising in Ruby and Ruby on Rails before finding freelance work and finally working with Primate.
 </p>
 
 <hr />
 
-<h2>Projects</h2>
+<h2>Career</h2>
 
 <% timeline do %>
   <%= alert text: "Apr 2019 - Mar 2021", type: :primary, html: { class: "margin-bottom--s" } %>
@@ -122,22 +131,23 @@ title: Jeff Knox CV
 <% end %>
 
 <hr />
-<h2>Skills Summary</h2>
+<h2>Languages Summary</h2>
 
 <p>Ruby/Ruby on Rails</p>
 <%= progress_arrow filled: 95 %>
 <br />
 
-<p>HTML/CSS/SASS</p>
+<p>HTML</p>
 <%= progress_arrow filled: 90 %>
+<br />
+
+<p>CSS</p>
+<%= progress_arrow filled: 80 %>
 <br />
 
 <p>JavaScript</p>
 <%= progress_arrow filled: 75 %>
 <br />
-
-<p>AWS</p>
-<%= progress_arrow filled: 55 %>
 
 <hr />
 <h2>Relevant Education and Courses</h2>
