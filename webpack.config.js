@@ -18,7 +18,7 @@ module.exports = function (env) {
     },
 
     output: {
-      path: path.join(__dirname, "dist"),
+      path: path.join(__dirname, "/.tmp/dist/assets/javascripts"),
       filename: `[name].js`
     },
 

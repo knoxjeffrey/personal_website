@@ -42,5 +42,10 @@ activate :directory_indexes
 activate :external_pipeline,
          name: :webpack,
          command: build? ? "yarn run build" : "yarn run start",
-         source: "dist",
+         source: ".tmp/dist",
          latency: 1
+
+configure :build do
+  activate :asset_hash
+  activate :minify_css
+end
