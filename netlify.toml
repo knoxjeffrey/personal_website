@@ -12,15 +12,15 @@
   command = "rake netlify_build:production'[$PRODUCTION_BUILD_OPTIONS]'"
 
 [context.production.processing]
-  skip_processing = false
+  skip_processing = true
 
 [context.production.processing.css]
-  bundle = true
-  minify = true
+  bundle = false
+  minify = false
 
 [context.production.processing.js]
-  bundle = true
-  minify = true
+  bundle = false
+  minify = false
 
 # Note that processing doesn't actually have to be turned on for pretty_urls to work.
 [context.production.processing.html]
