@@ -1,4 +1,4 @@
-require "netlify_headers.rb"
+require "./lib/netlify/netlify_headers.rb"
 
 module Netlify
   # NetlifyHeadersBuilder joins all of the headers in NetlifyHeaders into a format for Netlify and copies
