@@ -4,10 +4,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <!-- Use the title from a page's frontmatter if it has one -->
   <title><%= current_page.data.title || "Middleman" %></title>
-  <%= stylesheet_link_tag "main" %>
-  <%= stylesheet_link_tag "components" %>
-  <%= javascript_include_tag "main", defer: true %>
-  <%= javascript_include_tag "components", defer: true %>
+  <%= stylesheet_link_tag "main", "data-turbo-track": "reload" %>
+  <%= stylesheet_link_tag "components", "data-turbo-track": "reload" %>
+  <%= javascript_include_tag "main", "data-turbo-track": "reload", defer: true %>
+  <%= javascript_include_tag "components", "data-turbo-track": "reload", defer: true %>
   <!-- Fathom - beautiful, simple website analytics -->
   <script src="https://haddock.jeffreyknox.dev/script.js" data-site="IDHNGMRM" data-spa="auto" defer></script>
   <!-- / Fathom -->
