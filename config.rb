@@ -18,6 +18,7 @@ Pathname.new("./components").children.each do |entry|
   activate "#{entry.basename.to_s}_component".to_sym
 end
 
+proxy "_headers", "netlify-headers", ignore: true
 proxy "_redirects", "netlify-redirects", ignore: true
 
 activate :blog do |blog|

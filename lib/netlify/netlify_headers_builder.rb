@@ -15,7 +15,7 @@ module Netlify
     #   X-XSS-Protection: 1; mode=block
     def build(build_context)
       rules = header_rules(build_context).join("\n")
-      File.write("source/_headers", rules)
+      File.write("source/netlify-headers", rules)
     end
 
     private
