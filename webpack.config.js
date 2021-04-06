@@ -1,5 +1,6 @@
 const glob = require("glob");
 const path = require("path");
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = function (env) {
@@ -21,6 +22,11 @@ module.exports = function (env) {
       path: path.join(__dirname, "/.tmp/dist/assets/javascripts"),
       filename: `[name].js`
     },
+
+    plugins: [
+      // Clean the output folder before build
+      new CleanWebpackPlugin(),
+    ],
 
     optimization: (() => {
       if (isProduction) {
