@@ -13,6 +13,24 @@
     <div class="container">
       <h1>Styleguide</h1>
       <hr/>
+      <p>
+        I have to give a big shout out to the makers of <%= link_to "Terminal CSS", "https://terminalcss.xyz/", target: "_blank" %>
+        for creating this lightweight, modern and minimal CSS framework. I applied the framework to this
+        site and altered it to suit my needs.
+      </p>
+      <p>
+        As a Ruby developer, I've been interested to see how the concept of components would be adopted
+        and was excited to see the introduction of <%= link_to "ViewComponent", "https://github.com/github/view_component", target: "_blank" %>
+        in Ruby on Rails.
+      </p>
+      <p class="margin-bottom--l">
+        However, for my personal site I wanted to stick with the simplicity and speed of a static site and opted
+        for <%= link_to "Middleman", "https://middlemanapp.com/", target: "_blank" %>. This SSG has no
+        concept of components but after some experimentation I've got a working version where I can group
+        my Ruby components together with their SCSS and JS. Each component is rendered below and you
+        can <%= link_to "check out my repo", "https://github.com/knoxjeffrey/personal_website", target: "_blank" %>
+        for the code.
+      </p>
       <div class="components components-grid">
         <%= partial "partials/styleguide/aside" %>
         <main><%= yield %></main>
