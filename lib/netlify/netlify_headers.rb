@@ -6,7 +6,7 @@ module Netlify
     CSP = [
       "default-src 'self';",
       "img-src data: blob: *;",
-      "font-src 'self';",
+      "font-src 'self' data: cdn.commento.io;",
       "media-src 'self';",
       "style-src 'self' 'unsafe-inline' data: blob: *.commento.io;",
       "object-src 'self';",
