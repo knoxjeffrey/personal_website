@@ -8,9 +8,9 @@ module Netlify
       "img-src data: blob: *;",
       "font-src 'self';",
       "media-src 'self';",
-      "style-src 'self' 'unsafe-inline';",
+      "style-src 'self' 'unsafe-inline' data: blob: *.commento.io;",
       "object-src 'self';",
-      "connect-src 'self' data: wss: *.jeffreyknox.dev;",
+      "connect-src 'self' data: wss: *.jeffreyknox.dev *.commento.io;",
       "script-src 'self' 'unsafe-eval' 'unsafe-inline' blob: *.jeffreyknox.dev *.commento.io;"
     ]
 
