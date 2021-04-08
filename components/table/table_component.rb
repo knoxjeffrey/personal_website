@@ -8,7 +8,7 @@ module Components
       helpers do
         def table(opts, &block)
           concat(
-            content_tag(:table) do
+            content_tag(:table, class: "terminal-table") do
               content_tag(:caption, opts[:caption]) +
               capture_html(&block)
             end

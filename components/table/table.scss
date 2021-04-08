@@ -1,4 +1,4 @@
-table {
+table.terminal-table {
   width: 100%;
   border-collapse: collapse;
   margin: var(--global-line-height) 0;
@@ -6,8 +6,8 @@ table {
   font-size: var(--global-font-size);
 }
 
-table td,
-table th {
+table.terminal-table td,
+table.terminal-table th {
   vertical-align: top;
   border: 1px solid var(--font-color);
   line-height: var(--global-line-height);
@@ -15,20 +15,20 @@ table th {
   font-size: 1em;
 }
 
-table thead th {
+table.terminal-table thead th {
   font-size: 1em;
 }
 
-table tfoot tr th {
+table.terminal-table tfoot tr th {
   font-weight: 500;
 }
 
-table caption {
+table.terminal-table caption {
   font-size: 1em;
   margin: 0 0 1em 0;
 }
 
-table tbody td:first-child {
+table.terminal-table tbody td:first-child {
   font-weight: 700;
   color: var(var(--secondary-color));
 }
