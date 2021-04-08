@@ -5,6 +5,9 @@
     <%= figure media: image_tag(current_article.data.banner_image, loading: :eager, class: "margin-bottom--m") %>
   <% end %>
   <%= yield %>
+  <div data-controller="comments">
+    <%= button text: "Load comments", type: :default, html: { "data-action": "click->comments#load" } %>
+  </div>
   <div id="commento"></div>
   
   <script defer
