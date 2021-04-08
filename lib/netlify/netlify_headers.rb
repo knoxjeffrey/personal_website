@@ -11,7 +11,7 @@ module Netlify
       "style-src 'self' 'unsafe-inline';",
       "object-src 'self';",
       "connect-src 'self' data: wss: *.jeffreyknox.dev;",
-      "script-src 'self' 'unsafe-eval' 'unsafe-inline' blob: *.jeffreyknox.dev;"
+      "script-src 'self' 'unsafe-eval' 'unsafe-inline' blob: *.jeffreyknox.dev *.commento.io;"
     ]
 
     ALL_PAGES_HEADERS = [
