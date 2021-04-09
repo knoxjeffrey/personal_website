@@ -13,7 +13,11 @@
 }
 
 .commento-root .commento-submit-button {
+  background-color: var(--primary-color);
+  color: var(--invert-font-color);
+  font-size: inherit;
   margin-right: 0;
+  text-transform: inherit;
 }
 
 .commento-root .commento-markdown-help {
