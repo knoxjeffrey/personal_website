@@ -5,7 +5,7 @@ export default class extends Controller {
 
   load() {
     this.loadTarget.style.display = "none"
-    this.commentoTarget.classList.add("margin-top--xl")
+    this.commentoTarget.classList.add("margin-top--xxl")
     window.commento.main()
   }
 }
