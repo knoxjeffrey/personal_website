@@ -6,9 +6,9 @@
   <% end %>
   <%= yield %>
   <div data-controller="comments">
-    <%= button text: "Load comments", type: :default, html: { "data-action": "click->comments#load" } %>
+    <%= button text: "Load comments", type: :default, html: { class: "margin-top--m", "data-action": "click->comments#load" } %>
   </div>
-  <div id="commento"></div>
+  <div id="commento" class="margin-top--m"></div>
   
   <script defer
           src="https://cdn.commento.io/js/commento.js"
