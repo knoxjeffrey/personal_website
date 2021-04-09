@@ -12,6 +12,24 @@
   width: 100%;
 }
 
+.commento-root .commento-submit-button {
+  margin-right: 0;
+}
+
+.commento-root .commento-markdown-help {
+  border: none;
+  padding: 0;
+}
+
+.commento-root .commento-footer {
+  margin: 0;
+  padding-right: 0;
+}
+
+.commento-root .commento-card {
+  border-top: none;
+}
+
 .commento-root blockquote {
   position: inherit;
 }
