@@ -16,6 +16,7 @@
   background-color: var(--primary-color);
   color: var(--invert-font-color);
   font-size: inherit;
+  font-weight: 400;
   margin-right: 0;
   text-transform: inherit;
 }
@@ -23,6 +24,10 @@
 .commento-root .commento-markdown-help {
   border: none;
   padding: 0;
+}
+
+.commento-root .commento-markdown-help tr td pre {
+  padding-left: 0;
 }
 
 .commento-root .commento-footer {
