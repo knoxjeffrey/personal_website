@@ -39,6 +39,10 @@
   border-top: none;
 }
 
+.commento-root .commento-logged-container .commento-logged-in-as .commento-name {
+  display: none;
+}
+
 .commento-root blockquote {
   position: inherit;
 }
