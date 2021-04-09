@@ -2,10 +2,24 @@
   float: left;
   margin-left: 0;
 }
+
 .commento-root .commento-markdown-button {
   align-items: center;
   display: flex;
   line-height: 0;
+  margin-bottom: 16px;
   margin-left: 0;
   width: 100%;
+}
+
+.commento-root blockquote {
+  position: inherit;
+}
+
+.commento-root blockquote::after {
+  content: none;
+}
+
+.commento-root pre {
+  border: none;
 }
