@@ -1,0 +1,32 @@
+---
+title: Choosing a CMS for a static site
+date: 2021-04-11 17:56
+tags:
+  - Software engineering
+---
+To encourage myself to create more content on my personal site I thought it would be helpful to have a better writing environment. I wanted something that was simple to setup, ideally free, and would offer an easy way to preview the articles before deploying to production.
+
+Given it's just me writing and no other content writers, I was happy to stick with a Git based workflow because it's super simple to just keep my Markdown blog articles where they were and I wouldn't be tied to any CMS provider because ultimately all the content still lives within my repo.
+
+That really left me with two options:
+
+1. [Forestry](https://forestry.io/)
+2. [Netlify CMS](https://www.netlifycms.org/)
+
+Forestry appealed to me because, unlike Netlify CMS, I didn't have to setup the CMS interface and just required some simple, file based configuration in my repo. I decided to give it a shot and see how quickly I could get it all setup.
+
+The first stumbling block I came across was that it couldn't find any of my blog articles despite me providing what looked like the correct config. It turns out that the file extensions need to end with `.md` in order for Forestry to recognise them but my articles have nested extensions in Middleman and look like `.html.md.erb`. This is great because I can first process the articles as ERB before then processing as Markdown.
+
+Okay, no problem I thought, I can work around this. So I moved the articles to a new directory out of the `source` directory where files are automatically built in Middleman and renamed them to just have `.md` extensions. I then created a Ruby module that would be called in local development and during a build. This module simply had to copy the files to a `source/blog/` directory and rename the extension to `.html.md.erb`. Worked like a charm and Forestry was happy.
+
+My next issue was that when I saved articles, they would be deployed straight to production. What I really needed was a better workflow to let me preview everything. No problems though, Forestry has previews where I can configure it to run my local server. I found the appropriate Docker image to run Ruby and Node and setup the commands. Gems and npm packages installed without issue and I got the message that the server was running. However, try as I might, I continued to get a 503 error when I tried to view the previews of the blogs. I thought I could maybe get it to work by giving it the Middleman build command and then view the pages from the build directory but that just caused the server to hang. I grappled with these issues for several hours before coming to the conclusion that this was no longer fitting the bill for me.
+
+Cue a bit of GitHub work to drop previous commits, including the work I had done to move the blog articles to a new folder and then I started to look at Netlify CMS.
+
+Part of the beauty of Netlify is the ease with which I can spin up new sites. Rather than adding a lot of bloat to my personal website to be able to run the CMS I thought this would be an ideal candidate to split out the CMS from the website and I [created a new repo](https://github.com/knoxjeffrey/personal_website_admin). Netlify CMS makes this really simple by editing the config file to point to my personal site as the source of content and use GitHub authentication to access the CMS. I also configured my DNS settings to have the admin site available on a subdomain at <https://admin.jeffreyknox.dev/>.
+
+With Netlify CMS I can configure things to recognise my blog extensions of `html.md.erb` so there's no need to have a work around to make it work. I also set the configuration to have an editorial workflow so that when I save my articles, Netlify CMS automatically creates a PR with the content changes and Netlify then automatically creates a Deploy Preview. A really nice additional touch is adding the preview deploy path to the CMS config for my blog articles so that a link is generated in the CMS that takes you straight to your preview. When I'm happy with the edits I've made, I can change the article status to ready and then hit publish.
+
+I'm really happy with the workflow and my dev environment and builds remain snappy because of the separation of personal website and CMS. I think Netlify CMS will be an ideal fit for me in the long run because it is so configurable and I plan to add widgets that will make it super simple to add prebuilt blocks of code to articles such as calls to action, etc. I'll also be using [Cloudinary](https://cloudinary.com/) soon to serve my images and luckily Netlify CMS has a prebuilt extension so this should be a straightforward addition.
+
+Feel free to have a look at my [CMS repo](https://github.com/knoxjeffrey/personal_website_admin) to see how I have it configured and drop any questions below if you need more info.
