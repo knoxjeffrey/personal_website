@@ -10,4 +10,17 @@ module AssetTagHelpers
 
     super(url, options)
   end
+
+  def link_to(*args, &block)
+    url_arg_index = block_given? ? 0 : 1
+    options_index = block_given? ? 1 : 2
+
+    # external links to open in new tab and add noopener for security
+    unless args[url_arg_index].start_with? "/"
+      args[options_index] ||= {}
+      args[options_index][:target] ||= "_blank"
+      args[options_index][:rel] ||= "noopener"
+    end
+    super(*args, &block)
+  end
 end
