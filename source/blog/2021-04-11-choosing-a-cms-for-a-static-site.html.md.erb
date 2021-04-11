@@ -12,3 +12,9 @@ That really left me with two options
 
 1. [Forestry](https://forestry.io/)
 2. [Netlify CMS](https://www.netlifycms.org/)
+
+Forestry appealed to me because, unlike Netlify CMS, I didn't have to setup the CMS interface and just required some simple, file based configuration in my repo. I decided to give it a shot and see how quickly I could get it all setup.
+
+The first stumbling block I came across was that it couldn't find any of my blog articles despite me providing what looked like the correct config. It turns out that the file extensions need to end with \`.md\` in order for Forrestry to recognise them but my articles have nested extensions in Middleman and look like \`.html.md.erb\`. This is great because I can first process the articles as ERB before then processing as Markdown.
+
+Okay, no problem I thought, I can work around this. So I moved the articles to a new directory out of the \`source\` directory where files are automatically built in Middleman and renamed them to just have \`.md\` extensions.
