@@ -47,6 +47,22 @@ module Components
           active = opts[:active] == true || current_page.url.start_with?(opts[:link])
           active = active ? " active" : ""
           
+          return item_list_element(opts, active) if opts[:item_list_element] == true
+          standard_list_item(opts, active)
+        end
+
+        private
+
+        def item_list_element(opts, active)
+          content_tag(:li, property: "itemListElement", typeof: "ListItem") do
+            link_to(opts[:link], class: "menu-item#{active}", property: "item", typeof: "WebPage") do
+              content_tag(:span, opts[:text], property: "name")
+            end +
+            tag(:meta, property: "position", content: opts[:position])
+          end
+        end
+
+        def standard_list_item(opts, active)
           content_tag(:li) do
             link_to opts[:text], opts[:link], class: "menu-item#{active}"
           end

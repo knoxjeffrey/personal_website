@@ -3,11 +3,7 @@
   <%= partial "partials/head" %>
   <body class="terminal">
     <div class="container">
-      <% navigation_main link: "/", title: "Jeff Knox" do %>
-        <%= navigation_list_item link: "/blog/", text: "Blog" %>
-        <%= navigation_list_item link: "/cv/", text: "CV" %>
-        <%= navigation_list_item link: "/styleguide/", text: "Styleguide" %>
-      <% end %>
+      <%= partial "partials/main_navigation" %>
     </div>
 
     <div class="container">
