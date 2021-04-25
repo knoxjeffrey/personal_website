@@ -32,7 +32,7 @@ module.exports = function (env) {
       new CleanWebpackPlugin(),
       new MiniCssExtractPlugin({
         filename: `[name].css`
-      }),
+      })
     ],
 
     optimization: (() => {
@@ -73,6 +73,7 @@ module.exports = function (env) {
           use: [
             MiniCssExtractPlugin.loader,
             "css-loader",
+            "postcss-loader",
             "sass-loader",
           ],
         }
