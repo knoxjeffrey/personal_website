@@ -2,6 +2,7 @@ const glob = require("glob");
 const path = require("path");
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const TerserPlugin = require("terser-webpack-plugin");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = function (env) {
   const isProduction = env.production === true
@@ -15,17 +16,23 @@ module.exports = function (env) {
 
     entry: {
       main: path.resolve(__dirname, "./source/assets/javascripts/main.js"),
-      components: glob.sync(path.resolve(__dirname, "./components/**/*.js"))
+      components: glob.sync(path.resolve(__dirname, "./components/**/*.js")),
+      main_css: path.resolve(__dirname, "./source/assets/stylesheets/main.css.scss"),
+      components_css: glob.sync(path.resolve(__dirname, "./components/**/*.scss")),
+      commento_css: path.resolve(__dirname, "./source/assets/stylesheets/commento.css.scss")
     },
 
     output: {
-      path: path.join(__dirname, "/.tmp/dist/assets/javascripts"),
+      path: path.join(__dirname, "/.tmp/dist/compiled-assets"),
       filename: `[name].js`
     },
 
     plugins: [
       // Clean the output folder before build
       new CleanWebpackPlugin(),
+      new MiniCssExtractPlugin({
+        filename: `[name].css`
+      })
     ],
 
     optimization: (() => {
@@ -60,7 +67,16 @@ module.exports = function (env) {
 
     module: {
       rules: [
-        { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader" }
+        { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader" },
+        {
+          test: /\.(sa|sc|c)ss$/,
+          use: [
+            MiniCssExtractPlugin.loader,
+            "css-loader",
+            "postcss-loader",
+            "sass-loader",
+          ],
+        }
       ]
     }
   }
