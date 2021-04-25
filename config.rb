@@ -1,8 +1,6 @@
 # require all components
 require_all "./components/**/*.rb"
 
-BLOG_PATH = "./content/blog".freeze
-
 # Per-page layout changes
 page "/*.xml", layout: false
 page "/*.json", layout: false
@@ -12,14 +10,14 @@ config[:css_dir]      = "compiled-assets"
 config[:images_dir]   = "assets/images"
 config[:js_dir]       = "compiled-assets"
 
+proxy "_headers", "netlify-headers", ignore: true
+proxy "_redirects", "netlify-redirects", ignore: true
+
 # activate all components
 Pathname.new("./components").children.each do |entry|
   return unless entry.directory?
   activate "#{entry.basename.to_s}_component".to_sym
 end
-
-proxy "_headers", "netlify-headers", ignore: true
-proxy "_redirects", "netlify-redirects", ignore: true
 
 activate :blog do |blog|
   blog.prefix = "blog"
