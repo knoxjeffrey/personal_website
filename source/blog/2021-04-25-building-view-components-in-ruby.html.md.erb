@@ -67,3 +67,21 @@ and generates the following HTML:
 ```
 
 This example is very simple and doesn't remove too much code from the erb view file but many of the components are more complicated and have many levels of nested HTML. The components simplify things greatly and changes can easily be made from the one file to automatically update all the occurrences of that component across the site.
+
+As mentioned earlier, I also want the JS and CSS to live in the same component folder which can easily be achieved when using Webpack as my module bundler. For my entries I can once again use the glob pattern:
+
+```
+const glob = require("glob");
+const path = require("path");
+
+...
+
+entry: {
+    ...
+    components: glob.sync(path.resolve(__dirname, "./components/**/*.js")),
+    components_css: glob.sync(path.resolve(__dirname, "./components/**/*.scss")),
+    ...
+},
+```
+
+which creates files of `components.js` and `components_css.css` from all of the files ending in ```.js``` and ```.scss``` respectively in the ```components``` folder.
