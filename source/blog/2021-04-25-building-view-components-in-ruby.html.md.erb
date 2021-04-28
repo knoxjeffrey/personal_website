@@ -11,19 +11,59 @@ View components are not something that exist for the Middleman static site gener
 
 In terms of creating the HTML, there were a few approaches that could be taken. Partials for example, are a well used pattern for reusing similar code and locals can be passed to tailor their content and appearance. Partials however would really need to live in their own folder in order to work with Middleman so not really suitable for the goal of grouping the code with JavaScript and CSS. Partials are also slow so I would rather avoid their use for components which will be called extensively on every page.
 
-Helpers in Middleman are another option but again there are expectations in Middleman about where the code should sit and it is generally within a ```helpers``` folder at the root of the project. However, helpers can also sit within Middleman extensions where you can add a helpers block. The extensions are good because they can sit anywhere within the code base and simply have to be required and activated in Middleman so this looked like a good area to experiment on.
+Helpers in Middleman are another option but again there are expectations in Middleman about where the code should sit and it is generally within a `helpers` folder at the root of the project. However, helpers can also sit within Middleman extensions where you can add a helpers block. The extensions are good because they can sit anywhere within the code base and simply have to be required and activated in Middleman so this looked like a good area to experiment on.
 
-So, first things first, require and activate. I didn't want to manually require a new extension every time I wanted a new component so a neater solution was to keep them under a folder (a folder called ```components``` in this case) and I added a simple gem called [require_all](https://github.com/jarmo/require_all) that allowed me to load all extensions using a glob pattern:
+So, first things first, require and activate. I didn't want to manually require a new extension every time I wanted a new component so a neater solution was to keep them under a folder (a folder called `components` in this case) and I added a simple gem called [require_all](https://github.com/jarmo/require_all) that allowed me to load all extensions using a glob pattern:
 
-    require_all "./components/**/*.rb"
+```
+require_all "./components/**/*.rb"
+```
 
 and then activate all components by following a naming convention:
 
-    Pathname.new("./components").children.each do |entry|
-      return unless entry.directory?
-      activate "#{entry.basename.to_s}_component".to_sym
+```
+Pathname.new("./components").children.each do |entry|
+  return unless entry.directory?
+  activate "#{entry.basename.to_s}_component".to_sym
+end
+```
+
+where each folder for a component's code would have the same name as the extension followed by `_component`.
+
+My site has a card component for example which sits at `components/timeline/timeline_component.rb` and this is a Middleman extension.
+
+This is a simple example of a component which looks as follows:
+
+```
+module Components
+  module Timeline
+    class TimelineComponent < Middleman::Extension
+      helpers do
+        def timeline(&block)
+          content_tag(:div, nil, class: "terminal-timeline", &block)
+        end
+      end
     end
+  end
+end
 
-where each folder for a component's code would have the same name as the extension followed by ```_component```.
+::Middleman::Extensions.register(:timeline_component, Components::Timeline::TimelineComponent)
+```
 
-My site has a card component for example which sits at ```components/card/card_component.rb``` and this is a Middleman extension.
+The HTML is created using [Padrino tag helpers](https://padrinorb.com/guides/application-helpers/tag-helpers/) which are a standard part of Middleman. You can see more of my components in [my repo](https://github.com/knoxjeffrey/personal_website/tree/main/components). These components are easy to call from erb view files like so:
+
+```
+<% timeline do %>
+    ...
+<% end %>
+```
+
+and generates the following HTML:
+
+```
+<div class="terminal-timeline">
+    ...
+</div>
+```
+
+This example is very simple and doesn't remove too much code from the erb view file but many of the components are more complicated and have many levels of nested HTML. The components simplify things greatly and changes can easily be made from the one file to automatically update all the occurrences of that component across the site.
