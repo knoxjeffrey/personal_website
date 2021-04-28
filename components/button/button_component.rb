@@ -1,10 +1,6 @@
 module Components
   module Button
     class ButtonComponent < Middleman::Extension
-      def initialize(app, options_hash={}, &block)
-        super
-      end
-
       helpers do
         def button(opts)
           return link_to(opts[:text], opts[:href], build_button_html(opts)) if opts[:link]

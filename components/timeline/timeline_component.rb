@@ -1,10 +1,6 @@
 module Components
   module Timeline
     class TimelineComponent < Middleman::Extension
-      def initialize(app, options_hash={}, &block)
-        super
-      end
-
       helpers do
         def timeline(&block)
           content_tag(:div, nil, class: "terminal-timeline", &block)

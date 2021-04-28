@@ -1,10 +1,6 @@
 module Components
   module Alert
     class AlertComponent < Middleman::Extension
-      def initialize(app, options_hash={}, &block)
-        super
-      end
-
       helpers do
         def alert(opts)
           content_tag(:div, opts[:text], build_alert_html(opts))

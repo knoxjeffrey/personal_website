@@ -1,10 +1,6 @@
 module Components
   module Table
     class TableComponent < Middleman::Extension
-      def initialize(app, options_hash={}, &block)
-        super
-      end
-
       helpers do
         def table(opts, &block)
           concat(

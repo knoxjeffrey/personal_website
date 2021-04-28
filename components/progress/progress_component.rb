@@ -1,10 +1,6 @@
 module Components
   module Progress
     class ProgressComponent < Middleman::Extension
-      def initialize(app, options_hash={}, &block)
-        super
-      end
-
       helpers do
         def progress_arrow(opts)
           content_tag(:div, class: "progress-bar") do

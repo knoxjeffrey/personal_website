@@ -1,10 +1,6 @@
 module Components
   module Figure
     class FigureComponent < Middleman::Extension
-      def initialize(app, options_hash={}, &block)
-        super
-      end
-
       helpers do
         def figure(opts)
           content_tag(:figure, class: additional_classes(opts)) do

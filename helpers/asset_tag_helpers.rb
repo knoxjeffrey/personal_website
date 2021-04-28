@@ -16,7 +16,7 @@ module AssetTagHelpers
     options_index = block_given? ? 1 : 2
 
     # external links to open in new tab and add noopener for security
-    unless args[url_arg_index].start_with? "/"
+    unless args[url_arg_index].start_with?("/", "#")
       args[options_index] ||= {}
       args[options_index][:target] ||= "_blank"
       args[options_index][:rel] ||= "noopener"

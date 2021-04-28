@@ -1,10 +1,6 @@
 module Components
   module Highlight
     class HighlightComponent < Middleman::Extension
-      def initialize(app, options_hash={}, &block)
-        super
-      end
-
       helpers do
         def highlight(opts, &block)
           concat(

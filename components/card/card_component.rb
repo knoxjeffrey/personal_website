@@ -1,10 +1,6 @@
 module Components
   module Card
     class CardComponent < Middleman::Extension
-      def initialize(app, options_hash={}, &block)
-        super
-      end
-
       helpers do
         def card(opts, &block)
           concat(

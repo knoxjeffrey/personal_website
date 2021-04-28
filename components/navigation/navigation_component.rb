@@ -1,10 +1,6 @@
 module Components
   module Navigation
     class NavigationComponent < Middleman::Extension
-      def initialize(app, options_hash={}, &block)
-        super
-      end
-
       helpers do
         def navigation_main(opts, &block)
           concat(

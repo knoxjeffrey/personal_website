@@ -1,10 +1,6 @@
 module Components
   module Form
     class FormComponent < Middleman::Extension
-      def initialize(app, options_hash={}, &block)
-        super
-      end
-
       helpers do
         def form_fieldset(opts, &block)
           concat(
