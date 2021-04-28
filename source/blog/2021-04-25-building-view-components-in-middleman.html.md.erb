@@ -13,7 +13,7 @@ In terms of creating the HTML, there were a few approaches that could be taken. 
 
 Helpers in Middleman are another option but again there are expectations in Middleman about where the code should sit and it is generally within a `helpers` folder at the root of the project. However, helpers can also sit within Middleman extensions where you can add a helpers block. The extensions are good because they can sit anywhere within the code base and simply have to be required and activated in Middleman so this looked like a good area to experiment on.
 
-So, first things first, require and activate. I didn't want to manually require a new extension every time I wanted a new component so a neater solution was to keep them under a folder (a folder called `components` in this case) and I added a simple gem called [require_all](https://github.com/jarmo/require_all) that allowed me to load all extensions using a glob pattern:
+So, first things first, require and activate. I didn't want to manually require a new extension every time I wanted a new component so a neater solution was to keep them under a folder (a folder called `components` in this case) and I added a simple gem called [require_all](https://github.com/jarmo/require_all) that allowed me to load all extensions using a glob pattern from ```config.rb```:
 
     require_all "./components/**/*.rb"
 
