@@ -1,0 +1,79 @@
+---
+title: Building view components in Middleman
+date: 2021-04-25 20:57
+tags:
+  - Ruby
+  - Software engineering
+---
+This site is styled using the wonderful [Terminal CSS](https://terminalcss.xyz/) which has multiple components included. One feature of Javascript frameworks that I like is this concept of components where the HTML, JavaScript and CSS live together rather than being spread about in different folders in the code base. The [ViewComponent](https://viewcomponent.org/) framework has more recently been introduced to Rails which achieves this and, along with things like [Hotwire](https://hotwire.dev/), are improving the front end experience for developers.
+
+View components are not something that exist for the Middleman static site generator but it's something I fancied trying to implement on my site which is built with Middleman. I wanted something that could be configured once and continue to work when adding new Ruby code, JavaScript and CSS.
+
+In terms of creating the HTML, there were a few approaches that could be taken. Partials for example, are a well used pattern for reusing similar code and locals can be passed to tailor their content and appearance. Partials however would really need to live in their own folder in order to work with Middleman so not really suitable for the goal of grouping the code with JavaScript and CSS. Partials are also slow so I would rather avoid their use for components which will be called extensively on every page.
+
+Helpers in Middleman are another option but again there are expectations in Middleman about where the code should sit and it is generally within a `helpers` folder at the root of the project. However, helpers can also sit within Middleman extensions where you can add a helpers block. The extensions are good because they can sit anywhere within the code base and simply have to be required and activated in Middleman so this looked like a good area to experiment on.
+
+So, first things first, require and activate. I didn't want to manually require a new extension every time I wanted a new component so a neater solution was to keep them under a folder (a folder called `components` in this case) and I added a simple gem called [require_all](https://github.com/jarmo/require_all) that allowed me to load all extensions using a glob pattern:
+
+    require_all "./components/**/*.rb"
+
+and then activate all components by following a naming convention:
+
+    Pathname.new("./components").children.each do |entry|
+      return unless entry.directory?
+      activate "#{entry.basename.to_s}_component".to_sym
+    end
+
+where each folder for a component's code would have the same name as the extension followed by `_component`.
+
+My site has a timeline component for example which sits at `components/timeline/timeline_component.rb` and this is a Middleman extension.
+
+This is a simple example of a component which looks as follows:
+
+    module Components
+      module Timeline
+        class TimelineComponent < Middleman::Extension
+          helpers do
+            def timeline(&block)
+              content_tag(:div, nil, class: "terminal-timeline", &block)
+            end
+          end
+        end
+      end
+    end
+
+    ::Middleman::Extensions.register(:timeline_component, Components::Timeline::TimelineComponent)
+
+The HTML is created using [Padrino tag helpers](https://padrinorb.com/guides/application-helpers/tag-helpers/) which are a standard part of Middleman. You can see more of my components in [my repo](https://github.com/knoxjeffrey/personal_website/tree/main/components). These components are easy to call from erb view files like so:
+
+    <%% timeline do %>
+        ...
+    <%% end %>
+
+and generates the following HTML:
+
+    <div class="terminal-timeline">
+        ...
+    </div>
+
+This example is very simple and doesn't remove too much code from the erb view file but many of the components are more complicated and have many levels of nested HTML. The components simplify things greatly and changes can easily be made from the one file to automatically update all the occurrences of that component across the site.
+
+As mentioned earlier, I also want the JS and CSS to live in the same component folder which can easily be achieved when using Webpack as my module bundler. For my entries I can once again use the glob pattern:
+
+    const glob = require("glob");
+    const path = require("path");
+
+    ...
+
+    entry: {
+        ...
+        components: glob.sync(path.resolve(__dirname, "./components/**/*.js")),
+        components_css: glob.sync(path.resolve(__dirname, "./components/**/*.scss")),
+        ...
+    },
+
+which bundles files of ```components.js``` and ```components_css.css``` from all of the files ending in ```.js``` and ```.scss``` respectively in the ```components``` folder.
+
+This is a simple solution for my codebase at the moment. If the number of components grew to the point where the JS and CSS bundles became very large then I would need to look at ways of splitting them up but this isn't an issue at the moment.
+
+I'm very happy with how this is working and hopefully this provides inspiration to others. Please feel free to look at [my repo](https://github.com/knoxjeffrey/personal_website) to dig into the code.
