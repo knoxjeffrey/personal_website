@@ -1,6 +1,3 @@
-# require all components
-require_all "./components/**/*.rb"
-
 # Per-page layout changes
 page "/*.xml", layout: false
 page "/*.json", layout: false
@@ -13,7 +10,8 @@ config[:js_dir]       = "compiled-assets"
 proxy "_headers", "netlify-headers", ignore: true
 proxy "_redirects", "netlify-redirects", ignore: true
 
-# activate all components
+# load and activate all components
+Dir["./components/**/*.rb"].each { |file| load file }
 Pathname.new("./components").children.each do |entry|
   return unless entry.directory?
   activate "#{entry.basename.to_s}_component".to_sym
