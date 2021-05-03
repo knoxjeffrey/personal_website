@@ -7,3 +7,4 @@ build
 dist/
 node_modules/
 source/netlify-headers
+/game/hiding-in-plain-sight/

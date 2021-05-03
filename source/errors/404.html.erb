@@ -1,0 +1,23 @@
+---
+title: Oops. It's a 404! (Page Not Found)
+canonical: false
+---
+
+<% content_for :page_head_js do %>
+  <%= javascript_include_tag "game", "data-turbo-track": "reload", defer: true %>
+<% end %>
+
+<h1>404 - Page not found</h1>
+<hr/>
+
+<%= alert text: "It appears you're a little lost.", type: :error, html: { class: "margin-bottom--s" } %>
+
+<p class= "margin-top--l">
+  Not to worry. You can navigate back to the <%= link_to "homepage", "/" %> or maybe you have time
+  to read some of my <%= link_to "blog", "/blog/" %> articles?
+</p>
+
+<p data-controller="error-page">
+  Or, even more fun, what about a puzzle game? Go on, you'll love it! Although I should <code>warn</code>
+  you that it will become trickier after you've cracked a few of the easier clues.
+</p>
