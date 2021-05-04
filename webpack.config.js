@@ -80,6 +80,12 @@ module.exports = function (env) {
           ],
         }
       ]
+    },
+
+    resolve: {
+      fallback: {
+        "crypto": false
+      }
     }
   }
 };
