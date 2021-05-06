@@ -30,5 +30,10 @@ module Netlify
     HASHED_ASSETS_HEADERS = [
       "Cache-Control: max-age=315360000, immutable"
     ]
+
+    GAME_RESPONSE_HEADERS = [
+      "alg": "HS512",
+      "typ": "JWT"
+    ]
   end
 end
