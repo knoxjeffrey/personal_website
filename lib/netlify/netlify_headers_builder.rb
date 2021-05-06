@@ -32,7 +32,7 @@ module Netlify
       [
         { path: "/*", headers: ALL_PAGES_HEADERS },
         { path: "/assets/*", headers: ALL_PAGES_HEADERS + HASHED_ASSETS_HEADERS },
-        { path: "/game/response-headers/", headers: ALL_PAGES_HEADERS + GAME_RESPONSE_HEADERS }
+        { path: "/game/response-headers/", headers: ALL_PAGES_HEADERS + GAME_RESPONSE_HEADERS + BASIC_AUTH_HEADERS }
       ]
     end
 

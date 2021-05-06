@@ -32,8 +32,8 @@ module Netlify
     ]
 
     GAME_RESPONSE_HEADERS = [
-      "alg": "HS512",
-      "typ": "JWT"
+      "X-Alg": "HS512",
+      "X-Typ": "JWT"
     ]
   end
 end
