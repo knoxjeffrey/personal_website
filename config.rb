@@ -44,4 +44,10 @@ activate :external_pipeline,
 
 configure :build do
   activate :asset_hash
+  activate :minify_html do |config|
+    config.remove_quotes = false
+    config.remove_input_attributes = false
+    config.remove_style_attributes = false
+    config.remove_link_attributes = false
+  end
 end

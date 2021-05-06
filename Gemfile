@@ -4,6 +4,7 @@ gem "builder"
 gem "middleman", "~> 4.2"
 gem "middleman-autoprefixer", "~> 2.7"
 gem "middleman-blog"
+gem "middleman-minify-html"
 # Required for blog summaries
 gem "nokogiri"
 # Locked to v2.1.0 because of long install times for this gem with later versions
