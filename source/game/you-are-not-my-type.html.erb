@@ -1,0 +1,10 @@
+---
+title: Very keen
+noindex: true
+layout: game
+---
+<% content_for :page_head_assets do %>
+  <link rel="preload" href="/game/you-are-my-type.json" as="fetch">
+<% end %>
+
+<%= alert text: "Someone new has just come into my life.", type: :error, html: { class: "margin-top--m" } %>

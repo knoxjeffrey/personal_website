@@ -1,0 +1,24 @@
+<% content_for :page_head_css do %>
+  <%= stylesheet_link_tag "game_css", "data-turbo-track": "reload" %>
+<% end %>
+
+<% content_for :page_head_js do %>
+  <%= javascript_include_tag "game", "data-turbo-track": "reload", defer: true %>
+<% end %>
+
+<!doctype html>
+<html lang="en-GB">
+  <%= partial "partials/head" %>
+  <body class="terminal">
+    <div class="container">
+      <%= partial "partials/main_navigation" %>
+    </div>
+
+    <div class="container">
+      <div class="game_container">
+        <%= yield %>
+      </div>
+      <%= partial "partials/footer" %>
+    </div>    
+  </body>
+</html>

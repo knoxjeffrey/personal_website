@@ -24,11 +24,16 @@ module Netlify
     ]
 
     BASIC_AUTH_HEADERS = [
-      "Basic-Auth: integration:IntegrateThis!"
+      "Basic-Auth: preview:PreviewThis!"
     ]
 
     HASHED_ASSETS_HEADERS = [
       "Cache-Control: max-age=315360000, immutable"
+    ]
+
+    GAME_RESPONSE_HEADERS = [
+      "X-Alg: HS512",
+      "X-Typ: JWT"
     ]
   end
 end
