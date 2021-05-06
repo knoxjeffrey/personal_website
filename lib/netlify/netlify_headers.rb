@@ -24,7 +24,7 @@ module Netlify
     ]
 
     BASIC_AUTH_HEADERS = [
-      "Basic-Auth: integration:IntegrateThis!"
+      "Basic-Auth: preview:PreviewThis!"
     ]
 
     HASHED_ASSETS_HEADERS = [
@@ -32,8 +32,8 @@ module Netlify
     ]
 
     GAME_RESPONSE_HEADERS = [
-      "X-Alg": "HS512",
-      "X-Typ": "JWT"
+      "X-Alg: HS512",
+      "X-Typ: JWT"
     ]
   end
 end
