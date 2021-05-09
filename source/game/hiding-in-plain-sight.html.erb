@@ -4,18 +4,18 @@ noindex: true
 layout: game
 ---
 
-<div data-controller="hiding-in-plain-sight">
-  <%= alert text: "U2FsdGVkX1+LB8yv1mdjqCrB9rSVVEaw8yOUhDWe/15f2HkyXqpduEMzuXiVSQJR", type: :error, html: { class: "margin-top--m", "data-hiding-in-plain-sight-target": "unlock" } %>
+<div data-controller="h-i-p-s">
+  <%= alert text: "U2FsdGVkX1+LB8yv1mdjqCrB9rSVVEaw8yOUhDWe/15f2HkyXqpduEMzuXiVSQJR", type: :error, html: { class: "margin-top--m", "data-h-i-p-s-target": "unlock" } %>
 
   <% form_tag "#", class: "margin-top--l" do %>
     <% form_fieldset legend: "Enter your answer to get to the next level" do %>
       <% form_group do %>
         <%= label_tag :text, caption: "Answer:" %>
-        <%= text_field_tag :text, "data-hiding-in-plain-sight-target": "answer" %>
-        <p class="margin-top--s margin-bottom--s" style="display:none;" data-hiding-in-plain-sight-target="error"></p>
+        <%= text_field_tag :text, "data-h-i-p-s-target": "answer" %>
+        <p class="margin-top--s margin-bottom--s" style="display:none;" data-h-i-p-s-target="error"></p>
       <% end %>
       <% form_group do %>
-        <%= button text: "Submit", type: :default, html: { name: "submit", type: "submit", role: "button", id: "submit", "data-action": "click->hiding-in-plain-sight#submit" } %>
+        <%= button text: "Submit", type: :default, html: { name: "submit", type: "submit", role: "button", id: "submit", "data-action": "click->h-i-p-s#submit" } %>
       <% end %>
     <% end %>
   <% end %>

@@ -2,7 +2,7 @@ import { Controller } from "stimulus"
 import AES from "crypto-js/aes"
 import encUtf8 from "crypto-js/enc-utf8"
 
-export default class HidingInPlainSightController extends Controller {
+export default class HIPSController extends Controller {
   static targets = [ "answer", "error", "unlock" ]
 
   submit() {

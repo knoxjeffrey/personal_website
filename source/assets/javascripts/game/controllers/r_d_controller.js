@@ -1,6 +1,6 @@
 import { Controller } from "stimulus"
 
-export default class ResponsiveDesignController extends Controller {
+export default class RDController extends Controller {
   static targets = [ "alert" ]
 
   connect() {

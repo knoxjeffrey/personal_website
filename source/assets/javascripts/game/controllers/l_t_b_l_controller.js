@@ -1,6 +1,6 @@
 import { Controller } from "stimulus"
 
-export default class LetThereBeLightController extends Controller {
+export default class LTBLController extends Controller {
   next() {
     const body = document.querySelector("body")
     const backgroundColor = window.getComputedStyle(body).getPropertyValue("background-color")
