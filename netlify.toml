@@ -9,6 +9,9 @@
   publish = "build/"
 
   # Default build command.
+  command = "rake netlify_build:branch'[$BRANCH_BUILD_OPTIONS]'"
+
+[context.production]
   command = "rake netlify_build:production'[$PRODUCTION_BUILD_OPTIONS]'"
 
 [context.production.processing]
@@ -28,3 +31,6 @@
 
 [context.production.processing.images]
   compress = false
+
+[context.deploy-preview]
+  command = "rake netlify_build:branch'[$BRANCH_BUILD_OPTIONS]'"
