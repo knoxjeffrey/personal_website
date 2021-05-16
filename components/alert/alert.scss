@@ -5,12 +5,22 @@
   margin-bottom: var(--global-space);
 }
 
+.terminal-alert-primary {
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
 .terminal-alert-error {
   color: var(--error-color);
   border-color: var(--error-color);
 }
 
-.terminal-alert-primary {
-  color: var(--primary-color);
-  border-color: var(--primary-color);
+.terminal-alert-warning {
+  color: var(--highlight-color);
+  border-color: var(--highlight-color);
+}
+
+.terminal-alert-success {
+  color: var(--success-color);
+  border-color: var(--success-color);
 }
