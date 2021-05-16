@@ -17,6 +17,12 @@ export default class extends Controller {
             const { metricName, data, vitalsScore } = options
       
             switch (metricName) {
+              case "navigationTiming":
+                if (data && data.timeToFirstByte) {
+                }
+                break;
+              case "fcp":
+                break;
               case "lcp":
                 this.lcpValue = { data, vitalsScore }
                 break;
