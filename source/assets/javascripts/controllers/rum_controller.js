@@ -2,7 +2,7 @@ import { Controller } from "stimulus"
 import Perfume from "perfume.js"
 
 export default class extends Controller {
-  static targets = [ "intro", "metrics", "lcp", "fid", "cls" ]
+  static targets = [ "footer", "metrics", "lcp", "fid", "cls" ]
   static values = { 
     lcp: Object,
     fid: Object,
@@ -34,8 +34,13 @@ export default class extends Controller {
     })
   }
 
+  disconnect() {
+    this.footerTarget.style.display = "block"
+    this.metricsTarget.style.display = "none"
+  }
+
   reveal() {
-    this.introTarget.style.display = "none"
+    this.footerTarget.style.display = "none"
     this.metricsTarget.style.display = "block"
   }
 
