@@ -84,6 +84,6 @@ export default class extends Controller {
 
   alertSubstring(currentContent) {
     const contentStart = currentContent.split("...")[0]
-    return `${contentStart}...`
+    return `${contentStart} ... `
   }
 }
