@@ -1,31 +1,49 @@
 <% navigation_main_footer do %>
-  <div class="contact contact--social margin-bottom--s">
-    <% link_to "https://www.linkedin.com/profile/public-profile-settings?trk=prof-edit-edit-public_profile" do %>
-      <%= partial "partials/svgs/linkedin", locals: { icon_class: "social__icon" } %>
-    <% end %>
-    <% link_to "https://twitter.com/jeff_r_knox" do %>
-      <%= partial "partials/svgs/twitter", locals: { icon_class: "social__icon" } %>
-    <% end %>
-    <% link_to "https://github.com/knoxjeffrey" do %>
-      <%= partial "partials/svgs/github", locals: { icon_class: "social__icon" } %>
-    <% end %>
-  </div>
+  <div id="rum" data-turbo-permanent data-controller="rum" data-rum-fid="" data-rum-lcp="" data-rum-cls="">
+    <div data-rum-target="footer">
+      <div class="contact contact--social margin-bottom--s">
+        <% link_to "https://www.linkedin.com/profile/public-profile-settings?trk=prof-edit-edit-public_profile" do %>
+          <%= partial "partials/svgs/linkedin", locals: { icon_class: "social__icon" } %>
+        <% end %>
+        <% link_to "https://twitter.com/jeff_r_knox" do %>
+          <%= partial "partials/svgs/twitter", locals: { icon_class: "social__icon" } %>
+        <% end %>
+        <% link_to "https://github.com/knoxjeffrey" do %>
+          <%= partial "partials/svgs/github", locals: { icon_class: "social__icon" } %>
+        <% end %>
+      </div>
 
-  <div class="contact margin-bottom--s">
-    <%= partial "partials/svgs/mail", locals: { icon_class: "contact__icon" } %>
-    <%= mail_to "jeffreyknox@hey.com" %>
-  </div>
-  <div class="contact margin-bottom--s">
-    <%= partial "partials/svgs/phone", locals: { icon_class: "contact__icon" } %>
-    <%= link_to "07775682459", "tel:07775682459" %>
-  </div>
+      <div class="contact margin-bottom--s">
+        <%= partial "partials/svgs/mail", locals: { icon_class: "contact__icon" } %>
+        <%= mail_to "jeffreyknox@hey.com" %>
+      </div>
+      <div class="contact margin-bottom--s">
+        <%= partial "partials/svgs/phone", locals: { icon_class: "contact__icon" } %>
+        <%= link_to "07775682459", "tel:07775682459" %>
+      </div>
 
-  <div class="contact">
-    <%= partial "partials/svgs/info", locals: { icon_class: "contact__icon" } %>
-    <span>Ruby and JavaScript software engineer based in Edinburgh, UK.</span>
-  </div>
+      <div class="contact">
+        <%= partial "partials/svgs/info", locals: { icon_class: "contact__icon" } %>
+        <span>Ruby and JavaScript software engineer based in Edinburgh, UK.</span>
+      </div>
 
-  <p class="margin-top--l">
-    <%= "Copyright © Jeff Knox #{Date.today.year} • All rights reserved." %>
-  </p>
+      <%= button text: "Core Web Vitals for this visit", type: :default, html: { class: "margin-top--l", "data-action": "click->rum#reveal" } %>
+
+      <p class="margin-top--l">
+        <%= "Copyright © Jeff Knox #{Date.today.year} • All rights reserved." %>
+      </p>
+    </div>
+
+    <div data-rum-target="metrics" style="display:none;">
+      <p class="margin-top--l">
+        <%= link_to "Core Web Vitals", "https://web.dev/vitals/" %> focus on three aspects of the user
+        experience: loading, interactivity, and visual stability. How is your experience?
+      </p>
+      <div class="margin-top--l">
+        <%= alert text: "Largest Contentful Paint ... waiting", type: :default, html: { "data-rum-target": "lcp" } %>
+        <%= alert text: "First Input Delay ... waiting", type: :default, html: { "data-rum-target": "fid" } %>
+        <%= alert text: "Cumulative Layout Shift ... waiting", type: :default, html: { "data-rum-target": "cls" } %>
+      </div>
+    </div>
+  </div>
 <% end %>
