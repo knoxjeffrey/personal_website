@@ -18,7 +18,7 @@ module Netlify
       "Content-Security-Policy: #{CSP.join(" ")}",
       "X-Frame-Options: DENY",
       "X-Content-Type-Options: nosniff",
-      "Permissions-Policy: accelerometer=(), ambient-light-sensor=(), camera=(),  encrypted-media=(),  geolocation=(),  gyroscope=(),  magnetometer=(),  microphone=(),  midi=(),  payment=(),  usb=(),  vr=()",
+      "Permissions-Policy: accelerometer=(), camera=(),  encrypted-media=(),  geolocation=(),  gyroscope=(),  magnetometer=(),  microphone=(),  midi=(),  payment=(),  usb=()",
       "Referrer-Policy: no-referrer-when-downgrade",
       "X-XSS-Protection: 1; mode=block"
     ]
