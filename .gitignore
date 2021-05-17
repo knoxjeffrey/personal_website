@@ -8,7 +8,9 @@ build
 dist/
 node_modules/
 source/netlify-headers
-/game/make-your-mark/
 
 # Local Netlify folder
 .netlify
+
+# Game
+/game/make-your-mark/
