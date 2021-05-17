@@ -27,7 +27,7 @@
         <span>Ruby and JavaScript software engineer based in Edinburgh, UK.</span>
       </div>
 
-      <%= button text: "Core Web Vitals for this visit", type: :default, html: { class: "margin-top--l", "data-action": "click->rum#reveal" } %>
+      <%= button text: "Core Web Vitals for this visit", type: :default, html: { class: "margin-top--l", style: "display:none;", "data-rum-target": "vitalsButton", "data-action": "click->rum#reveal" } %>
 
       <p class="margin-top--l">
         <%= "Copyright © Jeff Knox #{Date.today.year} • All rights reserved." %>

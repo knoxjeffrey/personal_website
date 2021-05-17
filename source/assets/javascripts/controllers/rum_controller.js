@@ -2,7 +2,7 @@ import { Controller } from "stimulus"
 import Perfume from "perfume.js"
 
 export default class extends Controller {
-  static targets = [ "footer", "metrics", "lcp", "fid", "cls" ]
+  static targets = [ "footer", "vitalsButton", "metrics", "lcp", "fid", "cls" ]
   static values = { 
     lcp: Object,
     fid: Object,
@@ -10,10 +10,14 @@ export default class extends Controller {
   }
 
   initialize() {
+    // Test for presence of one Core Web Vital metric and display button if present. This is currently
+    // a good indicator of Chromium which only support Core Web Vitals metrics
+    if (window.LayoutShift) this.vitalsButtonTarget.style.display = "block"
     window.addEventListener("DOMContentLoaded", (event) => {
       try {
         new Perfume({
           analyticsTracker: (options) => {
+            if (!window.LayoutShift) return
             const { metricName, data, vitalsScore } = options
       
             switch (metricName) {
