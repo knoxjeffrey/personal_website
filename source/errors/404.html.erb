@@ -4,6 +4,10 @@ noindex: true
 canonical: false
 ---
 
+<% content_for :page_head_meta do %>
+  <meta name="turbo-visit-control" content="reload">
+<% end %>
+
 <% content_for :page_head_js do %>
   <%= javascript_include_tag "game", "data-turbo-track": "reload", defer: true %>
 <% end %>
