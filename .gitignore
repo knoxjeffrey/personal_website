@@ -6,6 +6,7 @@
 yarn-error.log
 build
 dist/
+functions/production/
 node_modules/
 source/netlify-headers
 

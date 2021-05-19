@@ -1,4 +1,6 @@
 [build]
+  functions = "functions/production"
+
   # Directory to change to before starting a build.
   # This is where Neltify will look for package.json/.nvmrc/etc.
   base = "/"
@@ -34,3 +36,6 @@
 
 [context.deploy-preview]
   command = "rake netlify_build:branch'[$BRANCH_BUILD_OPTIONS]'"
+
+[dev]
+  command = "overmind s"
