@@ -9,6 +9,7 @@ module Netlify
       "font-src 'self' data: cdn.commento.io;",
       "media-src 'self';",
       "style-src 'self' 'unsafe-inline' data: blob: *.commento.io;",
+      "frame-src 'self' app.netlify.com;",
       "object-src 'self';",
       "connect-src 'self' data: wss: *.jeffreyknox.dev commento.io;",
       "script-src 'self' 'unsafe-eval' 'unsafe-inline' blob: *.jeffreyknox.dev *.commento.io netlify-cdp-loader.netlify.app;"
