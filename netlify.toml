@@ -39,3 +39,5 @@
 
 [dev]
   command = "overmind s"
+  targetPort = 3000
+  framework = "#custom"
