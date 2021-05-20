@@ -8,6 +8,7 @@ export default class extends Controller {
     fid: Object,
     cls: Object
   }
+  static classes = [ "success", "warning", "error" ]
 
   initialize() {
     // Test for presence of one Core Web Vital metric and display button if present. This is currently
@@ -55,34 +56,32 @@ export default class extends Controller {
   }
 
   lcpValueChanged() {
-    if (Object.entries(this.lcpValue).length === 0) return
-    this.lcpTarget.classList.add(this.alertColor(this.lcpValue))
-    const replacementContent = `${this.alertSubstring(this.lcpTarget.innerHTML)}`
-    this.lcpTarget.innerHTML = `${replacementContent}${this.lcpValue.data}ms`
+    this.coreWebVitalResponse("lcp", this.lcpValue, this.lcpTarget)
   }
 
   fidValueChanged() {
-    if (Object.entries(this.fidValue).length === 0) return
-    this.fidTarget.classList.add(this.alertColor(this.fidValue))
-    const replacementContent = `${this.alertSubstring(this.fidTarget.innerHTML)}`
-    this.fidTarget.innerHTML = `${replacementContent}${this.fidValue.data}ms`
+    this.coreWebVitalResponse("fid", this.fidValue, this.fidTarget)
   }
 
   clsValueChanged() {
-    if (Object.entries(this.clsValue).length === 0) return
-    this.clsTarget.classList.add(this.alertColor(this.clsValue))
-    const replacementContent = `${this.alertSubstring(this.clsTarget.innerHTML)}`
-    this.clsTarget.innerHTML = `${replacementContent}${this.clsValue.data}`
+    this.coreWebVitalResponse("cls", this.clsValue, this.clsTarget)
+  }
+
+  coreWebVitalResponse(cwv, value, target) {
+    if (Object.entries(value).length === 0) return
+    target.classList.add(this.alertColor(value))
+    const replacementContent = `${this.alertSubstring(target.innerHTML)}${value.data}`
+    target.innerHTML = cwv === "cls" ? replacementContent : `${replacementContent}ms`
   }
 
   alertColor(value) {
     switch (value.vitalsScore) {
       case "good":
-        return "terminal-alert-success"
+        return this.successClass
       case "needsImprovement":
-        return "terminal-alert-warning"
+        return this.warningClass
       case "poor":
-        return "terminal-alert-error"
+        return this.errorClass
     }
   }
 
