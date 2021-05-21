@@ -9,7 +9,7 @@ tags:
 
 <!--more-->
 
-At my work we've been capturing Core Web Vitals metrics for some time now with the help of Perfume.js and I wanted to use the tool on this site. I have bigger plans for this captured data to be used in a proof of concept dashboard in a future project but that can wait for now!
+At my work we've been capturing Core Web Vitals metrics for some time now with the help of [Perfume.js](https://zizzamia.github.io/perfume/) and I wanted to use the tool on this site. I have bigger plans for this captured data to be used in a proof of concept dashboard in a future project but that can wait for now!
 
 In this blog post I want to walk you through how I implemented the `Core Web Vitals for this visit` button that you might be able to see in the footer of this page. Not on a Chromium browser? Then this button will be hidden because Firefox and Safari for example do not currently support the necessary APIs to track the metrics. Sorry!
 
@@ -148,9 +148,9 @@ is hidden on initial load because these metrics are only available on Chromium a
 
 if `window.LayoutShift` is available which is a simple test to see if one of the API's used in Core Web Vitals (CLS in this case) is available.
 
-The `data-action` attibute attaches a click event to the button which, when clicked, fires the `reveal()` method in the Stimulus controller to hide the standard content in the footer and instead show the Core Web Vitals metrics. Because the footer is persisted across page naviagtions, I need to take another step to show the standard footer content again on a page navigation. For this I use the built in `disconnect()` Stimulus lifecycle callback to reset what is visible.
+The `data-action` attibute attaches a click event handler to the button which, when clicked, fires the `reveal()` method in the Stimulus controller to hide the standard content in the footer and instead show the Core Web Vitals metrics. Because the footer is persisted across page naviagtions, I need to take another step to show the standard footer content again on a page navigation. For this I use the built in `disconnect()` Stimulus lifecycle callback to reset what is visible.
 
-Within the code for Perfume.js I exit if window.LayoutShift isn't available. This is purely because Perfume.js creates extra noise in the Firefox console by tiggering multiple `console.warn` messages saying the metrics aren't available. There doesn't seem to be a way to turn this off in the Perfume.js config so I just stop it trying to request the info in the first place. I really don't like this noise!
+Within the code for Perfume.js I exit if `window.LayoutShift` isn't available. This is purely because Perfume.js creates extra noise in the Firefox console by tiggering multiple `console.warn` messages saying the metrics aren't available. There doesn't seem to be a way to turn this off in the Perfume.js config so I just stop it trying to request the info in the first place. I really don't like this noise!
 
 Within the switch statement
 
