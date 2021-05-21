@@ -1,0 +1,173 @@
+---
+title: Displaying Core Web Vitals with Perfume.js, Stimulus and Turbo
+date: 2021-05-20 22:44
+tags:
+  - Software engineering
+  - Web performance
+---
+[Core Web Vitals](https://web.dev/vitals/) are all the rage right now because of effect they might have on search rankings. I'm passionate about website performance and thought it might be nice to make more of a feature of Core Web Vitals on my personal site.
+
+<!--more-->
+
+At my work we've been capturing Core Web Vitals metrics for some time now with the help of Perfume.js and I wanted to use the tool on this site. I have bigger plans for this captured data to be used in a proof of concept dashboard in a future project but that can wait for now!
+
+In this blog post I want to walk you through how I implemented the `Core Web Vitals for this visit` button that you might be able to see in the footer of this page. Not on a Chromium browser? Then this button will be hidden because Firefox and Safari for example do not currently support the necessary APIs to track the metrics. Sorry!
+
+On this website I use Stimulus which is a modest JavaScript framework designed to enhance my static HTML. The easiest way to work through the code is probably to show the final Stimulus controller code as well as a stripped down version of the HTML and then explain the process bit by bit.
+
+First up, here is the Stimulus controller code in `rum_controller.js`:
+
+    import { Controller } from "stimulus"
+    import Perfume from "perfume.js"
+
+    export default class extends Controller {
+      static targets = [ "footer", "vitalsButton", "metrics", "lcp", "fid", "cls" ]
+      static values = { 
+        lcp: Object,
+        fid: Object,
+        cls: Object
+      }
+      static classes = [ "success", "warning", "error" ]
+
+      initialize() {
+        if (window.LayoutShift) this.vitalsButtonTarget.style.display = "block"
+        window.addEventListener("DOMContentLoaded", (event) => {
+          try {
+            new Perfume({
+              analyticsTracker: (options) => {
+                if (!window.LayoutShift) return
+                const { metricName, data, vitalsScore } = options
+          
+                switch (metricName) {
+                  case "lcp":
+                    this.lcpValue = { data, vitalsScore }
+                    break;
+                  case "fid":
+                    this.fidValue = { data, vitalsScore }
+                    break;
+                  case "cls":
+                    this.clsValue = { data, vitalsScore }
+                    break;
+                }
+              }
+            })
+          }
+          catch(error) {}
+        })
+      }
+
+      disconnect() {
+        this.footerTarget.style.display = "block"
+        this.metricsTarget.style.display = "none"
+      }
+
+      reveal() {
+        this.footerTarget.style.display = "none"
+        this.metricsTarget.style.display = "block"
+      }
+
+      lcpValueChanged() {
+        this.coreWebVitalResponse("lcp", this.lcpValue, this.lcpTarget)
+      }
+
+      fidValueChanged() {
+        this.coreWebVitalResponse("fid", this.fidValue, this.fidTarget)
+      }
+
+      clsValueChanged() {
+        this.coreWebVitalResponse("cls", this.clsValue, this.clsTarget)
+      }
+
+      coreWebVitalResponse(cwv, value, target) {
+        if (Object.entries(value).length === 0) return
+        target.classList.add(this.alertColor(value))
+        const replacementContent = `${this.alertSubstring(target.innerHTML)}${value.data}`
+        target.innerHTML = cwv === "cls" ? replacementContent : `${replacementContent}ms`
+      }
+
+      alertColor(value) {
+        switch (value.vitalsScore) {
+          case "good":
+            return this.successClass
+          case "needsImprovement":
+            return this.warningClass
+          case "poor":
+            return this.errorClass
+        }
+      }
+
+      alertSubstring(currentContent) {
+        const contentStart = currentContent.split("...")[0]
+        return `${contentStart} ... `
+      }
+    }
+
+and a stripped down version of the erb partial for the footer where I use my [custom view components](/blog/building-view-components-in-middleman/):
+
+    <div id="rum" data-turbo-permanent data-controller="rum" data-rum-fid-value="{}" data-rum-lcp-value="{}" data-rum-cls-value="{}" data-rum-success-class="terminal-alert-success" data-rum-warning-class="terminal-alert-warning" data-rum-error-class="terminal-alert-error">
+      <div data-rum-target="footer">
+        ...
+        <%%= button text: "Core Web Vitals for this visit", type: :default, html: { class: "margin-top--l", style: "display:none;", "data-rum-target": "vitalsButton", "data-action": "click->rum#reveal" } %>
+        ...
+      </div>
+
+      <div data-rum-target="metrics" style="display:none;">
+        <p class="margin-top--l">
+          <%%= link_to "Core Web Vitals", "https://web.dev/vitals/" %> focus on three aspects of the user
+          experience: loading, interactivity, and visual stability. How is your experience?
+        </p>
+        <div class="margin-top--l">
+          <%%= alert text: "Largest Contentful Paint ... waiting", type: :default, html: { "data-rum-target": "lcp" } %>
+          <%%= alert text: "First Input Delay ... waiting", type: :default, html: { "data-rum-target": "fid" } %>
+          <%%= alert text: "Cumulative Layout Shift ... waiting", type: :default, html: { "data-rum-target": "cls" } %>
+        </div>
+      </div>
+    </div>
+
+Starting with the first line of the HTML, I can explain the connection to the Stimulus controller.
+
+    <div id="rum" data-turbo-permanent data-controller="rum" data-rum-fid-value="{}" data-rum-lcp-value="{}" data-rum-cls-value="{}" data-rum-success-class="terminal-alert-success" data-rum-warning-class="terminal-alert-warning" data-rum-error-class="terminal-alert-error">
+
+Stimulus continuously monitors the page waiting for `data-controller` to appear. This data attribute has a value of `rum` so Stimulus finds a corresponding controller class called `rum_controller.js`, creates a new instance of that class, and connects it to the element.
+
+The data attributes ending in `-value` are a way to manage state, in this case with initial values of `{}`, and also trigger change callbacks in Stimulus when the values are updated, for example in the `lcpValueChanged()` method.
+
+The data attributes ending in `-class` are an alternative to hard-coding classes with JavaScript strings. For example, `data-rum-success-class` would be referenced as `this.successClass` within Stimulus.
+
+You may also notice an `id` and `data-turbo-permanent` within the div. This isn't actually anything to do with Stimulus but is part of [Turbo](https://turbo.hotwire.dev/) and I use it to persit the changes to the footer across multiple page navigations. Turbo Drive enhances page-level navigation and updates the page without doing a full reload. When you click an eligible link, Turbo Drive prevents the browser from following it, changes the browser’s URL using the History API, requests the new page using `fetch`, and then renders the HTML response. This poses an issue because the Web APIs that measure page load specific Core Web Vitals metrics will not re-emit metrics following a SPA type navigation like that of Turbo Drive. Therefore, without persisting the footer, the Core Web Vitals scores would be reset but the metrics would not re-emit and the feature would appear broken because it would always be waiting for the metrics to become available.
+
+This is also why I only trigger Perfume.js on the `DOMContentLoaded` event. The Stimulus controller will fire the `initialize()` method on every page transition but I only want Perfume.js to fire on the initial full page load because that is the only time the Core Web Vitals metrics are emitted.
+
+The button used to display the Core Web Vitals metrics
+
+    <%%= button text: "Core Web Vitals for this visit", type: :default, html: { class: "margin-top--l", style: "display:none;", "data-rum-target": "vitalsButton", "data-action": "click->rum#reveal" } %>
+
+is hidden on initial load because these metrics are only available on Chromium and therefore the button wouldn't be much use on other browsers. I use a target data attribute with value `vitalsButton` to be able to show the button from within Stimulus
+
+    if (window.LayoutShift) this.vitalsButtonTarget.style.display = "block"
+
+if `window.LayoutShift` is available which is a simple test to see if one of the API's used in Core Web Vitals (CLS in this case) is available.
+
+The `data-action` attibute attaches a click event to the button which, when clicked, fires the `reveal()` method in the Stimulus controller to hide the standard content in the footer and instead show the Core Web Vitals metrics. Because the footer is persisted across page naviagtions, I need to take another step to show the standard footer content again on a page navigation. For this I use the built in `disconnect()` Stimulus lifecycle callback to reset what is visible.
+
+Within the code for Perfume.js I exit if window.LayoutShift isn't available. This is purely because Perfume.js creates extra noise in the Firefox console by tiggering multiple `console.warn` messages saying the metrics aren't available. There doesn't seem to be a way to turn this off in the Perfume.js config so I just stop it trying to request the info in the first place. I really don't like this noise!
+
+Within the switch statement
+
+    switch (metricName) {
+      case "lcp":
+        this.lcpValue = { data, vitalsScore }
+        break;
+      case "fid":
+        this.fidValue = { data, vitalsScore }
+        break;
+      case "cls":
+        this.clsValue = { data, vitalsScore }
+        break;
+    }
+
+each data attribute value is getting the empty `{}` values updated with the corresponding Core Web Vitals metrics. As mentioned above, these changes trigger callbacks. For example, updating `this.lcpValue` triggers the `lcpValueChanged()` method. I'm using the `coreWebVitalResponse` method to handle all of the value changes and this simply renders the metics and changes the colour of the text and the box surrounding each metric to be green, yellow or red depending if the result is good, needs improvement or poor respectively.
+
+So, that's a quick run through of how I'm using Perfume.js, Stimulus and Turbo to show users the Core Web Vitals score for their visit. At the moment that data is not persisted but I plan on working on a new feature that will make use of [Netlify Functions](https://www.netlify.com/products/functions/) and [Fauna](https://fauna.com/) to do just that so look out for that coming soon!
+
+Hopefully this article has been helpful but please leave comments below if you have any questions.
