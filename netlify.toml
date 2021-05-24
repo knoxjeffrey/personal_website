@@ -1,6 +1,4 @@
 [build]
-  functions = "functions/production"
-
   # Directory to change to before starting a build.
   # This is where Neltify will look for package.json/.nvmrc/etc.
   base = "/"
@@ -41,3 +39,7 @@
   command = "overmind s"
   targetPort = 3000
   framework = "#custom"
+
+[functions]
+  directory = "functions"
+  node_bundler = "esbuild"
