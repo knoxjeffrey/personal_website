@@ -53,3 +53,24 @@ I also have added a `functions/.babelrc` file in order to maintain a separate co
     }
 
 and this allows me to run the modern async/await syntax in my functions.
+
+For the function example I'm going to have a very simple hello world function which calls a utility function to generate a random number after the string. This is a stupidly basic use case for Netlify Lambda but it works nicely for a demo.
+
+First up, create the utility function at `functions/development/utils/random_number_generator.js`
+
+    export function randomNumberGenerator() {
+      return Math.floor(Math.random() * 10)
+    }
+
+and then create your function at `functions/development/hello_world.js`
+
+import { randomNumberGenerator } from "/utils/random_number_generator"
+
+    export async function handler(event, context) {
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ message: `Hello world ${randomNumberGenerator()}` })
+      };
+    }
+
+Then run `netlify dev` and you'll see the bundled production file generated at `functions/production/hello_world.js`. You can see the output at `http://localhost:8888/.netlify/functions/hello_world` (your localhost port may vary depending on your Netlify Dev setup). Make a change and you'll see the success message in the terminal, refresh the page and you can see the update.
