@@ -1,0 +1,15 @@
+---
+title: Simple build step for Netlify Functions
+date: 2021-05-24 18:04
+tags:
+  - Software engineering
+---
+[Netlify Functions](https://www.netlify.com/products/functions/) are a fantastic way to extend the capabilities of a static site to build scalable and dynamic applications.
+
+<!--more-->
+
+Netlify Functions are AWS Lambda functions, so yes you could totally do this without Netlify, but Netlify makes the whole process so much easier. You simply write your functions in the same repo with the rest of your code, deploy and Netlify takes care of the rest. This is made even easier with [Netlify Dev](https://www.netlify.com/products/dev/) which allows you run your local development environment and have Netlify environment variables available as well as have your functions available at local endpoints so you can easily test your entire integration.
+
+What I have found lacking with the out of the box setup for Netlify Functions is a build step which I frequently want in order to import utility functions that I can share across multiple functions.
+
+In this post I'll walk you through the basics to get set up with a build step that integrates really well with Netlify Functions and Netlify Dev.
