@@ -87,7 +87,7 @@ Now make the following updates to your `netlify.toml` file
 
 This makes use of [esbuild](https://esbuild.github.io/) which Netlify Dev is now using under the hood in order to bundle your Netlify Functions. It is very fast and I'm definitely noticing the difference in bundle times!
 
-The folder structure is also stripped down with my function living at`functions/hello_world.js`
+The folder structure is also stripped down with my function living at `functions/hello_world.js`
 
     import { randomNumberGenerator } from "./utils/random_number_generator"
 
@@ -104,6 +104,6 @@ and utility function at `functions/utils/random_number_generator.js`
       return Math.floor(Math.random() * 10)
     }
 
-The `functions/.babelrc` and `functions/webpack.functions.js` files are no longer needed and I also have no need for an additional build script in `package.json`.
+The `functions/.babelrc` and `functions/webpack.functions.js` files are no longer needed and I also have no need for an additional build script in `package.json`. Once again, run `netlify dev`, you'll see the bundled production file generated at `functions/production/hello_world.js`. If you make any updates, you can see how quickly the changes take effect.
 
 That's it! It is so much easier now to get up and running with a build step for your functions and means you can just get on with the job of shipping code rather than working on build configuration.
