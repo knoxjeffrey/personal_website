@@ -13,3 +13,29 @@ Netlify Functions are AWS Lambda functions, so yes you could totally do this wit
 What I have found lacking with the out of the box setup for Netlify Functions is a build step which I frequently want in order to import utility functions that I can share across multiple functions.
 
 In this post I'll walk you through the basics to get set up with a build step that integrates really well with Netlify Functions and Netlify Dev.
+
+[Netlify Lambda](https://github.com/netlify/netlify-lambda) is an additional package you can pull in which adds a simple webpack/babel build step. First step, install Netlify Lambda
+
+```
+yarn add netlify-lambda --dev
+```
+
+Then add a new script to `package.json`
+
+```
+"build_functions": "netlify-lambda build functions/development -c functions/webpack.functions.js"
+```
+
+Lets explain what this does. Netlify Functions need to live in a separate folder in your repo which is `functions` in my case. For functions I have 2 folders, `development` and `production`. `Development` is where I write my function code during development and `production` is where the Netlify Lambda will output the code following the build step.
+
+In order to tell Netlify Lambda where to build to and also let Netlify know where to find the production functions during a build, you have to make an addition to the `netlify.toml` file at the root of your repo.
+
+```
+[build]
+  functions = "functions/production"
+  ...
+```
+
+At this point when I was setting things up, it's not particularly clear how Netlify Lambda and Netlify Dev actually work together. I eventually came across [these docs](https://github.com/netlify/cli/blob/main/docs/netlify-dev.md) that made things clearer. Netlify Dev offers function builder detection where it automatically looks for scripts with `netlify-lambda build $SRCFOLDER` when you run the `netlify dev` command and will execute it. It will also watch the files in `functions/development` and run the build command again when any changes are made. 
+
+I also add `functions/production/` to my `.gitignore` file because when you run `netlify dev` locally it will automatically run the `build_functions` script and output the bundled code to the `functions/production/` and I would rather this
