@@ -5,8 +5,7 @@
   "private": true,
   "scripts": {
     "start": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --mode development --env.development --watch --progress --color",
-    "build": "./node_modules/webpack/bin/webpack.js --mode production --env.production --bail -p",
-    "build_functions": "netlify-lambda build functions/development -c functions/webpack.functions.js"
+    "build": "./node_modules/webpack/bin/webpack.js --mode production --env.production --bail -p"
   },
   "repository": {
     "type": "git",
@@ -27,7 +26,6 @@
     "clean-webpack-plugin": "^3.0.0",
     "css-loader": "^5.2.1",
     "mini-css-extract-plugin": "^1.4.1",
-    "netlify-lambda": "^2.0.7",
     "node-sass": "^5.0.0",
     "postcss-loader": "^5.2.0",
     "postcss-preset-env": "^6.7.0",

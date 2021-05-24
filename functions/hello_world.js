@@ -1,4 +1,4 @@
-import { randomNumberGenerator } from "/utils/random_number_generator"
+import { randomNumberGenerator } from "./utils/random_number_generator"
 
 export async function handler(event, context) {
   return {

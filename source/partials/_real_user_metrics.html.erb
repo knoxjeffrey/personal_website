@@ -1,0 +1,15 @@
+<div id="rum" data-turbo-permanent data-controller="rum" data-rum-fid="" data-rum-lcp="" data-rum-cls="">
+  <div data-rum-target="intro">
+    <p class="margin-top--l">
+      Core Web Vitals are an initiative by Google to encourage site owners to provide a great user experience
+      on the web. They focus on three aspects of the user experience: loading, interactivity, and visual
+      stability. How is your experience?
+    </p>
+    <%= button text: "View metrics", type: :default, html: { "data-action": "click->rum#reveal" } %>
+  </div>
+  <div class="margin-top--l" data-rum-target="metrics" style="display:none;">
+    <%= alert text: "Largest Contentful Paint...waiting", type: :default, html: { "data-rum-target": "lcp" } %>
+    <%= alert text: "First Input Delay...waiting", type: :default, html: { "data-rum-target": "fid" } %>
+    <%= alert text: "Cumulative Layout Shift...waiting", type: :default, html: { "data-rum-target": "cls" } %>
+  </div>
+</div>
