@@ -89,7 +89,13 @@ When you run `netlify dev`, you'll see the bundled production file generated at 
 
 ## The new way
 
-The recent updates by Netlify have simplified things greatly. First up, make the following changes to your `netlify.toml` file
+The recent updates by Netlify have simplified things greatly. First up, disregard the changes made in the old way of doing things and ensure you have the latest version of Netlify CLI installed
+
+```
+npm install netlify-cli -g
+```
+
+Now make the following updates to your `netlify.toml` file
 
 ```
 [functions]
@@ -97,7 +103,7 @@ The recent updates by Netlify have simplified things greatly. First up, make the
   node_bundler = "esbuild"
 ```
 
-This takes care of [esbuild](https://esbuild.github.io/) which Netlify Dev is now using under the hood in order to bundle your Netlify Functions. It is very fast and I'm definitely noticing the difference in bundle times!
+This makes use of [esbuild](https://esbuild.github.io/) which Netlify Dev is now using under the hood in order to bundle your Netlify Functions. It is very fast and I'm definitely noticing the difference in bundle times!
 
 The folder structure is also stripped down with my function living at`functions/hello_world.js`
 
@@ -120,6 +126,6 @@ export function randomNumberGenerator() {
 }
 ```
 
-The `functions/.babelrc` and `functions/webpack.functions.js` files are also no longer needed.
+The `functions/.babelrc` and `functions/webpack.functions.js` files are no longer needed and I also have no need for an additional build script in `package.json`.
 
-This was a simple example to get you started with integrating a build step into your Netlify Functions but should serve as a nice stepping stone into cleaner and maintainable code as your functions become complex.
+That's it! It is so much easier now to get up and running with a build step for your functions and means you can just get on with the job of shipping code rather than working on build configuration.
