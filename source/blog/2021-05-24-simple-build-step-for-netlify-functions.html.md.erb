@@ -4,37 +4,31 @@ date: 2021-05-24 18:04
 tags:
   - Software engineering
 ---
-[Netlify Functions](https://www.netlify.com/products/functions/) are a fantastic way to extend the capabilities of a static site to build scalable and dynamic applications.
+[Netlify Functions](https://www.netlify.com/products/functions/) are a fantastic way to extend the capabilities of a static site and enable you to easily build scalable and dynamic applications.
 
 <!--more-->
 
 Netlify Functions are AWS Lambda functions, so yes you could totally do this without Netlify, but Netlify makes the whole process so much easier. You simply write your functions in the same repo with the rest of your code, deploy and Netlify takes care of the rest. This is made even easier with [Netlify Dev](https://www.netlify.com/products/dev/) which allows you run your local development environment and have Netlify environment variables available as well as have your functions available at local endpoints so you can easily test your entire integration.
 
-What I have found lacking with the out of the box setup for Netlify Functions is a build step which I frequently want in order to import utility functions that I can share across multiple functions.
+What I have found lacking with the out of the box setup for Netlify Functions is a build step which I frequently want in order to import utility functions that I can share across multiple functions. You may have other needs such as typescript or running babel transforms which require this build step.
 
 In this post I'll walk you through the basics to get set up with a build step that integrates really well with Netlify Functions and Netlify Dev.
 
 [Netlify Lambda](https://github.com/netlify/netlify-lambda) is an additional package you can pull in which adds a simple webpack/babel build step. First step, install Netlify Lambda
 
-```
-yarn add netlify-lambda --dev
-```
+    yarn add netlify-lambda --dev
 
 Then add a new script to `package.json`
 
-```
-"build_functions": "netlify-lambda build functions/development -c functions/webpack.functions.js"
-```
+    "build_functions": "netlify-lambda build functions/development -c functions/webpack.functions.js"
 
-Lets explain what this does. Netlify Functions need to live in a separate folder in your repo which is `functions` in my case. For functions I have 2 folders, `development` and `production`. `Development` is where I write my function code during development and `production` is where the Netlify Lambda will output the code following the build step.
+Lets explain what this does. Netlify Functions need to live in a separate folder in your repo which is `functions` in my case. For functions I have 2 folders, `development` and `production`. `Development` is where I write my function code during development and `production` is where Netlify Lambda will output the code following the build step.
 
-In order to tell Netlify Lambda where to build to and also let Netlify know where to find the production functions during a build, you have to make an addition to the `netlify.toml` file at the root of your repo.
+In order to tell Netlify Lambda where to build to and also let Netlify know where to find the production functions during a build, you have to add to the `netlify.toml` file at the root of your repo.
 
-```
-[build]
-  functions = "functions/production"
-  ...
-```
+    [build]
+      functions = "functions/production"
+      ...
 
 At this point when I was setting things up, it's not particularly clear how Netlify Lambda and Netlify Dev actually work together. I eventually came across [these docs](https://github.com/netlify/cli/blob/main/docs/netlify-dev.md) that made things clearer. Netlify Dev offers function builder detection where it automatically looks for scripts with `netlify-lambda build $SRCFOLDER` when you run the `netlify dev` command and will execute it. It will also watch the files in `functions/development` and run the build command again when any changes are made. 
 
@@ -64,7 +58,7 @@ First up, create the utility function at `functions/development/utils/random_num
 
 and then create your function at `functions/development/hello_world.js`
 
-import { randomNumberGenerator } from "/utils/random_number_generator"
+    import { randomNumberGenerator } from "/utils/random_number_generator"
 
     export async function handler(event, context) {
       return {
@@ -73,4 +67,6 @@ import { randomNumberGenerator } from "/utils/random_number_generator"
       };
     }
 
-Then run `netlify dev` and you'll see the bundled production file generated at `functions/production/hello_world.js`. You can see the output at `http://localhost:8888/.netlify/functions/hello_world` (your localhost port may vary depending on your Netlify Dev setup). Make a change and you'll see the success message in the terminal, refresh the page and you can see the update.
+When you run `netlify dev`, you'll see the bundled production file generated at `functions/production/hello_world.js`. You can see the output of the function at `http://localhost:8888/.netlify/functions/hello_world` (your localhost port may vary depending on your Netlify Dev setup). Make a change and you'll see the success message in the terminal, refresh the page and you can see the update.
+
+This was a simple example to get you started with integrating a build step into your Netlify Functions but should serve as a nice stepping stone into cleaner and maintainable code as your functions become complex.
