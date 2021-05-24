@@ -104,6 +104,6 @@ and utility function at `functions/utils/random_number_generator.js`
       return Math.floor(Math.random() * 10)
     }
 
-The `functions/.babelrc` and `functions/webpack.functions.js` files are no longer needed and I also have no need for an additional build script in `package.json`. Once again, run `netlify dev`, you'll see the bundled production file generated at `functions/production/hello_world.js`. If you make any updates, you can see how quickly the changes take effect.
+The `functions/.babelrc` and `functions/webpack.functions.js` files are no longer needed and I also have no need for an additional build script in `package.json`. Once again, run `netlify dev`, and you will see the output of the function at `http://localhost:8888/.netlify/functions/hello_world`. If you make any updates, you can see how quickly the changes take effect.
 
 That's it! It is so much easier now to get up and running with a build step for your functions and means you can just get on with the job of shipping code rather than working on build configuration.
