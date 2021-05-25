@@ -13,15 +13,16 @@ namespace :netlify_build do
     Netlify::NetlifyHeadersBuilder.build(build_context)
   end
 
+  yarn_test = "yarn test --maxWorkers=2"
   middleman_build = "#{BUILD_ENVS} bundle exec middleman build"
 
   task :production, [:build_options] do |_task, args|
     build_headers("production")
-    sh "yarn test && #{PRODUCTION_ENVS} #{middleman_build} #{args[:build_options]}"
+    sh "#{yarn_test} && #{PRODUCTION_ENVS} #{middleman_build} #{args[:build_options]}"
   end
 
   task :branch, [:build_options] do |_task, args|
     build_headers("branch")
-    sh "yarn test && #{BRANCH_ENVS} #{middleman_build} #{args[:build_options]}"
+    sh "#{yarn_test} && #{BRANCH_ENVS} #{middleman_build} #{args[:build_options]}"
   end
 end
