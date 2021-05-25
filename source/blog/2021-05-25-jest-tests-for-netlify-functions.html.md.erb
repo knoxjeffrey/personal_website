@@ -8,4 +8,34 @@ Have to struggled to figure out a good way to test your Netlify Functions? As yo
 
 <!--more-->
 
-I was in the same position but after some research and trial and error, I think I have a good solution in place. In order to demonstrate how to set things up, I'll build upon my [previous blog post](/blog/simple-build-step-for-netlify-functions/) that built a simple Netlify Function to print out Hello world followed by a random number.
+I was in the same position but after some research and trial and error, I think I have a good solution in place. In order to demonstrate how to set things up, I'll build upon my [previous blog post](/blog/simple-build-step-for-netlify-functions/) that created a simple Netlify Function to print out "Hello world" followed by a random number.
+
+At this point I'll assume you do not have Jest installed so I can work through the steps from the very beginning. The first step then is to install Jest!
+
+```
+yarn add jest --dev
+```
+
+You will also need to add some additional config to `package.json`
+
+```
+"jest": {
+  "moduleFileExtensions": [
+    "js"
+  ],
+  "moduleDirectories": [
+    "functions",
+    "node_modules"
+  ]
+}
+```
+
+and add a new script
+
+```
+"test": "jest ./spec/javascripts"
+```
+
+That's all there is to get the basics setup and now we need a file to test which you can create at `spec/javascripts/functions/hello_world.test.js`. This is where it gets interesting because now we're at the point of figuring out how to test the function.
+
+After some research I came across a package called [lambda-tester](https://github.com/vandium-io/lambda-tester) which looked like it would fit the bill nicely. It's designed to simplify writing unit tests for AWS Lambda functions which of course is what Netlify Functions are under the hood. 
