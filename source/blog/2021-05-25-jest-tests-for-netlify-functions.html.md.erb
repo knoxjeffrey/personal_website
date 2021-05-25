@@ -1,0 +1,105 @@
+---
+title: Jest tests for Netlify Functions
+date: 2021-05-25 22:20
+tags:
+  - Software engineering
+---
+Have you struggled to figure out a good way to test your Netlify Functions? As you start to make more use of functions, you really need to have good unit tests in place for peace of mind during production deploys.
+
+<!--more-->
+
+I was in the same position but after some research and trial and error, I'm happy that I have a good solution in place. In order to demonstrate how to set things up, I'll build upon my [previous blog post](/blog/simple-build-step-for-netlify-functions/) that created a simple Netlify Function to print out "Hello world" followed by a random number.
+
+At this point I'll assume you do not have Jest installed so I will work through the steps from the very beginning. Obviously, the first step is to install Jest!
+
+    yarn add jest --dev
+
+You will also need to add additional config to `package.json`
+
+    "jest": {
+      "moduleFileExtensions": [
+        "js"
+      ],
+      "moduleDirectories": [
+        "functions",
+        "node_modules"
+      ]
+    }
+
+and add to `scripts`
+
+    "test": "jest ./spec/javascripts"
+
+That's all there is to get the basics setup and now we need a file to test your function which you can create at `spec/javascripts/functions/hello_world.test.js`. This is where it gets interesting because now we're at the point of figuring out how to test the function.
+
+After some research I came across a package called [lambda-tester](https://github.com/vandium-io/lambda-tester) which looked like it would fit the bill nicely. It's designed to simplify writing unit tests for AWS Lambda functions which of course is what Netlify Functions are under the hood. Install the package
+
+    yarn add lambda-tester --dev
+
+and a simple test will look as follows
+
+    const LambdaTester = require("lambda-tester")
+    const myHandler = require("hello_world").handler
+
+    jest.spyOn(global.Math, "random").mockReturnValue(0.5);
+
+    describe("handler", function() {
+      it("returns hello world followed by a random number", async function() {
+        await LambdaTester(myHandler)
+          .event()
+          .expectResolve((result) => {
+            expect(result.statusCode).toEqual(200);
+            expect(result.body).toEqual(JSON.stringify({
+              message: "Hello world 5",
+            }))
+          })
+      })
+    })
+
+If you run `yarn test` you will get an error stating that regeneratorRuntime is not defined! This can easily be fixed by adding another package
+
+    yarn add @babel/plugin-transform-runtime --dev
+
+and add the following to your `.babelrc` file
+
+    "env": {
+      "test": {
+        "plugins": ["@babel/plugin-transform-runtime"]
+      }
+    }
+
+which will allow you to use async/await in tests. Now `yarn test` should run successfully! 
+
+For this post I'll add in another quick example about how to easily handle Netlify environment variables in your function tests because that is likely to be a common use case. Instead of this line of code in your function
+
+    body: JSON.stringify({ message: `Hello world ${randomNumberGenerator()}` })
+
+lets change the function code to look as follows
+
+    import { randomNumberGenerator } from "./utils/random_number_generator"
+    const { HELLO_WORLD } = process.env
+
+    export async function handler(event, context) {
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ message: `${HELLO_WORLD} ${randomNumberGenerator()}` })
+      };
+    }
+
+and you can now add a key of `HELLO_WORLD` and value `Hello world` to your Netlify environment variables.
+
+If you run your test now it will fail because `${HELLO_WORLD}` is undefined. In order to fix this, add the following to your Jest config in `package.json`
+
+    "setupFiles": [
+      "./spec/javascripts/support/setEnvVars.js"
+    ]
+
+and create a new file at `spec/javascripts/support/setEnvVars.js` with the following content
+
+    process.env = {
+      HELLO_WORLD: "Hello world"
+    }
+
+Run your test again and everything should pass.
+
+That's all there is to it and you can add `yarn test` to your Netlify build command to run the tests before each site build. Using lambda-tester makes unit testing your Netlify Functions a breeze and gives you peace of mind with every production deploy!
