@@ -78,3 +78,44 @@ and add the following to your `.babelrc` file
 }
 ```
 
+Now `yarn test` should run successfully! 
+
+For this post I'll add in another quick example about how to easily handle Netlify environment variables in your function tests because that is likely to be a common use case. Instead of this line of code in your function
+
+    body: JSON.stringify({ message: `Hello world ${randomNumberGenerator()}` })
+
+lets change the function code to look as follows
+
+```
+import { randomNumberGenerator } from "./utils/random_number_generator"
+const { HELLO_WORLD } = process.env
+
+export async function handler(event, context) {
+  return {
+    statusCode: 200,
+    body: JSON.stringify({ message: `${HELLO_WORLD} ${randomNumberGenerator()}` })
+  };
+}
+```
+
+and you can now add a key of `HELLO_WORLD` and value `Hello world` to your Netlify environment variables.
+
+If you run your test now it will fail because `${HELLO_WORLD}` is undefined. In order to fix this, add the following to your Jest config in `package.json`
+
+```
+"setupFiles": [
+  "./spec/javascripts/support/setEnvVars.js"
+]
+```
+
+and create a new file at `spec/javascripts/support/setEnvVars.js` with the following content
+
+```
+process.env = {
+  HELLO_WORLD: "Hello world"
+}
+```
+
+Run your test again and everything should pass.
+
+That's all there is to it, using lambda-tester makes unit testing your Netlify Functions a breeze!
