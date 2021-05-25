@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "start": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --mode development --env.development --watch --progress --color",
-    "build": "./node_modules/webpack/bin/webpack.js --mode production --env.production --bail -p"
+    "build": "./node_modules/webpack/bin/webpack.js --mode production --env.production --bail -p",
+    "test": "jest ./spec/javascripts"
   },
   "repository": {
     "type": "git",
@@ -25,6 +26,8 @@
     "babel-loader": "^8.2.2",
     "clean-webpack-plugin": "^3.0.0",
     "css-loader": "^5.2.1",
+    "jest": "^27.0.1",
+    "lambda-tester": "^4.0.1",
     "mini-css-extract-plugin": "^1.4.1",
     "node-sass": "^5.0.0",
     "postcss-loader": "^5.2.0",
@@ -41,5 +44,18 @@
     "highlight.js": "^10.6.0",
     "perfume.js": "^6.2.0",
     "stimulus": "^2.0.0"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js"
+    ],
+    "moduleDirectories": [
+      "source/assets/javascripts",
+      "functions",
+      "node_modules"
+    ],
+    "setupFiles": [
+      "./spec/javascripts/support/setEnvVars.js"
+    ]
   }
 }
