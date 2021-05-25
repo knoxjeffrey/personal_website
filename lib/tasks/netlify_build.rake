@@ -17,11 +17,11 @@ namespace :netlify_build do
 
   task :production, [:build_options] do |_task, args|
     build_headers("production")
-    sh "#{PRODUCTION_ENVS} #{middleman_build} #{args[:build_options]}"
+    sh "yarn test && #{PRODUCTION_ENVS} #{middleman_build} #{args[:build_options]}"
   end
 
   task :branch, [:build_options] do |_task, args|
     build_headers("branch")
-    sh "#{BRANCH_ENVS} #{middleman_build} #{args[:build_options]}"
+    sh "yarn test && #{BRANCH_ENVS} #{middleman_build} #{args[:build_options]}"
   end
 end
