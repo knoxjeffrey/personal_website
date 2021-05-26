@@ -3,10 +3,5 @@
     "test": {
       "plugins": ["@babel/plugin-transform-runtime"] // Required for using async/await in tests
     }
-  },
-  "presets": [
-    [
-      "@babel/preset-env", { "shippedProposals": true }
-    ]
-  ]
+  }
 }
