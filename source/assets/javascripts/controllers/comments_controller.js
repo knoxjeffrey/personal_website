@@ -1,3 +1,10 @@
+/**
+ * @namespace Controllers
+ * @author Jeff Knox
+ * 
+ * @description Commento controller
+ */
+
 import { Controller } from "stimulus"
 
 export default class extends Controller {
