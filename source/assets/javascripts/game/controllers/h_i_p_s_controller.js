@@ -1,3 +1,10 @@
+/**
+ * @namespace Controllers.Game
+ * @author Jeff Knox
+ * 
+ * @description Hiding in plain sight controller
+ */
+
 import { Controller } from "stimulus"
 import AES from "crypto-js/aes"
 import encUtf8 from "crypto-js/enc-utf8"

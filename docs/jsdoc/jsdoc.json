@@ -1,0 +1,33 @@
+{
+  "source": {
+    "include": ["../../source/assets/javascripts"],
+    "includePattern": ".+\\.js?$"
+  },
+  "opts": {
+    "template": "node_modules/docdash"
+  },
+  "plugins": [
+  ],
+  "docdash": {
+    "static": true,
+    "sort": true,
+    "search": true,
+    "collapse": true,
+    "typedefs": true,
+    "removeQuotes": "none",
+    "scripts": [],
+    "menu":{
+      "Github repo": {
+        "href":"https://github.com/knoxjeffrey/personal_website",
+        "target":"_blank",
+        "class":"menu-item",
+        "id":"repository"
+      }
+    }
+  },
+  "templates": {
+    "default": {
+      "useLongnameInNav": true
+    }
+  }
+}
