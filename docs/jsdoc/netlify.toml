@@ -7,3 +7,20 @@
   # the build. This is relative to the base directory if one has been set, or the
   # root directory if a base has not been set.
   publish = "build/"
+
+[context.production.processing]
+  skip_processing = false
+
+[context.production.processing.css]
+  bundle = true
+  minify = true
+
+[context.production.processing.js]
+  bundle = true
+  minify = true
+
+[context.production.processing.html]
+  pretty_urls = true
+
+[context.production.processing.images]
+  compress = false
