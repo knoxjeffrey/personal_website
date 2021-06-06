@@ -29,7 +29,7 @@
     
     <input type="text" id="nav-search" placeholder="Search" />
     
-    <h2><a href="index.html">Home</a></h2><h2><a href="https://github.com/knoxjeffrey/personal_website" target="_blank" class="menu-item" id="repository" >Github repo</a></h2><h3>Classes</h3><ul><li><a href="CommentsController.html">CommentsController</a><ul class='members'><li data-type='member' style='display: none;'><a href="CommentsController.html#.targets">targets</a></li></ul><ul class='methods'><li data-type='method' style='display: none;'><a href="CommentsController.html#load">load</a></li></ul></li><li><a href="RUMController.html">RUMController</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://github.com/knoxjeffrey/personal_website" target="_blank" class="menu-item" id="repository" >Github repo</a></h2><h3>Classes</h3><ul><li><a href="CommentsController.html">CommentsController</a><ul class='members'><li data-type='member' style='display: none;'><a href="CommentsController.html#.targets">targets</a></li></ul><ul class='methods'><li data-type='method' style='display: none;'><a href="CommentsController.html#load">load</a></li></ul></li><li><a href="RUMController.html">RUMController</a><ul class='members'><li data-type='member' style='display: none;'><a href="RUMController.html#.targets">targets</a></li></ul></li></ul>
 </nav>
 
 <div id="main">
@@ -53,7 +53,16 @@ import Perfume from "perfume.js"
  * @extends Controller
  */
 export default class extends Controller {
-
+  /**
+   * @property {Function} footer
+   * @property {Function} vitalsButton
+   * @property {Function} metrics
+   * @property {Function} lcp
+   * @property {Function} fid
+   * @property {Function} cls
+   * @memberof RUMController
+   * @static
+   */
   static targets = [ "footer", "vitalsButton", "metrics", "lcp", "fid", "cls" ]
   static values = { 
     lcp: Object,
