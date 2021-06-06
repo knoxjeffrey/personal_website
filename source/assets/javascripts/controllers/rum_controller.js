@@ -7,16 +7,7 @@ import Perfume from "perfume.js"
  * @extends Controller
  */
 export default class extends Controller {
-  /**
-   * @property {Function} footer
-   * @property {Function} vitalsButton
-   * @property {Function} metrics
-   * @property {Function} lcp
-   * @property {Function} fid
-   * @property {Function} cls
-   * @memberof RUMController
-   * @static
-   */
+
   static targets = [ "footer", "vitalsButton", "metrics", "lcp", "fid", "cls" ]
   static values = { 
     lcp: Object,
