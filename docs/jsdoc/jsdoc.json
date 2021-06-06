@@ -1,13 +1,4 @@
 {
-  "source": {
-    "include": ["../../source/assets/javascripts"],
-    "includePattern": ".+\\.js?$"
-  },
-  "opts": {
-    "template": "node_modules/docdash"
-  },
-  "plugins": [
-  ],
   "docdash": {
     "static": true,
     "sort": true,
@@ -25,9 +16,22 @@
       }
     }
   },
+  "opts": {
+    "access": "all",
+    "destination": "build",
+    "readme": "README.md",
+    "recurse": true,
+    "template": "node_modules/docdash"
+  },
+  "plugins": [
+  ],
   "templates": {
     "default": {
       "useLongnameInNav": true
     }
+  },
+  "source": {
+    "include": ["../../source/assets/javascripts"],
+    "includePattern": ".+.js?$"
   }
 }
