@@ -27,6 +27,7 @@
   ],
   "templates": {
     "default": {
+      "includeDate": false,
       "useLongnameInNav": true
     }
   },

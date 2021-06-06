@@ -10,6 +10,6 @@
     "jsdoc": "^3.6.7"
   },
   "scripts": {
-    "jsdoc": "jsdoc -c jsdoc.json"
+    "jsdoc": "rm -rf build && jsdoc -c jsdoc.json"
   }
 }

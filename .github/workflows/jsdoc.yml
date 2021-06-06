@@ -1,0 +1,35 @@
+name: Jsdocs
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  generate-jsdocs:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: docs/jsdoc
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+      
+      - name: Install and build docs
+        run: |
+          yarn install
+          yarn jsdoc
+      
+      - name: Commit changes in jsdoc build folder
+        run: |
+          git config --global user.name "Jsdocs update"
+          git config --global user.email "knoxjeffrey@users.noreply.github.com"
+          git add ./build
+          git commit -m "Updating Jsdoc documentation"
+          git push
+
+
+        
