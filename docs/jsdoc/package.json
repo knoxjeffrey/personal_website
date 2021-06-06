@@ -1,0 +1,15 @@
+{
+  "name": "personal-website-js-docs",
+  "version": "1.0.0",
+  "description": "JavaScript Documentation",
+  "main": "index.js",
+  "author": "Jeff Knox",
+  "license": "ISC",
+  "devDependencies": {
+    "docdash": "^1.2.0",
+    "jsdoc": "^3.6.7"
+  },
+  "scripts": {
+    "jsdoc": "jsdoc -c jsdoc.json"
+  }
+}
