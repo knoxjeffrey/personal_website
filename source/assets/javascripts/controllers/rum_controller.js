@@ -8,21 +8,35 @@ import Perfume from "perfume.js"
  */
 export default class extends Controller {
   /**
-   * @property {Function} footer
-   * @property {Function} vitalsButton
-   * @property {Function} metrics
-   * @property {Function} lcp
-   * @property {Function} fid
-   * @property {Function} cls
+   * @property {Function} footer - targets the normal footer section
+   * @property {Function} vitalsButton - targets the button to display CWV
+   * @property {Function} metrics - targets the CWV section
+   * @property {Function} lcp - tagets the text result of LCP
+   * @property {Function} fid - tagets the text result of FID
+   * @property {Function} cls - tagets the text result of CLS
    * @memberof RUMController
    * @static
    */
   static targets = [ "footer", "vitalsButton", "metrics", "lcp", "fid", "cls" ]
+
+  /**
+   * @property {Object} lcp - holds LCP data eg {"data":1201.705,"vitalsScore":"good"}
+   * @property {Object} fid - holds FID data eg {"data":1.305,"vitalsScore":"good"}
+   * @property {Object} cls - holds CLS data eg {"data":0.0049,"vitalsScore":"good"}
+   * @memberof RUMController
+   * @static
+   */
   static values = { 
     lcp: Object,
     fid: Object,
     cls: Object
   }
+
+  /**
+   * @property {String} success - tagets the CSS to use for success highlighting on border and text
+   * @property {String} warning - tagets the CSS to use for warning highlighting on border and text
+   * @property {String} error - tagets the CSS to use for error highlighting on border and text
+   */
   static classes = [ "success", "warning", "error" ]
 
   initialize() {
@@ -66,6 +80,7 @@ export default class extends Controller {
   }
 
   reveal() {
+    console.log(this.footerTarget)
     this.footerTarget.style.display = "none"
     this.metricsTarget.style.display = "block"
   }
