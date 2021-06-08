@@ -25,10 +25,10 @@ jobs:
       
       - name: Commit changes in jsdoc build folder
         run: |
-          git config --global user.name "Jsdocs update"
-          git config --global user.email "knoxjeffrey@users.noreply.github.com"
+          git config --global user.name "GitHub Actiond"
+          git config --global user.email "knoxjeffrey@hey.com"
           git add ./build
-          git commit -m "Updating Jsdoc documentation"
+          git commit -m "Updating Jsdoc documentation" || echo "No changes to commit"
           git push
 
 
