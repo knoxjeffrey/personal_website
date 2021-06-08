@@ -18,7 +18,6 @@
   },
   "opts": {
     "access": "all",
-    "destination": "build",
     "readme": "README.md",
     "recurse": true,
     "template": "node_modules/docdash"
