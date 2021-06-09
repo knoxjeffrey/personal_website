@@ -108,4 +108,52 @@ Just a little bit more configuration left! I have a `netlify.toml` file at the r
   compress = false
 ```
 
-You have to make sure the base directory is set from within the Netlify UI otherwise Netlify will build from the root and also read the `netlify.toml` in the root. One other thing to note from my config is that `pretty_urls` should be set as false otherwise the sub navigation within the documentation site will not work correctly.
+You have to make sure the base directory is set from within the Netlify UI when you get to the point of setting that up otherwise Netlify will build from the root and also read the `netlify.toml` in the root. One other thing to note from my config is that `pretty_urls` should be set as false otherwise the sub navigation within the documentation site will not work correctly.
+
+## Documenting JavaScript
+
+There's quite a lot to take in when reading through the various tags in the [JSDoc site](https://jsdoc.app/) so make sure you spend some time reading through it all. Below is an example of the documentation for one of my Stimulus controllers to initialise [Commento](https://commento.io/):
+
+```
+import { Controller } from "stimulus"
+
+/**
+ * @class CommentsController
+ * @classdesc Stimulus controller to initialise Commento to allow users to view and make comments.
+ * @extends Controller
+ */
+export default class extends Controller {
+  /**
+   * @property {Function} load - targets the button to load comments
+   * @property {Function} commento - targets the div to initialise Commento
+   * @memberof CommentsController
+   * @static
+   */
+  static targets = [ "load", "commento" ]
+
+  /** 
+   * Triggered by a click event.
+   * Hides the button for loading comments.
+   * Adds top margin to the Commneto block and initialises Commento
+   * 
+   * @instance
+   * @memberof CommentsController
+   * @returns {void} N/A
+   * */
+  load() {
+    this.loadTarget.style.display = "none"
+    this.commentoTarget.classList.add("margin-top--xxl")
+    window.commento.main()
+  }
+}
+```
+
+You can read through more examples in my [repo](https://github.com/knoxjeffrey/personal_website/tree/main/source/assets/javascripts).
+
+When you have your documentation written, run `build_jsdoc` from the command line to build your documentation static website. You can now commit these changes to production.
+
+## Netlify
+
+I logged into my Netlify account and setup a new site which linked to my repo. As mentioned above, I ensured I set my base directory as `docs/jsdoc` which means during the deploy Netlify knows what directory to switch to. Netlify will only run a full build if there are changes in the `docs/jsdoc` directory, otherwise it will start and then cancel the build.
+
+That's it, my documentation site is build and you can view the final product [here](https://jsdocs.jeffreyknox.dev/). Now, this works okay but it means you have to remember to manually rebuild the documentation every time you make changes. I can do better than that and in a blog post to follow soon I will show you how to use a GitHub action to automate the process.
