@@ -12,6 +12,71 @@ However, documentation can be easier to read if it's nicely formatted rather tha
 
 In this article I'll show you how I setup and wrote documentation with JSDoc and how I deployed the output to Netlify.
 
+## Folder structure
+
 At the root of my repo I created a new folder at `docs/jsdoc` and changed into that directory in the console. Then I ran `yarn init` and followed the console steps to create a new `package.json` file. Then I ran `yarn add jsdoc docdash --dev` to install the required packages.
 
 Keeping all of the documentation configuration in a subdirectory prevents polluting the main code base with additional configuration and keeps the node modules separate. Netlify supports deploying sites from within subdirectories so everything required to build the documentation sites can be neatly organised in it own folder. I can also easily add other folders under `docs` for additional documentation sites, say for my [view components](/blog/building-view-components-in-middleman/) as an example.
+
+## Configuration
+
+Next I created a simple \`README.md\` file which will automatically get pulled into your \`index.html\` file by JSDoc during the build.
+
+Then I had to configure a script to run the JSDoc build in `package.json:`
+
+```
+"scripts": {
+  "build_jsdoc": "rm -rf build && jsdoc -c jsdoc.json -d build",
+  "dev_jsdoc": "rm -rf dist && jsdoc -c jsdoc.json -d dist"
+}
+```
+
+I also ensured that `dist` was added to my `.gitignore` file. The `build_jsdoc` script is used to generate the production version of the documentation but sometimes I want to test things out without messing up the production version so I also added the `dev_jsdoc` command for this purpose. In summary, this first removes all files in the build folder, get the configuration for JSDoc from `jsdoc.json` and outputs the build in either the `build` or `dist` folders.
+
+So clearly I needed a `jsdoc.json` file to write my JSDoc configuration:
+
+```
+{
+  "docdash": {
+    "static": true,
+    "sort": true,
+    "search": true,
+    "collapse": true,
+    "typedefs": true,
+    "removeQuotes": "none",
+    "scripts": [],
+    "menu":{
+      "Github repo": {
+        "href":"https://github.com/knoxjeffrey/personal_website",
+        "target":"_blank",
+        "class":"menu-item",
+        "id":"repository"
+      }
+    }
+  },
+  "opts": {
+    "access": "all",
+    "readme": "README.md",
+    "recurse": true,
+    "template": "node_modules/docdash"
+  },
+  "plugins": [
+  ],
+  "templates": {
+    "default": {
+      "includeDate": false,
+      "useLongnameInNav": true
+    }
+  },
+  "source": {
+    "include": ["../../source/assets/javascripts"],
+    "includePattern": ".+.js?$"
+  }
+}
+```
+
+You no doubt have already noticed [Docdash](https://github.com/clenemt/docdash) which I added to give a clean, responsive documentation template theme for JSDoc 3. You can read more about the configuration options on their GitHub repo.
+
+Under `source` you can add as many folders as you need which directs JSDoc where to navigate to in order to find your documentation and you can include a regex pattern for the file extensions.
+
+One configuration change I ensured I made was to set `includeDate` to false. If you set it as true then the current date and time of when the documentation was built is added to every page. However this would mean your build output will change every time you run `yarn build_jsdoc` even when there are no documentation change and therefore you will end up with unnecessary builds in Netlify. This became even more important when I automated the build process with a GitHub action which I will go into in my next blog post.
