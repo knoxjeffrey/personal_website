@@ -7,7 +7,7 @@ import { Controller } from "stimulus"
  */
 export default class EPController extends Controller {
   /** 
-   * Prints a console log with the first answer in the game with a path to the next puzzle
+   * Prints a console log with the first answer in the game with a path to the next puzzle.
    * 
    * @instance
    * @memberof Game.EPController
