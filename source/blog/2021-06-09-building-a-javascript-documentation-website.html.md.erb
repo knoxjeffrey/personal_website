@@ -8,4 +8,10 @@ I think code documentation works best when it lives side by side with the code i
 
 <!--more-->
 
-However, documentation can be easier to read if it's nicely formatted rather than reading straight from the code editor. With this in mind, I started looking at [JSDoc](https://jsdoc.app/) for documenting my JavaScript code. You simply write the documentation with your source code and then run a command to generate a static website build with nicely formatted documentation.
+However, documentation can be easier to read if it's nicely formatted rather than reading straight from the code editor. With this in mind, I started looking at [JSDoc](https://jsdoc.app/) for documenting my JavaScript code. You simply write the documentation with your source code and then run a command to generate a static website build with nicely formatted documentation. Best of both worlds!
+
+In this article I'll show you how I setup and wrote documentation with JSDoc and how I deployed the output to Netlify.
+
+At the root of my repo I created a new folder at `docs/jsdoc` and changed into that directory in the console. Then I ran `yarn init` and followed the console steps to create a new `package.json` file. Then I ran `yarn add jsdoc docdash --dev` to install the required packages.
+
+Keeping all of the documentation configuration in a subdirectory prevents polluting the main code base with additional configuration and keeps the node modules separate. Netlify supports deploying sites from within subdirectories so everything required to build the documentation sites can be neatly organised in it own folder. I can also easily add other folders under `docs` for additional documentation sites, say for my [view components](/blog/building-view-components-in-middleman/) as an example.
