@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>Home - Documentation</title>
+    <title>game/controllers/h_i_p_s_controller.js - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -34,35 +34,57 @@
 
 <div id="main">
     
+    <h1 class="page-title">game/controllers/h_i_p_s_controller.js</h1>
+    
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { Controller } from "stimulus"
+import AES from "crypto-js/aes"
+import encUtf8 from "crypto-js/enc-utf8"
 
+/**
+ * @class Game.HIPSController
+ * @classdesc Stimulus controller for /game/hiding-in-plain-sight.
+ * @extends Controller
+ */
+export default class HIPSController extends Controller {
+  /**
+   * @property {Function} answer - targets the text field input
+   * @property {Function} error - targets the error message
+   * @property {Function} unlock - targets the alert
+   * @memberof Game.HIPSController
+   * @static
+   */
+  static targets = [ "answer", "error", "unlock" ]
 
-    <section class="package">
-        <h3> </h3>		
+  /** 
+   * If the answer matches `128aes`, the string in the alert is decrypted to reveal the path to the
+   * next puzzle. Otherwise an error message is displayed.
+   * 
+   * @instance
+   * @memberof Game.HIPSController
+   * @returns {void} N/A
+   * */
+  submit() {
+    if (this.answerTarget.value === "128aes") {
+      this.errorTarget.style.display = "none"
+      const bytes = AES.decrypt(this.unlockTarget.innerHTML, "128aes")
+      this.unlockTarget.innerHTML = bytes.toString(encUtf8)
+    } else {
+      this.errorTarget.style.display = "block"
+      this.errorTarget.innerHTML = `${this.answerTarget.value} is incorrect`
+    }
+  }
+}
+</code></pre>
+        </article>
     </section>
-
-
-
-
-
-
-
-
-
-    
-
-
-
-    <section class="readme usertext">
-        <article><h1>JavaScript Documentation for Jeff Knox personal website</h1></article>
-    </section>
-
-
 
 
 

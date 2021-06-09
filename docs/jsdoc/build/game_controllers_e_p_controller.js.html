@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>Home - Documentation</title>
+    <title>game/controllers/e_p_controller.js - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -34,35 +34,40 @@
 
 <div id="main">
     
+    <h1 class="page-title">game/controllers/e_p_controller.js</h1>
+    
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { Controller } from "stimulus"
 
-
-    <section class="package">
-        <h3> </h3>		
+/**
+ * @class Game.EPController
+ * @classdesc Stimulus controller on the 404 page to start the game with the first answer.
+ * @extends Controller
+ */
+export default class EPController extends Controller {
+  /** 
+   * Prints a console log with the first answer in the game with a path to the next puzzle
+   * 
+   * @instance
+   * @memberof Game.EPController
+   * @returns {void} N/A
+   * */
+  initialize() {
+    console.warn(
+      "Good job! I told you it would be simple to start with. Want more? /game/get-to-know-each-other/"
+    )
+  }
+}
+</code></pre>
+        </article>
     </section>
-
-
-
-
-
-
-
-
-
-    
-
-
-
-    <section class="readme usertext">
-        <article><h1>JavaScript Documentation for Jeff Knox personal website</h1></article>
-    </section>
-
-
 
 
 
