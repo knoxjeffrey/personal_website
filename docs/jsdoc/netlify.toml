@@ -19,7 +19,7 @@
 
 [context.production.processing.js]
   bundle = false
-  minify = true
+  minify = false
 
 [context.production.processing.html]
   pretty_urls = true
