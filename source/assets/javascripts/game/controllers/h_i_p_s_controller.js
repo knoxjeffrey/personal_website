@@ -2,9 +2,29 @@ import { Controller } from "stimulus"
 import AES from "crypto-js/aes"
 import encUtf8 from "crypto-js/enc-utf8"
 
+/**
+ * @class Game.HIPSController
+ * @classdesc Stimulus controller for /game/hiding-in-plain-sight.
+ * @extends Controller
+ */
 export default class HIPSController extends Controller {
+  /**
+   * @property {Function} answer - targets the text field input
+   * @property {Function} error - targets the error message
+   * @property {Function} unlock - targets the alert
+   * @memberof Game.HIPSController
+   * @static
+   */
   static targets = [ "answer", "error", "unlock" ]
 
+  /** 
+   * If the answer matches `128aes`, the string in the alert is decrypted to reveal the path to the
+   * next puzzle. Otherwise an error message is displayed.
+   * 
+   * @instance
+   * @memberof Game.HIPSController
+   * @returns {void} N/A
+   * */
   submit() {
     if (this.answerTarget.value === "128aes") {
       this.errorTarget.style.display = "none"
