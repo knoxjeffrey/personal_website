@@ -15,11 +15,11 @@
 
 [context.production.processing.css]
   bundle = false
-  minify = true
+  minify = false
 
 [context.production.processing.js]
   bundle = false
-  minify = false
+  minify = true
 
 [context.production.processing.html]
   pretty_urls = true
