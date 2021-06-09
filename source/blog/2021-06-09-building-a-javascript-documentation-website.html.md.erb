@@ -29,7 +29,7 @@ Then I had to configure a script to run the JSDoc build in `package.json:`
       "dev_jsdoc": "rm -rf dist && jsdoc -c jsdoc.json -d dist"
     }
 
-I also ensured that `dist` was added to my `.gitignore` file. The `build_jsdoc` script is used to generate the production version of the documentation but sometimes I want to test things out without messing up the production version so I also added the `dev_jsdoc` command for this purpose. In summary, this first removes all files in the build folder, get the configuration for JSDoc from `jsdoc.json` and outputs the build in either the `build` or `dist` folders.
+I also ensured that `dist` was added to my `.gitignore` file. The `build_jsdoc` script is used to generate the production version of the documentation but sometimes I want to test things out without messing up the production version so I also added the `dev_jsdoc` command for this purpose. In summary, this first removes all files in the build folder, gets the configuration for JSDoc from `jsdoc.json` and outputs the build in either the `build` or `dist` folders.
 
 So clearly I needed a `jsdoc.json` file to write my JSDoc configuration:
 
@@ -142,7 +142,7 @@ There's quite a lot to take in when reading through the various tags in the [JSD
 
 You can read through more examples in my [repo](https://github.com/knoxjeffrey/personal_website/tree/main/source/assets/javascripts).
 
-When you have your documentation written, run `build_jsdoc` from the command line to build your documentation static website. You can now commit these changes to production.
+When you have your documentation written, run `yarn build_jsdoc` from the command line to build your documentation static website. You can now commit these changes to production.
 
 ## Netlify
 
