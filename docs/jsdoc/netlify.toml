@@ -22,7 +22,7 @@
   minify = false
 
 [context.production.processing.html]
-  pretty_urls = true
+  pretty_urls = false
 
 [context.production.processing.images]
   compress = false
