@@ -13,7 +13,7 @@ export default class RDController extends Controller {
    * appear in the red box.
    * 
    * @instance
-   * @memberof Game.MYMController
+   * @memberof Game.RDController
    * @returns {void} N/A
    * */
   connect() {
