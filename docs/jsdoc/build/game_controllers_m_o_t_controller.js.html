@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>game/controllers/e_p_controller.js - Documentation</title>
+    <title>game/controllers/m_o_t_controller.js - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -34,7 +34,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">game/controllers/e_p_controller.js</h1>
+    <h1 class="page-title">game/controllers/m_o_t_controller.js</h1>
     
 
     
@@ -47,22 +47,24 @@
             <pre class="prettyprint source linenums"><code>import { Controller } from "stimulus"
 
 /**
- * @class Game.EPController
- * @classdesc Stimulus controller on the 404 page to start the game with the first answer.
+ * @class Game.MOTController
+ * @classdesc Stimulus controller for /game/ministry-of-truth.
  * @extends Controller
  */
-export default class EPController extends Controller {
+export default class MOTController extends Controller {
   /** 
-   * Prints a console log with the first answer in the game with a path to the next puzzle.
+   * Changes the previous history.
+   * Clicking the back button won't work but type `history.back()` in the console and you'll get the
+   * next puzzle.
    * 
    * @instance
-   * @memberof Game.EPController
+   * @memberof Game.MOTController
    * @returns {void} N/A
    * */
-  initialize() {
-    console.warn(
-      "Good job! I told you it would be simple to start with. Want more? /game/get-to-know-each-other/"
-    )
+  connect() {
+    history.pushState(null, "", "/game/back-to-base/")
+    history.pushState(null, "", "/game/ministry-of-truth/")
+    window.onpopstate = () => location.reload()
   }
 }
 </code></pre>

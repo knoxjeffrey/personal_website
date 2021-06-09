@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>game/controllers/e_p_controller.js - Documentation</title>
+    <title>game/controllers/r_d_controller.js - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -34,7 +34,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">game/controllers/e_p_controller.js</h1>
+    <h1 class="page-title">game/controllers/r_d_controller.js</h1>
     
 
     
@@ -47,22 +47,27 @@
             <pre class="prettyprint source linenums"><code>import { Controller } from "stimulus"
 
 /**
- * @class Game.EPController
- * @classdesc Stimulus controller on the 404 page to start the game with the first answer.
+ * @class Game.RDController
+ * @classdesc Stimulus controller for /game/responsive-design.
  * @extends Controller
  */
-export default class EPController extends Controller {
+export default class RDController extends Controller {
+  static targets = [ "alert" ]
+
   /** 
-   * Prints a console log with the first answer in the game with a path to the next puzzle.
+   * In Dev Tools change the resposive screen size to 320x480 and the path to the next puzzle will
+   * appear in the red box.
    * 
    * @instance
-   * @memberof Game.EPController
+   * @memberof Game.MYMController
    * @returns {void} N/A
    * */
-  initialize() {
-    console.warn(
-      "Good job! I told you it would be simple to start with. Want more? /game/get-to-know-each-other/"
-    )
+  connect() {
+    window.onresize = () => {
+      if (window.screen.width === 320 &amp;&amp; window.screen.height === 480) {
+        this.alertTarget.innerHTML = "/game/ministry-of-truth/"
+      }
+    }
   }
 }
 </code></pre>

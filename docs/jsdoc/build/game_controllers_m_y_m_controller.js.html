@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>game/controllers/e_p_controller.js - Documentation</title>
+    <title>game/controllers/m_y_m_controller.js - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -34,7 +34,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">game/controllers/e_p_controller.js</h1>
+    <h1 class="page-title">game/controllers/m_y_m_controller.js</h1>
     
 
     
@@ -47,22 +47,21 @@
             <pre class="prettyprint source linenums"><code>import { Controller } from "stimulus"
 
 /**
- * @class Game.EPController
- * @classdesc Stimulus controller on the 404 page to start the game with the first answer.
+ * @class Game.MYMController
+ * @classdesc Stimulus controller for /game/make-your-mark.
  * @extends Controller
  */
-export default class EPController extends Controller {
+export default class MYMController extends Controller {
   /** 
-   * Prints a console log with the first answer in the game with a path to the next puzzle.
+   * Add a performance mark with the path of the next puzzle
+   * Type `performance.getEntriesByType("mark")` in the console and you will get the next path.
    * 
    * @instance
-   * @memberof Game.EPController
+   * @memberof Game.MYMController
    * @returns {void} N/A
    * */
-  initialize() {
-    console.warn(
-      "Good job! I told you it would be simple to start with. Want more? /game/get-to-know-each-other/"
-    )
+  connect() {
+    performance.mark("/game/responsive-design/")
   }
 }
 </code></pre>
