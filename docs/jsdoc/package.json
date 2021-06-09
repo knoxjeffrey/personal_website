@@ -10,7 +10,7 @@
     "jsdoc": "^3.6.7"
   },
   "scripts": {
-    "jsdoc": "rm -rf build && jsdoc -c jsdoc.json -d build",
-    "try_jsdoc": "rm -rf dist && jsdoc -c jsdoc.json -d dist"
+    "build_jsdoc": "rm -rf build && jsdoc -c jsdoc.json -d build",
+    "dev_jsdoc": "rm -rf dist && jsdoc -c jsdoc.json -d dist"
   }
 }
