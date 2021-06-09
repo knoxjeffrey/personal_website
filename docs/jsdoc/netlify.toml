@@ -14,12 +14,12 @@
   skip_processing = false
 
 [context.production.processing.css]
-  bundle = false
-  minify = false
+  bundle = true
+  minify = true
 
 [context.production.processing.js]
-  bundle = false
-  minify = false
+  bundle = true
+  minify = true
 
 [context.production.processing.html]
   pretty_urls = false
