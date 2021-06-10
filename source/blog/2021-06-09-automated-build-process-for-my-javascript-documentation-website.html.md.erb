@@ -7,3 +7,68 @@ tags:
 My [last blog post](https://www.jeffreyknox.dev/blog/building-a-javascript-documentation-website/) demonstrated how to build a JavaScript documentation website using [JSDoc](https://jsdoc.app/) and have it deployed on [Netlify](https://www.netlify.com/). The process was a bit manual though so in this post I improve upon the solution by automating the build using a [GitHub Action](https://github.com/features/actions) to ensure your documentation website is never out of sync with the documentation in your code base.
 
 <!--more-->
+
+Have you read the last post? Good, we can crack on with the automation! First up, create a new file at `.github/workflows/jsdoc.yml` which is where your GitHub Action config will live:
+
+```
+name: Jsdocs
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  generate-jsdocs:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: docs/jsdoc
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+      
+      - name: Install and build docs
+        run: |
+          yarn install
+          yarn build_jsdoc
+      
+      - name: Commit changes in jsdoc build folder
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "knoxjeffrey@users.noreply.github.com"
+          git add ./build
+          git commit -m "Updating Jsdoc documentation" || echo "No changes to commit"
+          git push
+```
+
+This GitHub Action will only trigger on pushes to my main branch as I only want to update my documentation when I have deployed to production. The action will use `docs/jsdoc` as my working directory so all other commands will be relative to that directory. All dependencies are installed and `yarn build_jsdoc` builds my static site in the `build` directory as dictated by the script in `package.json`. Finally, only changes in the `build` directory are committed and then pushed to production.
+
+This is where it gets a little confusing about when builds kick off in Netlify. If I make a documentation change in one of my JavaScript files and commit the change then the Netlify build for <https://www.jeffreyknox.dev/> will start as expected. The Netlify build for <https://jsdocs.jeffreyknox.dev/> will also begin but then is quickly cancelled by Neltify because there are currently no changes in my `docs/jsdoc` folder. The GitHub Action will also kick in at this point and run the above steps. There are now changes in `docs/jsdoc` so the Netlify build for <https://jsdocs.jeffreyknox.dev/> will run all the way through this time. However the Netlify build for <https://www.jeffreyknox.dev/>[](https://jsdocs.jeffreyknox.dev/) will also run even though the only changes are in `docs/jsdoc` and have no effect on this site.
+
+Still with me?! I wanted to prevent this final unnecessary build so in the root of my repo I updated the `netlify.toml` file to include a new `ignore` attribute:
+
+```
+[build]
+  ...
+  ignore = "git show -s --format=%s | grep 'Updating Jsdoc documentation'"
+  
+ ...
+```
+
+So now if my commit message includes "Updating Jsdoc documentation" then the build will be cancelled for my <https://www.jeffreyknox.dev/> site. At this point I also updated my netlify.toml file in the `docs/jsdoc` folder to look as follows:
+
+```
+[build]
+  ...
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF ."
+  
+ ...
+```
+
+so it continues to still only run a Netlify build if there are changes in the `docs/jsdoc` folder.
+
+With these changes made, any time I make an update to my JavaScript documentation I no longer have to remember to manually run the JSDoc command as the process is now automated and my documentation website will always be up to date.
