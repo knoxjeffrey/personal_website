@@ -75,7 +75,7 @@ You no doubt have already noticed [Docdash](https://github.com/clenemt/docdash) 
 
 Under `source` you can add as many folders as you need which directs JSDoc where to navigate to in order to find your documentation and you can include a regex pattern for the file extensions.
 
-One configuration change I ensured I made was to set `includeDate` to false. If you set it as true then the current date and time of when the documentation was built is added to every page. However this would mean your build output will change every time you run `yarn build_jsdoc` even when there are no documentation changes and therefore you will end up with unnecessary builds in Netlify. This became even more important when I automated the build process with a GitHub action which I will go into in a blog post to follow soon.
+One configuration change I ensured I made was to set `includeDate` to false. If you set it as true then the current date and time of when the documentation was built is added to every page. However this would mean your build output will change every time you run `yarn build_jsdoc` even when there are no documentation changes and therefore you will end up with unnecessary builds in Netlify. This became even more important when I automated the build process with a GitHub action which I will go into in my [next blog post](/blog/automated-build-process-for-my-javascript-documentation-website/).
 
 Just a little bit more configuration left! I have a `netlify.toml` file at the root of my repo but I need another one to sit with my docs:
 
@@ -148,4 +148,4 @@ When you have your documentation written, run `yarn build_jsdoc` from the comman
 
 I logged into my Netlify account and setup a new site which linked to my repo. As mentioned above, I ensured I set my base directory as `docs/jsdoc` which means during the deploy Netlify knows what directory to switch to. Netlify will only run a full build if there are changes in the `docs/jsdoc` directory, otherwise it will start and then cancel the build.
 
-That's it, my documentation site is built and you can view the final output [here](https://jsdocs.jeffreyknox.dev/). Now, this works okay but it means you have to remember to manually rebuild the documentation every time you make changes. I can do better than that and in a blog post to follow soon I will show you how to use a GitHub action to automate the process.
+That's it, my documentation site is built and you can view the final output [here](https://jsdocs.jeffreyknox.dev/). Now, this works okay but it means you have to remember to manually rebuild the documentation every time you make changes. I can do better than that and in [my next blog post](/blog/automated-build-process-for-my-javascript-documentation-website/) I will show you how to use a GitHub action to automate the process.
