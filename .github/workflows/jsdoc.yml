@@ -1,8 +1,10 @@
 name: Jsdocs
 on:
   push:
-    branches:
-      - main
+    branches-ignore:
+      - "main"
+    paths:
+      - "source/assets/javascripts/**"
 
 jobs:
   generate-jsdocs:
