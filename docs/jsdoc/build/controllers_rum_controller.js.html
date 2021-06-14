@@ -114,6 +114,7 @@ export default class extends Controller {
               case "fcp":
                 break;
               case "lcp":
+                this.rumLogger(data, vitalsScore)
                 this.lcpValue = { data, vitalsScore }
                 break;
               case "fid":
@@ -150,9 +151,27 @@ export default class extends Controller {
    * @returns {void} N/A
    * */
   reveal() {
-    console.log(this.footerTarget)
     this.footerTarget.style.display = "none"
     this.metricsTarget.style.display = "block"
+  }
+
+  rumLogger(data, vitalsScore) {
+    fetch("/.netlify/functions/rum_logger-background", { method: "POST" })
+      .then(responseCheck => {
+        console.log(responseCheck)
+        // if (!responseCheck.ok) { throw Error(responseCheck.status); }
+        // return responseCheck;
+      })
+      .then(res => res.json())
+      .then(function(response) {
+        console.log(response)
+        // accountManager.user = { ...accountManager.user, ...response.user };
+        // setData(accountManager, 200);
+      })
+      .catch(error => {
+        console.log(error)
+        // setData(accountManager, 500);
+      });
   }
 
   /** 
