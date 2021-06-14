@@ -112,18 +112,18 @@ export default class extends Controller {
   rumLogger(data, vitalsScore) {
     fetch("/.netlify/functions/rum_logger-background", { method: "POST" })
       .then(responseCheck => {
-        console.log(responseCheck)
+        console.warn(responseCheck)
         // if (!responseCheck.ok) { throw Error(responseCheck.status); }
         // return responseCheck;
       })
       .then(res => res.json())
       .then(function(response) {
-        console.log(response)
+        console.warn(response)
         // accountManager.user = { ...accountManager.user, ...response.user };
         // setData(accountManager, 200);
       })
       .catch(error => {
-        console.log(error)
+        console.warn(error)
         // setData(accountManager, 500);
       });
   }
