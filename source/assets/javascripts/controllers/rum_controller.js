@@ -57,24 +57,32 @@ export default class extends Controller {
       try {
         new Perfume({
           analyticsTracker: (options) => {
-            if (!window.LayoutShift) return
             const { metricName, data, vitalsScore } = options
       
             switch (metricName) {
               case "navigationTiming":
                 if (data && data.timeToFirstByte) {
+                  this.rumLogger("ttfb", data.timeToFirstByte)
+                }
+                break;
+              case "networkInformation":
+                if (data && data.effectiveType) {
+                  this.rumLogger("networkInfo", data.effectiveType)
                 }
                 break;
               case "fcp":
+                this.rumLogger("fcp", data, vitalsScore)
                 break;
               case "lcp":
-                this.rumLogger(data, vitalsScore)
+                this.rumLogger("lcp", data, vitalsScore)
                 this.lcpValue = { data, vitalsScore }
                 break;
               case "fid":
+                this.rumLogger("fid", data, vitalsScore)
                 this.fidValue = { data, vitalsScore }
                 break;
               case "cls":
+                this.rumLogger("cls", data, vitalsScore)
                 this.clsValue = { data, vitalsScore }
                 break;
             }
@@ -109,8 +117,36 @@ export default class extends Controller {
     this.metricsTarget.style.display = "block"
   }
 
-  rumLogger(data, vitalsScore) {
-    fetch("/.netlify/functions/rum_logger-background", { method: "POST" })
+  /** 
+   * Sends the Real User Metric data to a Netlify background function.
+   * Netlify background functions will immediately return a 202 to indicate that the bckground function
+   * has been triggered but we are not to wait for a result as the function will be queued and could
+   * take as much as 15 mins to run.
+   *
+   * @instance rumLogger
+   * @property {String} metric - string identifying the RUM metric
+   * @property {(String|Number)} data - value associated with the metric
+   * @property {String} [vitalsScore] - CWV reading of good, needs improvement or poor
+   * 
+   * @memberof RUMController
+   * @returns {void} N/A
+   * @example
+   * this.rumLogger("cls", 0, "good")
+   * @example
+   * this.rumLogger("networkInformation", "4g")
+   * */
+  rumLogger(metric, data, vitalsScore = "null") {
+    const loggerData = {
+      metric,
+      data,
+      vitalsScore,
+      path: window.location.pathname,
+      userAgent: window.navigator.userAgent
+    }
+    fetch("/.netlify/functions/rum_logger-background", { 
+      method: "POST",
+      body: JSON.stringify(loggerData)
+    })
       .then(responseCheck => {
         if (!responseCheck.ok) { throw Error(responseCheck.status); }
       })

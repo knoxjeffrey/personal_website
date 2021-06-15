@@ -11,7 +11,7 @@
   # Default build command.
   command = "rake netlify_build:branch'[$BRANCH_BUILD_OPTIONS]'"
 
-  # ignore = "git show -s --format=%s | grep 'Updating Jsdoc documentation'"
+  ignore = "git show -s --format=%s | grep 'Updating Jsdoc documentation'"
 
 [context.production]
   command = "rake netlify_build:production'[$PRODUCTION_BUILD_OPTIONS]'"
