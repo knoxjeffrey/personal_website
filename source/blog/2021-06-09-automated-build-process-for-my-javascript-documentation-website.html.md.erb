@@ -69,17 +69,4 @@ so it continues to only run a Netlify build if there are changes in the `docs/js
 
 With these changes made, any time I make an update to my JavaScript documentation I no longer have to remember to manually run the JSDoc command as the process is now automated and my documentation website will always be up to date.
 
-## Edit 14 June 2021
-
-I decided to make a change to my GitHub Action so the documentation is created by JSDoc during changes on a branch in the `source/assets/javascripts` folder rather than an additional commit being made directly on my `main` branch. The deploy to my [documentation site](https://jsdocs.jeffreyknox.dev/) will still only happen when the `main` branch has alterations in the `docs/jsdoc` folder though.
-
-The change is in the `on` section of the action which now looks as follows:
-
-    on:
-      push:
-        branches-ignore:
-          - "main"
-        paths:
-          - "source/assets/javascripts/**"
-
 
