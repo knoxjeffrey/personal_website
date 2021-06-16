@@ -15,5 +15,6 @@ export async function handler(event, context) {
     osName: browser.os.name,
     platformType: browser.platform.type
   }
+  
   console.log(rumMetricsForAnalytics)
 }
