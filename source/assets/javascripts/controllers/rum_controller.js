@@ -8,6 +8,14 @@ import Perfume from "perfume.js"
  */
 export default class extends Controller {
   /**
+   * Will be set on `initialize` with the current Unix timestamp in milliseconds
+   * 
+   * @type {Number}
+   * @memberof RUMController
+   */
+  rumIdentifier
+
+  /**
    * @property {Function} footer - targets the normal footer section
    * @property {Function} vitalsButton - targets the button to display CWV
    * @property {Function} metrics - targets the CWV section
@@ -50,6 +58,7 @@ export default class extends Controller {
    * @returns {void} N/A
    * */
   initialize() {
+    this.rumIdentifier = Date.now()
     // Test for presence of one Core Web Vital metric and display button if present. This is currently
     // a good indicator of Chromium which only support Core Web Vitals metrics
     if (window.LayoutShift) this.vitalsButtonTarget.style.display = "block"
@@ -119,6 +128,7 @@ export default class extends Controller {
 
   /** 
    * Sends the Real User Metric data to a Netlify background function.
+   * 
    * Netlify background functions will immediately return a 202 to indicate that the bckground function
    * has been triggered but we are not to wait for a result as the function will be queued and could
    * take as much as 15 mins to run.
@@ -137,11 +147,14 @@ export default class extends Controller {
    * */
   rumLogger(metric, data, vitalsScore = "null") {
     const loggerData = {
+      identifier: this.rumIdentifier,
+      path: window.location.pathname,
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      unixTimeStamp: Math.floor(Date.now() / 1000),
+      userAgent: window.navigator.userAgent,
       metric,
       data,
-      vitalsScore,
-      path: window.location.pathname,
-      userAgent: window.navigator.userAgent
+      vitalsScore
     }
     fetch("/.netlify/functions/rum_logger-background", { 
       method: "POST",
@@ -193,8 +206,10 @@ export default class extends Controller {
 
   /** 
    * Returns if no value object present. This will happen on the first runs of the value change callbacks
-   * on initial page load.<br>
-   * Adds a relevent class for the alert colour.<br>
+   * on initial page load.
+   * 
+   * Adds a relevent class for the alert colour.
+   * 
    * Replaces the `... waiting` text with the CWV score.
    *
    * @instance coreWebVitalResponse
