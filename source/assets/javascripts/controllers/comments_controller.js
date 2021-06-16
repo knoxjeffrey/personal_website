@@ -16,7 +16,9 @@ export default class extends Controller {
 
   /** 
    * Triggered by a click event.
+   * 
    * Hides the button for loading comments.
+   * 
    * Adds top margin to the Commneto block and initialises Commento
    * 
    * @instance

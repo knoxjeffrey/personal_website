@@ -44,6 +44,7 @@
     "crypto-js": "^4.0.0",
     "highlight.js": "^10.6.0",
     "perfume.js": "^6.2.0",
+    "sha.js": "^2.4.11",
     "stimulus": "^2.0.0"
   },
   "jest": {
