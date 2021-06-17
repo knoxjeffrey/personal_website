@@ -140,6 +140,9 @@ export default class extends Controller {
    * 
    * @memberof RUMController
    * @returns {void} N/A
+   * @see visitorIsBot
+   * @see postRumLoggerData
+   * 
    * @example
    * this.rumLogger("cls", 0, "good")
    * @example
@@ -156,6 +159,36 @@ export default class extends Controller {
       data,
       vitalsScore
     }
+    if (visitorIsBot(userAgent.userAgent)) return
+    postRumLoggerData(loggerData)
+  }
+
+  /** 
+   * Checks if the part of the userAgent matches against one of the given bot names
+   *
+   * @instance visitorIsBot
+   * @property {String} userAgent - the userAgent string
+   * 
+   * @memberof RUMController
+   * @returns {Boolean}
+   * */
+  visitorIsBot(userAgent) {
+    const botNames = [
+      "Googlebot" ,"Bingbot", "Slurp", "DuckDuckBot", "Baiduspider", "YandexBot", "Sogou", "Exabot"
+    ]
+    if (botNames.some(name => userAgent.includes(name))) return true
+  }
+
+  /** 
+   * Sends the Real User Metric data to a Netlify background function.
+   *
+   * @instance postRumLoggerData
+   * @property {Object} loggerData - RUM logger data object
+   * 
+   * @memberof RUMController
+   * @returns {void}
+   * */
+  postRumLoggerData(loggerData) {
     fetch("/.netlify/functions/rum_logger-background", { 
       method: "POST",
       body: JSON.stringify(loggerData)
