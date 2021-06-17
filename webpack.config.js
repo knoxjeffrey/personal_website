@@ -18,10 +18,10 @@ module.exports = function (env) {
       main: path.resolve(__dirname, "./source/assets/javascripts/main.js"),
       components: glob.sync(path.resolve(__dirname, "./components/**/*.js")),
       game: path.resolve(__dirname, "./source/assets/javascripts/game/game.js"),
-      main_css: path.resolve(__dirname, "./source/assets/stylesheets/main.css.scss"),
-      components_css: glob.sync(path.resolve(__dirname, "./components/**/*.scss")),
-      commento_css: path.resolve(__dirname, "./source/assets/stylesheets/commento.css.scss"),
-      game_css: path.resolve(__dirname, "./source/assets/stylesheets/game.css.scss")
+      main_css: path.resolve(__dirname, "./source/assets/stylesheets/main.css"),
+      components_css: glob.sync(path.resolve(__dirname, "./components/**/*.css")),
+      commento_css: path.resolve(__dirname, "./source/assets/stylesheets/commento.css"),
+      game_css: path.resolve(__dirname, "./source/assets/stylesheets/game.css")
     },
 
     output: {
@@ -65,12 +65,11 @@ module.exports = function (env) {
       rules: [
         { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader" },
         {
-          test: /\.(sa|sc|c)ss$/,
+          test: /\.css$/,
           use: [
             MiniCssExtractPlugin.loader,
             "css-loader",
-            "postcss-loader",
-            "sass-loader",
+            "postcss-loader"
           ],
         }
       ]
