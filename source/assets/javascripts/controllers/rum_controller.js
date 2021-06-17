@@ -159,8 +159,8 @@ export default class extends Controller {
       data,
       vitalsScore
     }
-    if (visitorIsBot(userAgent.userAgent)) return
-    postRumLoggerData(loggerData)
+    if (this.visitorIsBot(userAgent.userAgent)) return
+    this.postRumLoggerData(loggerData)
   }
 
   /** 
