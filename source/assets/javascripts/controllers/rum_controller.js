@@ -159,7 +159,7 @@ export default class extends Controller {
       data,
       vitalsScore
     }
-    if (this.visitorIsBot(userAgent.userAgent)) return
+    if (this.visitorIsBot(loggerData.userAgent)) return
     this.postRumLoggerData(loggerData)
   }
 
