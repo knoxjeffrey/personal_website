@@ -180,7 +180,7 @@ export default class extends Controller {
   }
 
   /** 
-   * Sends the Real User Metric data to a Netlify background function.
+   * Sends the Real User Metrics data to a Netlify background function.
    *
    * @instance postRumLoggerData
    * @property {Object} loggerData - RUM logger data object

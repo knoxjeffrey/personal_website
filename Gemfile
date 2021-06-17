@@ -7,6 +7,7 @@ gem "middleman-blog"
 gem "middleman-minify-html"
 # Required for blog summaries
 gem "nokogiri"
+gem "rake"
 # Locked to v2.1.0 because of long install times for this gem with later versions
 # Thread here - https://github.com/sass/sassc-ruby/issues/189
 # This gem is a requirement of Middleman but the lock can be removed when this issue is resolved.
