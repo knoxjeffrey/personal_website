@@ -108,6 +108,7 @@ GEM
     racc (1.5.2)
     rack (2.2.3)
     rainbow (3.0.0)
+    rake (13.0.3)
     rb-fsevent (0.10.4)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
@@ -155,6 +156,7 @@ DEPENDENCIES
   middleman-minify-html
   nokogiri
   pry-byebug
+  rake
   rubocop (~> 0.92.0)
   rubocop-performance
   rubocop-rspec
