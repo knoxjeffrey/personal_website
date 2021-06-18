@@ -65,7 +65,8 @@ module.exports = function (env) {
       rules: [
         { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader" },
         {
-          test: /\.css$/,
+          test: /(\.css)$/,
+          exclude: /node_modules/,
           use: [
             MiniCssExtractPlugin.loader,
             "css-loader",
