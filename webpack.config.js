@@ -19,7 +19,7 @@ module.exports = function (env) {
       components: glob.sync(path.resolve(__dirname, "./components/**/*.js")),
       game: path.resolve(__dirname, "./source/assets/javascripts/game/game.js"),
       main_css: path.resolve(__dirname, "./source/assets/stylesheets/main.css"),
-      components_css: glob.sync(path.resolve(__dirname, "./components/**/*.css")),
+      components_css: path.resolve(__dirname, "./source/assets/stylesheets/components.css"),
       commento_css: path.resolve(__dirname, "./source/assets/stylesheets/commento.css"),
       game_css: path.resolve(__dirname, "./source/assets/stylesheets/game.css")
     },
