@@ -3,9 +3,6 @@ import esbuild from "rollup-plugin-esbuild"
 import path from "path"
 
 export default {
-  server: {
-    port: "3333"
-  },
   build: {
     brotliSize: false,
     emptyOutDir: true,
@@ -13,19 +10,19 @@ export default {
     outDir: ".tmp/dist/assets",
     rollupOptions: {
       input: {
-        "main": path.resolve(__dirname, "./source/assets/javascripts/main.js"),
         "components": path.resolve(__dirname, "./source/assets/javascripts/components.js"),
+        "main": path.resolve(__dirname, "./source/assets/javascripts/main.js"),
         "game": path.resolve(__dirname, "./source/assets/javascripts/game/game.js"),
-        "main_css": path.resolve(__dirname, "./source/assets/stylesheets/main.css"),
-        "components_css": path.resolve(__dirname, "./source/assets/stylesheets/components.css"),
         "commento_css": path.resolve(__dirname, "./source/assets/stylesheets/commento.css"),
-        "game_css": path.resolve(__dirname, "./source/assets/stylesheets/game.css")
+        "components_css": path.resolve(__dirname, "./source/assets/stylesheets/components.css"),
+        "game_css": path.resolve(__dirname, "./source/assets/stylesheets/game.css"),
+        "main_css": path.resolve(__dirname, "./source/assets/stylesheets/main.css"),
       },
       output: {
-        format: "es",
-        entryFileNames: "[name].js",
+        assetFileNames: "[name].[ext]",
         chunkFileNames: "[name].js",
-        assetFileNames: "[name].[ext]"
+        entryFileNames: "[name].js",
+        format: "es"
       },
       plugins: [
         esbuild({
@@ -34,5 +31,8 @@ export default {
         globImport()
       ]
     }
+  },
+  server: {
+    port: "3333"
   }
 }
