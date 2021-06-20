@@ -4,8 +4,8 @@
   "description": "",
   "private": true,
   "scripts": {
-    "dev": "vite build --watch",
-    "build": "vite build",
+    "dev": "vite build --watch --mode development",
+    "build": "vite build --mode production",
     "test": "jest ./spec/javascripts"
   },
   "repository": {
