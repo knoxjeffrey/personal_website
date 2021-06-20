@@ -1,3 +1,5 @@
+require "./lib/asset_hash_import_from"
+
 # Per-page layout changes
 page "/*.xml", layout: false
 page "/*.json", layout: false
@@ -44,6 +46,7 @@ activate :external_pipeline,
 
 configure :build do
   activate :asset_hash
+  activate :asset_hash_import_from
   activate :minify_html do |config|
     config.remove_quotes = false
     config.remove_input_attributes = false
