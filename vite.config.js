@@ -1,5 +1,5 @@
-import globImport from "rollup-plugin-glob-import"
 import esbuild from "rollup-plugin-esbuild"
+import globImport from "rollup-plugin-glob-import"
 import path from "path"
 
 export default {
