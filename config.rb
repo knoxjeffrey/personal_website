@@ -3,9 +3,9 @@ page "/*.xml", layout: false
 page "/*.json", layout: false
 page "/*.txt", layout: false
 
-config[:css_dir]      = "compiled-assets"
+config[:css_dir]      = "assets"
 config[:images_dir]   = "assets/images"
-config[:js_dir]       = "compiled-assets"
+config[:js_dir]       = "assets"
 
 proxy "_headers", "netlify-headers", ignore: true
 proxy "_redirects", "netlify-redirects", ignore: true
@@ -38,7 +38,7 @@ activate :directory_indexes
 
 activate :external_pipeline,
          name: :webpack,
-         command: build? ? "yarn run build" : "yarn run start",
+         command: build? ? "yarn run build" : "yarn run dev",
          source: ".tmp/dist",
          latency: 1
 

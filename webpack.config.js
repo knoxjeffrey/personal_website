@@ -1,7 +1,7 @@
 const glob = require("glob");
 const path = require("path");
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const TerserPlugin = require("terser-webpack-plugin");
+const { ESBuildMinifyPlugin } = require('esbuild-loader');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = function (env) {
@@ -42,18 +42,9 @@ module.exports = function (env) {
         return {
           minimize: true,
           minimizer: [
-            new TerserPlugin({
-              extractComments: true,
-              terserOptions: {
-                compress: {
-                  pure_funcs: [
-                    "console.log"
-                  ]
-                },
-                output: {
-                  comments: false
-                }
-              }
+            new ESBuildMinifyPlugin({
+              target: "es2015",
+              css: true
             })
           ],
           moduleIds: "deterministic"
@@ -63,7 +54,7 @@ module.exports = function (env) {
 
     module: {
       rules: [
-        { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader" },
+        { test: /\.js$/, exclude: /node_modules/, loader: "esbuild-loader" },
         {
           test: /(\.css)$/,
           exclude: /node_modules/,
