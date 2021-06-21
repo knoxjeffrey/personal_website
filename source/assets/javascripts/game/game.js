@@ -1,3 +1,4 @@
+import * as Turbo from "@hotwired/turbo"
 import { Application } from "stimulus"
 
 import EPController from "./controllers/e_p_controller"
@@ -8,9 +9,9 @@ import MYMController from "./controllers/m_y_m_controller"
 import RDController from "./controllers/r_d_controller"
 
 const application = Application.start()
-application.register("e_p", EPController)
-application.register("h_i_p_s", HIPSController)
-application.register("l_t_b_l", LTBLController)
-application.register("m_o_t", MOTController)
-application.register("m_y_m", MYMController)
-application.register("r_d", RDController)
+application.register("e-p", EPController)
+application.register("h-i-p-s", HIPSController)
+application.register("l-t-b-l", LTBLController)
+application.register("m-o-t", MOTController)
+application.register("m-y-m", MYMController)
+application.register("r-d", RDController)
