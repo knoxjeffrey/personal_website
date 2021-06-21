@@ -39,6 +39,14 @@ pre code {
   font-family: var(--mono-font-stack);
 }
 
+.prism {
+  display: block;
+  overflow-x: auto;
+  padding: 0.5em;
+  background: var(--block-background-color);
+  color: var(--font-color);
+}
+
 .hljs {
   display: block;
   overflow-x: auto;

@@ -2372,6 +2372,15 @@ clean-webpack-plugin@^3.0.0:
     "@types/webpack" "^4.4.31"
     del "^4.1.1"
 
+clipboard@^2.0.0:
+  version "2.0.8"
+  resolved "https://registry.yarnpkg.com/clipboard/-/clipboard-2.0.8.tgz#ffc6c103dd2967a83005f3f61976aa4655a4cdba"
+  integrity sha512-Y6WO0unAIQp5bLmk1zdThRhgJt/x3ks6f30s3oE3H1mgIEU33XyQjEf8gsf6DxC7NPX8Y1SsNWjUjL/ywLnnbQ==
+  dependencies:
+    good-listener "^1.2.2"
+    select "^1.1.2"
+    tiny-emitter "^2.0.0"
+
 cliui@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/cliui/-/cliui-5.0.0.tgz#deefcfdb2e800784aa34f46fa08e06851c7bbbc5"
@@ -2811,6 +2820,11 @@ delayed-stream@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/delayed-stream/-/delayed-stream-1.0.0.tgz#df3ae199acadfb7d440aaae0b29e2272b24ec619"
   integrity sha1-3zrhmayt+31ECqrgsp4icrJOxhk=
+
+delegate@^3.1.2:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/delegate/-/delegate-3.2.0.tgz#b66b71c3158522e8ab5744f720d8ca0c2af59166"
+  integrity sha512-IofjkYBZaZivn0V8nnsMJGBr4jVLxHDheKSW88PyxS5QC4Vo9ZbZVvhzlSxY87fVq3STR6r+4cGepyHkcWOQSw==
 
 delegates@^1.0.0:
   version "1.0.0"
@@ -3582,6 +3596,13 @@ globule@^1.0.0:
     lodash "~4.17.10"
     minimatch "~3.0.2"
 
+good-listener@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/good-listener/-/good-listener-1.2.2.tgz#d53b30cdf9313dffb7dc9a0d477096aa6d145c50"
+  integrity sha1-1TswzfkxPf+33JoNR3CWqm0UXFA=
+  dependencies:
+    delegate "^3.1.2"
+
 graceful-fs@^4.1.11, graceful-fs@^4.1.2, graceful-fs@^4.2.3, graceful-fs@^4.2.4:
   version "4.2.6"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.6.tgz#ff040b2b0853b23c3d31027523706f1885d76bee"
@@ -3669,11 +3690,6 @@ has@^1.0.3:
   integrity sha512-f2dvO0VU6Oej7RkWJGrehjbzMAjFp5/VKPp5tTpWIV4JHHZK1/BxbFRtf/siA2SWTe09caDmVtYYzWEIbBS4zw==
   dependencies:
     function-bind "^1.1.1"
-
-highlight.js@^10.6.0:
-  version "10.6.0"
-  resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-10.6.0.tgz#0073aa71d566906965ba6e1b7be7b2682f5e18b6"
-  integrity sha512-8mlRcn5vk/r4+QcqerapwBYTe+iPL5ih6xrNylxrnBdHQiijDETfXX7VIxC3UiCRiINBJfANBAsPzAvRQj8RpQ==
 
 homedir-polyfill@^1.0.1:
   version "1.0.3"
@@ -6089,6 +6105,13 @@ pretty-format@^27.0.1:
     ansi-styles "^5.0.0"
     react-is "^17.0.1"
 
+prismjs@^1.23.0:
+  version "1.23.0"
+  resolved "https://registry.yarnpkg.com/prismjs/-/prismjs-1.23.0.tgz#d3b3967f7d72440690497652a9d40ff046067f33"
+  integrity sha512-c29LVsqOaLbBHuIbsTxaKENh1N2EQBOHaWv7gkHN4dgRbxSREqDnDbtFJYdpPauS4YCplMSNCABQ6Eeor69bAA==
+  optionalDependencies:
+    clipboard "^2.0.0"
+
 process-nextick-args@~2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/process-nextick-args/-/process-nextick-args-2.0.1.tgz#7820d9b16120cc55ca9ae7792680ae7dba6d7fe2"
@@ -6533,6 +6556,11 @@ select-hose@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/select-hose/-/select-hose-2.0.0.tgz#625d8658f865af43ec962bfc376a37359a4994ca"
   integrity sha1-Yl2GWPhlr0Psliv8N2o3NZpJlMo=
+
+select@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/select/-/select-1.1.2.tgz#0e7350acdec80b1108528786ec1d4418d11b396d"
+  integrity sha1-DnNQrN7ICxEIUoeG7B1EGNEbOW0=
 
 selfsigned@^1.10.8:
   version "1.10.8"
@@ -7155,6 +7183,11 @@ thunky@^1.0.2:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/thunky/-/thunky-1.1.0.tgz#5abaf714a9405db0504732bbccd2cedd9ef9537d"
   integrity sha512-eHY7nBftgThBqOyHGVN+l8gF0BucP09fMo0oO/Lb0w1OF80dJv+lDVpXG60WMQvkcxAkNybKsrEIE3ZtKGmPrA==
+
+tiny-emitter@^2.0.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/tiny-emitter/-/tiny-emitter-2.1.0.tgz#1d1a56edfc51c43e863cbb5382a72330e3555423"
+  integrity sha512-NB6Dk1A9xgQPMoGqC5CVXn123gWyte215ONT5Pp5a0yt4nlEoO1ZWeCwpncaekPHXO60i47ihFnZPiRPjRMq4Q==
 
 tmpl@1.0.x:
   version "1.0.4"

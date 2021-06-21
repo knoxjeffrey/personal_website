@@ -26,10 +26,12 @@ Next I created a simple `README.md` file which will automatically get pulled int
 
 Then I had to configure a script to run the JSDoc build in `package.json:`
 
-    "scripts": {
-      "build_jsdoc": "rm -rf build && jsdoc -c jsdoc.json -d build",
-      "dev_jsdoc": "rm -rf dist && jsdoc -c jsdoc.json -d dist"
-    }
+<% highlight code: "json" do %>
+"scripts": {
+  "build_jsdoc": "rm -rf build && jsdoc -c jsdoc.json -d build",
+  "dev_jsdoc": "rm -rf dist && jsdoc -c jsdoc.json -d dist"
+}
+<% end %>
 
 I also ensured that `dist` was added to my `.gitignore` file. The `build_jsdoc` script is used to generate the production version of the documentation but sometimes I want to test things out without messing up the production version so I also added the `dev_jsdoc` command for this purpose. In summary, this first removes all files in the build folder, gets the configuration for JSDoc from `jsdoc.json` and outputs the build in either the `build` or `dist` folders.
 
@@ -110,37 +112,39 @@ You have to make sure the base directory is set from within the Netlify UI when 
 
 There's quite a lot to take in when reading through the various tags in the [JSDoc site](https://jsdoc.app/) so make sure you spend some time reading through it all. Below is an example of the documentation for one of my Stimulus controllers to initialise [Commento](https://commento.io/):
 
-    import { Controller } from "stimulus"
+<% highlight code: "javascript" do %>
+import { Controller } from "stimulus"
 
-    /**
-    * @class CommentsController
-    * @classdesc Stimulus controller to initialise Commento to allow users to view and make comments.
-    * @extends Controller
-    */
-    export default class extends Controller {
-      /**
-      * @property {Function} load - targets the button to load comments
-      * @property {Function} commento - targets the div to initialise Commento
-      * @memberof CommentsController
-      * @static
-      */
-      static targets = [ "load", "commento" ]
+/**
+* @class CommentsController
+* @classdesc Stimulus controller to initialise Commento to allow users to view and make comments.
+* @extends Controller
+*/
+export default class extends Controller {
+  /**
+  * @property {Function} load - targets the button to load comments
+  * @property {Function} commento - targets the div to initialise Commento
+  * @memberof CommentsController
+  * @static
+  */
+  static targets = [ "load", "commento" ]
 
-      /** 
-      * Triggered by a click event.
-      * Hides the button for loading comments.
-      * Adds top margin to the Commneto block and initialises Commento
-      * 
-      * @instance
-      * @memberof CommentsController
-      * @returns {void} N/A
-      * */
-      load() {
-        this.loadTarget.style.display = "none"
-        this.commentoTarget.classList.add("margin-top--xxl")
-        window.commento.main()
-      }
-    }
+  /** 
+  * Triggered by a click event.
+  * Hides the button for loading comments.
+  * Adds top margin to the Commneto block and initialises Commento
+  * 
+  * @instance
+  * @memberof CommentsController
+  * @returns {void} N/A
+  * */
+  load() {
+    this.loadTarget.style.display = "none"
+    this.commentoTarget.classList.add("margin-top--xxl")
+    window.commento.main()
+  }
+}
+<% end %>
 
 You can read through more examples in my [repo](https://github.com/knoxjeffrey/personal_website/tree/main/source/assets/javascripts).
 
