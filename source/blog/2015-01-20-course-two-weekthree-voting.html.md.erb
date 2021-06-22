@@ -19,44 +19,58 @@ Columns name in a polymorphic model are ...able. eg voteable_type and voteable_i
 
 So to generate this do:
 
-    rails generate migration create_votes
+<% highlight code: "bash" do %>
+rails generate migration create_votes
+<% end %>
     
 and then in the migration file:
 
-    create_table :votes do |t|
-      t.boolean :vote
-      t.integer :user_id
-      t.string :voteable_type
-      t.integer :voteable_id
-      t.timestamps
-    end
+<% highlight code: "ruby" do %>
+create_table :votes do |t|
+  t.boolean :vote
+  t.integer :user_id
+  t.string :voteable_type
+  t.integer :voteable_id
+  t.timestamps
+end
+<% end %>
 
 Note that ```t.string :voteable_type``` and ```t.integer :voteable_id``` could be replaced by this one liner:
 
-    t.references :voteable, polymorphic: true
+<% highlight code: "ruby" do %>
+t.references :voteable, polymorphic: true
+<% end %>
     
 due to the conventions of rails but I decided to be more explicit at this time.  The boolean value is used to indicate an up vote or down vote.
 
 Back to the command line for the usual command ```rake db:migrate``` and then I need to create a model called vote.rb:
 
-    class Vote < ActiveRecord::Base
-      belongs_to :creator, class_name: 'User', foreign_key: 'user_id'
-      belongs_to :voteable, polymorphic: true
-    end
+<% highlight code: "ruby" do %>
+class Vote < ActiveRecord::Base
+  belongs_to :creator, class_name: 'User', foreign_key: 'user_id'
+  belongs_to :voteable, polymorphic: true
+end
+<% end %>
     
 Rails is clever in that if you set voteable (remember this is a virtual attribute that has getters and setters) as a post object it will know to hit the database with voteable_type as Post and voteable_id as the post primary key.
 
 On the Post model (the one side, Vote is many) I need to add:
 
-    has_many :votes, as: :voteable
+<% highlight code: "ruby" do %>
+has_many :votes, as: :voteable
+<% end %>
 
 Same for Comment:
 
-    has_many :votes, as: :voteable
+<% highlight code: "ruby" do %>
+has_many :votes, as: :voteable
+<% end %>
 
 And finally User:
 
-    has_many :votes
+<% highlight code: "ruby" do %>
+has_many :votes
+<% end %>
 
 Note that I don't need to make any more changes to the database.  That's all there is to setting up the model layer so next it's on to implementing the votes in the application.
 
@@ -64,33 +78,43 @@ Note that I don't need to make any more changes to the database.  That's all the
 
 As an example of a simple implementation of adding votes to my posts I can do the following in my _post.html.erb partial:
 
-    <div class="span0 well text-center'>
-      <%%= link_to '' do %>
-        <i class="icon-arrow-up"></i>
-      <%% end %>
+<% highlight code: "html" do %>
+<div class="span0 well text-center'>
+  <%%= link_to '' do %>
+    <i class="icon-arrow-up"></i>
+  <%% end %>
 
-      <%%= link_to '' do %>
-        <i class="icon-arrow-down"></i>
-      <%% end %>
-    </div>
+  <%%= link_to '' do %>
+    <i class="icon-arrow-down"></i>
+  <%% end %>
+</div>
+<% end %>
     
 Looking at this it's now obvious that I have to implement POST routes in order for the up and down votes to hit the database.  I can either do this like so:
 
-    resources :votes, only: [:create]
+<% highlight code: "ruby" do %>
+resources :votes, only: [:create]
+<% end %>
 
 or nest under the posts and comments resources (which is what I have done in my application)
 
-    post :vote, on: :member
+<% highlight code: "ruby" do %>
+post :vote, on: :member
+<% end %>
     
 I can also do exactly the same thing, except as a block:
 
-    member do
-      post :vote
-    end
+<% highlight code: "ruby" do %>
+member do
+  post :vote
+end
+<% end %>
     
 This will expose a POST route, /posts/3/vote, for example and I can add this to my link with a named route like so:
 
-    <%%= link_to vote_post_path(post), method: 'post' do %>
+<% highlight code: "ruby" do %>
+<%%= link_to vote_post_path(post), method: 'post' do %>
+<% end %>
 
 The ```method``` syntax calls some built in javascript in rails that generates a form on the fly and actually submits the form with any parameters that I add.  Pretty handy!
 
@@ -98,53 +122,67 @@ In this case I need a true/false parameter to show if its an up or down vote.  T
 
 For the up arrow I can make it:
 
-    <%%= link_to vote_post_path(post, vote: true), method: 'post' do %>
+<% highlight code: "ruby" do %>
+<%%= link_to vote_post_path(post, vote: true), method: 'post' do %>
+<% end %>
 
 and for the down arrow:
 
-    <%%= link_to vote_post_path(post, vote: false), method: 'post' do %>
+<% highlight code: "ruby" do %>
+<%%= link_to vote_post_path(post, vote: false), method: 'post' do %>
+<% end %>
     
 I now will need an action in PostsController to handle the route:
 
-    def vote
-      posts = Post.find(params[:id])
-      vote = Vote.create(voteable: post, creator: current_user, vote: params[:vote])
+<% highlight code: "ruby" do %>
+def vote
+  posts = Post.find(params[:id])
+  vote = Vote.create(voteable: post, creator: current_user, vote: params[:vote])
 
-      if vote.valid?
-        flash[:notice] = "You're vote was counted"
-      else
-        flash[:notice] = "You can only vote once"
-      end
+  if vote.valid?
+    flash[:notice] = "You're vote was counted"
+  else
+    flash[:notice] = "You can only vote once"
+  end
 
-      redirect_to :back
-    end
+  redirect_to :back
+end
+<% end %>
     
 I also want to display the total number of votes between the up/down arrows.  This requires some logic because I actually want up_votes - down_votes.  The is data logic and should belong in the Post model:
 
-    def total_votes
-      up_votes - down_votes
-    end
+<% highlight code: "ruby" do %>
+def total_votes
+  up_votes - down_votes
+end
 
-    def up_votes
-      self.votes.where(vote: true).size
-    end
+def up_votes
+  self.votes.where(vote: true).size
+end
 
-    def down_votes
-      self.votes.where(vote: false).size
-    end
+def down_votes
+  self.votes.where(vote: false).size
+end
+<% end %>
     
 Then in the html between the arrows simply add:
 
-    <%%= post.total_votes %>
+<% highlight code: "ruby" do %>
+<%%= post.total_votes %>
+<% end %>
 
 If I want to display the post in the order of number of votes I can do this in PostsController by adding to the index method:
 
-    def index
-      @posts = Post.all.sort_by(|x| x.total_votes).reverse
-    end
+<% highlight code: "ruby" do %>
+def index
+  @posts = Post.all.sort_by(|x| x.total_votes).reverse
+end
+<% end %>
 
 Lastly, I only want my users to vote once which will require a validation in the Vote model:
 
-    validates_uniqueness_of :creator, scope: [:voteable_type, :voteable_id]
+<% highlight code: "ruby" do %>
+validates_uniqueness_of :creator, scope: [:voteable_type, :voteable_id]
+<% end %>
     
 That's pretty much it and it's a case of repeating for voting on comments.  Hope you enjoyed reading about polymorphic association and how to implement it in a Rails application.
