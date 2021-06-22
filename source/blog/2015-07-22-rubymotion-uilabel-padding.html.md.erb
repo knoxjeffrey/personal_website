@@ -15,18 +15,22 @@ On my first attempt I though it would be nice and simple to add some trailing wh
 
 After a bit of reading I tried subclassing UILabel and overriding ```drawTextInRect```:
 
-    def drawTextInRect(rect)
-      insets = UIEdgeInsets.new(0, 0, 0, 10)
-      super.drawTextInRect(UIEdgeInsetsInsetRect(rect, insets))
-    end
+<% highlight code: "ruby" do %>
+def drawTextInRect(rect)
+  insets = UIEdgeInsets.new(0, 0, 0, 10)
+  super.drawTextInRect(UIEdgeInsetsInsetRect(rect, insets))
+end
+<% end %>
 
 I'm not sure if I've done this wrong or if it is to do with RubyMotion but it kept crashing the app so that was another dead end.
 
 Another way could have been to add another view and arrange things that way but it seemed pretty ridiculous for something so simple and eventually I found this way of doing it using ```NSAttributedString```:
 
-    edit_style = NSMutableParagraphStyle.new
-    edit_style.tailIndent = -10
-    text_attributes = { NSParagraphStyleAttributeName => edit_style }
-    my_label.attributedText = NSAttributedString.alloc.initWithString("my text", attributes: text_attributes)
+<% highlight code: "ruby" do %>
+edit_style = NSMutableParagraphStyle.new
+edit_style.tailIndent = -10
+text_attributes = { NSParagraphStyleAttributeName => edit_style }
+my_label.attributedText = NSAttributedString.alloc.initWithString("my text", attributes: text_attributes)
+<% end %>
 
 Not at all obvious but a fairly elegant solution in the end, well certainly more so than adding an extra view to create a little bit of padding!
