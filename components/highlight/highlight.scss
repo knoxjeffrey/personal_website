@@ -39,7 +39,7 @@ pre code {
   font-family: var(--mono-font-stack);
 }
 
-.prism {
+.highlight {
   display: block;
   overflow-x: auto;
   padding: 0.5em;
@@ -47,72 +47,35 @@ pre code {
   color: var(--font-color);
 }
 
-.hljs {
-  display: block;
-  overflow-x: auto;
-  padding: 0.5em;
-  background: var(--block-background-color);
+.highlight .boolean,
+.highlight .builtin,
+.highlight .constant,
+.highlight .selector,
+.highlight .tag .attr-name {
+  color: var(--highlight-color);
+}
+
+.highlight .comment,
+.highlight .property,
+.highlight .property + .punctuation {
+  color: var(--secondary-color);
+}
+
+.highlight .function,
+.highlight .tag .tag,
+.highlight .tag ~ .punctuation:last-of-type {
+  color: var(--error-color);
+}
+
+.highlight .keyword {
+  color: var(--primary-color);
+}
+
+.highlight .attr-value,
+.highlight .string {
+  color: var(--success-color);
+}
+
+.highlight .attr-value .attr-equals{
   color: var(--font-color);
-}
-
-.hljs-comment,
-.hljs-quote {
-  color: var(--secondary-color);
-}
-
-.hljs-variable {
-  color: var(--font-color);
-}
-
-.hljs-keyword,
-.hljs-selector-tag,
-.hljs-built_in,
-.hljs-name,
-.hljs-tag {
-  color: var(--primary-color);
-}
-
-.hljs-string,
-.hljs-title,
-.hljs-section,
-.hljs-attribute,
-.hljs-literal,
-.hljs-template-tag,
-.hljs-template-variable,
-.hljs-type,
-.hljs-addition {
-  color: var(--secondary-color);
-}
-
-.hljs-string {
-  color: var(--secondary-color);
-}
-
-.hljs-deletion,
-.hljs-selector-attr,
-.hljs-selector-pseudo,
-.hljs-meta {
-  color: var(--primary-color);
-}
-
-.hljs-doctag {
-  color: var(--secondary-color);
-}
-
-.hljs-attr {
-  color: var(--primary-color);
-}
-
-.hljs-symbol,
-.hljs-bullet,
-.hljs-link {
-  color: var(--primary-color);
-}
-
-.hljs-emphasis {
-  font-style: italic;
-}
-
-.hljs-strong {
-  font-weight: bold;
 }
