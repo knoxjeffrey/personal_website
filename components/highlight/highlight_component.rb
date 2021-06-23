@@ -5,7 +5,7 @@ module Components
         def highlight(opts, &block)
           concat(
             content_tag(:pre) do
-              content_tag(:code, class: "hljs #{opts[:code]}") do
+              content_tag(:code, class: "highlight language-#{opts[:code]}") do
                 CGI.escapeHTML(capture_html(&block))
               end
             end

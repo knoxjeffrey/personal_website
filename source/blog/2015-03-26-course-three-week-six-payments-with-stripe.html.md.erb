@@ -19,9 +19,11 @@ Next up include ```gem 'stripe'``` in the Gemfile and ```bundle install```.
 
 The next thing to do is to find your API keys under Account Settings and then generate ENV variables in your application.  I'm using Figaro for this so for instance I would store my data like so in ```application.yml```:
 
-    production:
-      STRIPE_SECRET_KEY: 'your secret key'
-      STRIPE_PUBLISHABLE_KEY: 'your publishable key'
+<% highlight code: "ruby" do %>
+production:
+  STRIPE_SECRET_KEY: 'your secret key'
+  STRIPE_PUBLISHABLE_KEY: 'your publishable key'
+<% end %>
       
 Just replace my mock info with whatever your keys are.
 
@@ -29,69 +31,77 @@ For my example I am actually going to build a [custom form](https://stripe.com/d
 
 For the MyFLiX application I am getting users to pay a subscription fee when they sign up and for this I need a ```form_for```. The important parts of the ```form_for``` are as follows:
 
-    = form_for @user, html: {id: 'payment-form'} do |f|
+<% highlight code: "ruby" do %>
+= form_for @user, html: {id: 'payment-form'} do |f|
+<% end %>
     
 Notice the id of ```payment-form``` which is really important because it allows me to add a jQuery event handler when hitting submit on my forms.  To include the handler I need to add the following to the top of my view:
 
-    = content_for :head do
-      %script(type="text/javascript" src="https://js.stripe.com/v2/")
-      :javascript
-        Stripe.setPublishableKey("#{ENV['STRIPE_PUBLISHABLE_KEY']}");
-      = javascript_include_tag "payment"
+<% highlight code: "ruby" do %>
+= content_for :head do
+  %script(type="text/javascript" src="https://js.stripe.com/v2/")
+  :javascript
+    Stripe.setPublishableKey("#{ENV['STRIPE_PUBLISHABLE_KEY']}");
+  = javascript_include_tag "payment"
+<% end %>
       
 The ```content_for``` will attach the scripts into the head of my page because of the way my ```application.html.haml``` file is setup:
 
-    !!! 5
-    %html(lang="en-US")
-      %head
-        %title MyFLiX - a video on demand service
-        %meta(charset="UTF-8")
-        %meta(name="viewport" content="width=device-width, initial-scale=1.0")
-        = csrf_meta_tag
-        = stylesheet_link_tag "application"
-        = javascript_include_tag "application"
-        = yield :head
-      %body
-        %header
-          = render 'shared/header'
-        %section.content.clearfix
-          = render 'shared/messages'
-          = yield
-        %footer
-          &copy 2013 MyFLiX
+<% highlight code: "ruby" do %>
+!!! 5
+%html(lang="en-US")
+  %head
+    %title MyFLiX - a video on demand service
+    %meta(charset="UTF-8")
+    %meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    = csrf_meta_tag
+    = stylesheet_link_tag "application"
+    = javascript_include_tag "application"
+    = yield :head
+  %body
+    %header
+      = render 'shared/header'
+    %section.content.clearfix
+      = render 'shared/messages'
+      = yield
+    %footer
+      &copy 2013 MyFLiX
+<% end %>
     
 Notice where I have ```= yield :head```, this is where the javascript will be inserted.  The rest of the info in my sign up form is explained in the documentation although notice I have used my ENV variable and I have also included ```= javascript_include_tag "payment"```.  I have this file in ```app/assets/javascripts/payment.js``` which looks as follows:
 
-    jQuery(function($) {
-      $('#payment-form').submit(function(event) {
-        var $form = $(this);
+<% highlight code: "javascript" do %>
+jQuery(function($) {
+  $('#payment-form').submit(function(event) {
+    var $form = $(this);
 
-        // Disable the submit button to prevent repeated clicks
-        $form.find('button').prop('disabled', true);
+    // Disable the submit button to prevent repeated clicks
+    $form.find('button').prop('disabled', true);
 
-        Stripe.card.createToken($form, stripeResponseHandler);
+    Stripe.card.createToken($form, stripeResponseHandler);
 
-        // Prevent the form from submitting with the default action
-        return false;
-      });
+    // Prevent the form from submitting with the default action
+    return false;
+  });
 
-      function stripeResponseHandler(status, response) {
-        var $form = $('#payment-form');
+  function stripeResponseHandler(status, response) {
+    var $form = $('#payment-form');
 
-        if (response.error) {
-          // Show the errors on the form
-          $form.find('.payment-errors').html('<div class="alert alert-danger">' + response.error.message);
-          $form.find('button').prop('disabled', false);
-        } else {
-          // response contains id and card, which contains additional card details
-          var token = response.id;
-          // Insert the token into the form so it gets submitted to the server
-          $form.append($('<input type="hidden" name="stripeToken" />').val(token));
-          // and submit
-          $form.get(0).submit();
-        }
-      };
-    });
+    if (response.error) {
+      // Show the errors on the form
+      $form.find('.payment-errors').html('<div class="alert alert-danger">' + response.error.message);
+      $form.find('button').prop('disabled', false);
+    } else {
+      // response contains id and card, which contains additional card details
+      var token = response.id;
+      // Insert the token into the form so it gets submitted to the server
+      $form.append($('<input type="hidden" name="stripeToken" />').val(token));
+      // and submit
+      $form.get(0).submit();
+    }
+  };
+});
+<% end %>
 
 Notice that it includes that id of ```payment-form``` to attach the event handler when the form is submitted.  Again, you can get all of this from the Stripe documentation but I'll quickly explain how this works.
 
@@ -99,53 +109,57 @@ When the submit button is hit, this function is called ```Stripe.card.createToke
 
 Going back to the ```form_for``` I also need to include the fields for entering the card data:
 
-    %fieldset.credit_card
-      %span.payment-errors
-      .form-group
-        %label.control-label.col-sm-2 Credit Card Number
-        .col-sm-6
-          %input.form-control#stripe_number(type="text" size="20" data-stripe="number")
-      .form-group
-        %label.control-label.col-sm-2 Security Code
-        .col-sm-6
-          %input.form-control#stripe_cvc(type="text" size="4" data-stripe="cvc")
-      .form-group
-        %label.control-label.col-sm-2 Expiration
-        .col-sm-3
-          = select_month(Date.today, {add_month_numbers: true},  class: 'form-control', data: { stripe: "exp-month" })
-        .col-sm-2
-          = select_year(Date.today.year, {start_year: Date.today.year, end_year: Date.today.year + 4}, class: 'form-control', data: { stripe: "exp-year" })
+<% highlight code: "ruby" do %>
+%fieldset.credit_card
+  %span.payment-errors
+  .form-group
+    %label.control-label.col-sm-2 Credit Card Number
+    .col-sm-6
+      %input.form-control#stripe_number(type="text" size="20" data-stripe="number")
+  .form-group
+    %label.control-label.col-sm-2 Security Code
+    .col-sm-6
+      %input.form-control#stripe_cvc(type="text" size="4" data-stripe="cvc")
+  .form-group
+    %label.control-label.col-sm-2 Expiration
+    .col-sm-3
+      = select_month(Date.today, {add_month_numbers: true},  class: 'form-control', data: { stripe: "exp-month" })
+    .col-sm-2
+      = select_year(Date.today.year, {start_year: Date.today.year, end_year: Date.today.year + 4}, class: 'form-control', data: { stripe: "exp-year" })
+<% end %>
           
 I have other info in my form to collect the user data but for the sake of keeping it simple I haven't included it above.  That's pretty much it for the form to collect the card details.  It looks like quite a lot but most of the above is taken from the Stripe documentation so it's actually quite straightforward.  One other thing to note is that the from will be submitted to my servers without any card details, just the user info and token.  This is because there are no name attributes on the form for the card details.  This is one of the main things that makes Stripe so good, I don't have to worry about any of the regulations that go with handling sensitive financial data on my servers.
 
 With that done I need to edit my create action for my UsersController so the payment can be processed if the token is returned from Stripe.  This looks as follows:
 
-    def create
-      ActiveRecord::Base.transaction do
-        @user = User.new(user_params)
-        if @user.save
-          if process_payment.is_successful
-            redirect_to sign_in_path and return
-          else
-            flash[:danger] = process_payment.error_message
-            raise ActiveRecord::Rollback #jumps to end of transaction
-          end
-        else
-          render :new and return
-        end
+<% highlight code: "ruby" do %>
+def create
+  ActiveRecord::Base.transaction do
+    @user = User.new(user_params)
+    if @user.save
+      if process_payment.is_successful
+        redirect_to sign_in_path and return
+      else
+        flash[:danger] = process_payment.error_message
+        raise ActiveRecord::Rollback #jumps to end of transaction
       end
-      redirect_to register_path if !process_payment.is_successful
-    end 
-    
-    private
-  
-    def payment_processor
-      StripePaymentProcessor.new('999', @user.email_address, params[:stripeToken])
+    else
+      render :new and return
     end
-  
-    def process_payment
-      payment_processor.charge_card
-    end
+  end
+  redirect_to register_path if !process_payment.is_successful
+end 
+
+private
+
+def payment_processor
+  StripePaymentProcessor.new('999', @user.email_address, params[:stripeToken])
+end
+
+def process_payment
+  payment_processor.charge_card
+end
+<% end %>
   
 In the Tealeaf course a user would still be created even if the payment process failed which isn't ideal although they will deal with this later in the course. However, I've had a go at this myself by using a transaction to allow me to rollback the database if the payment process fails which means that the user record will not be stored in the database.
 
@@ -153,34 +167,36 @@ If the payment fails then you can see that I call ```raise ActiveRecord::Rollbac
 
 I'll also talk through my ```process_payment``` method as well.  I originally had the code for processing the Stripe payment in the controller but I felt that it really didn't belong there and therefore I extracted it as a service object in ```app/services/process_stripe_payment.rb``` and the code is as follows:
 
-    class StripePaymentProcessor
+<% highlight code: "ruby" do %>
+class StripePaymentProcessor
 
-      attr_reader :amount, :email, :token
-      attr_accessor :error_message, :is_successful
+  attr_reader :amount, :email, :token
+  attr_accessor :error_message, :is_successful
 
-      def initialize(amount, email, token)
-        @amount = amount
-        @email = email
-        @token = token
-      end
+  def initialize(amount, email, token)
+    @amount = amount
+    @email = email
+    @token = token
+  end
 
-      def charge_card
-        begin
-          Stripe.api_key = ENV['STRIPE_SECRET_KEY']
-          Stripe::Charge.create(
-          amount: amount,
-          currency: "gbp",
-          source: token,
-          description: "Charge for #{email}"
-          )
-          self.is_successful = true
-        rescue Stripe::CardError => e
-          self.error_message = e.message
-        end 
-        self
-      end
+  def charge_card
+    begin
+      Stripe.api_key = ENV['STRIPE_SECRET_KEY']
+      Stripe::Charge.create(
+      amount: amount,
+      currency: "gbp",
+      source: token,
+      description: "Charge for #{email}"
+      )
+      self.is_successful = true
+    rescue Stripe::CardError => e
+      self.error_message = e.message
+    end 
+    self
+  end
 
-    end
+end
+<% end %>
 
 Note that in the charge_card method I am returning self which returns the stripe service object and there therefore allows me to call ```process_payment.is_successful``` and ```process_payment.error_message``` in the controller.
 
@@ -190,71 +206,79 @@ Creating my service object has helped to clean up my controller a lot, made it e
 
 Once I got my payment code up and running I ran my test suite and noticed that I was getting failures on the user signup process because a successful payment had to be made in order for my user to be registered.  I'll include one of my UsersController specs to give an example:
 
-    describe "POST create" do
-      context "valid input details" do
+<% highlight code: "ruby" do %>
+describe "POST create" do
+  context "valid input details" do
 
-        before { post :create, user: Fabricate.attributes_for(:user) }
+    before { post :create, user: Fabricate.attributes_for(:user) }
 
-        it "creates user record" do
-          expect(User.count).to eq(1)
-        end
-      end
+    it "creates user record" do
+      expect(User.count).to eq(1)
     end
+  end
+end
+<% end %>
 
 You can see that there is no token in the response for this test which is making it fail.  Now for my tests I don't want to be actually hitting the Stripe servers so after looking around I found the the [stripe-ruby-mock](https://github.com/rebelidealist/stripe-ruby-mock) gem which allowed me to get around this.  With this included I now set my test up as follows:
 
-    describe "POST create" do
-      context "valid input details" do
+<% highlight code: "ruby" do %>
+describe "POST create" do
+  context "valid input details" do
 
-        let(:stripe_helper) { StripeMock.create_test_helper }
-        before do
-          StripeMock.start
-          post :create, user: generate_attributes_for(:user), stripeToken: stripe_helper.generate_card_token 
-        end
-        after { StripeMock.stop }
+    let(:stripe_helper) { StripeMock.create_test_helper }
+    before do
+      StripeMock.start
+      post :create, user: generate_attributes_for(:user), stripeToken: stripe_helper.generate_card_token 
+    end
+    after { StripeMock.stop }
 
-        it "creates user record" do
-          expect(User.count).to eq(1)
-        end
-      end
-    end  
+    it "creates user record" do
+      expect(User.count).to eq(1)
+    end
+  end
+end
+<% end %>
     
 I also had the same issue with my feature test that was checking that a user could sign up after being invited by a friend:
 
-    require 'spec_helper'
+<% highlight code: "ruby" do %>
+require 'spec_helper'
 
-    feature "user invites friend" do
-      scenario "user successfully invites friend and is accepted" do
-        inviter = object_generator(:user)
+feature "user invites friend" do
+  scenario "user successfully invites friend and is accepted" do
+    inviter = object_generator(:user)
 
-        sign_in_user(inviter)
-        invite_friend
+    sign_in_user(inviter)
+    invite_friend
 
-        open_email(friend_email)
-        click_accept_invitation
+    open_email(friend_email)
+    click_accept_invitation
 
-        friend_signs_up
-        expect_to_be_on_sign_in_path
-        friend_signs_in
+    friend_signs_up
+    expect_to_be_on_sign_in_path
+    friend_signs_in
 
-        expect_friend_to_follow(inviter)
-        expect_inviter_to_follow_friend(inviter)
+    expect_friend_to_follow(inviter)
+    expect_inviter_to_follow_friend(inviter)
 
-        clear_emails
-      end
-    end
+    clear_emails
+  end
+end
+<% end %>
 
 Now you'll see that I have abstracted a lot of my code away but the important method is ```friend_signs_up``` and the code for this is:
 
-    def friend_signs_up
-      StripeMock.start
-      fill_in_password
-      fill_in 'Full Name', with: friend_name
-      fill_in 'stripe_number', with: '4242424242424242'
-      fill_in 'stripe_cvc', with: '123'
-      click_button "Sign Up"
-      StripeMock.stop
-    end
+<% highlight code: "ruby" do %>
+def friend_signs_up
+  StripeMock.start
+  fill_in_password
+  fill_in 'Full Name', with: friend_name
+  fill_in 'stripe_number', with: '4242424242424242'
+  fill_in 'stripe_cvc', with: '123'
+  click_button "Sign Up"
+  StripeMock.stop
+end
+<% end %>
     
 That's some examples of how to test with Stripe and now my test suite is passing.
 
