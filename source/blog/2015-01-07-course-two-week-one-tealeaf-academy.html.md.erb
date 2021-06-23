@@ -18,26 +18,30 @@ The first step is to decide on the database schema and sketching out an entity r
 
 Rails makes it super easy to create database tables.  For example, if I want a posts table in the database (all database table names are plural) then I can create a migration file with the terminal command ```rails generate migration create_posts```.  This automatically creates a migration file with the following code:
 
-    class CreatePosts < ActiveRecord::Migration
-      def change
-        create_table :posts do |t|
-        end
-      end
+<% highlight code: "ruby" do %>
+class CreatePosts < ActiveRecord::Migration
+  def change
+    create_table :posts do |t|
     end
+  end
+end
+<% end %>
     
 The create table method has already declared the posts table name for me because I used the ```create_posts``` command in the terminal (one of the many Rails conventions).  All I have to do now is fill out the column names for posts along with their data types.  This now looks as follows (note that timestamps below automatically creates column names of created_at and updated_at):
 
-    class CreatePosts < ActiveRecord::Migration
-      def change
-        create_table :posts do |t|
-          t.string :title
-          t.string :url
-          t.text :description
-          t.integer :user_id
-          t.timestamps
-        end
-      end
+<% highlight code: "ruby" do %>
+class CreatePosts < ActiveRecord::Migration
+  def change
+    create_table :posts do |t|
+      t.string :title
+      t.string :url
+      t.text :description
+      t.integer :user_id
+      t.timestamps
     end
+  end
+end
+<% end %>
     
 Excellent, all done and all I have to do now is run ```rake db:migrate``` from the command line to create my table in the database.
     
@@ -47,9 +51,11 @@ Rails makes use of Active Record to make it nice and easy to connect to the rela
 
 The first convention is the model file name.  In order for Active Record to map to the posts database table, the file must be the singular of the table name: ```post.rb```.  Within that file you must define a class called ```Post``` which represents the database table and would look like:
 
-    class Post < ActiveRecord::Base
+<% highlight code: "ruby" do %>
+class Post < ActiveRecord::Base
 
-    end
+end
+<% end %>
 
 By subclassing ```ActiveRecord::Base``` I have now mapped to the posts table in the database.  Every object created from this class now represents a row of the table eg, ```post = Post.find(2)``` creates a post object that represents the row in the posts table with id of 2.   The attributes of the object represents the column names and Active Record has automatically created getter and setter methods for each column so I can retrieve and change the information eg, ```post.title``` will get the data from the title column of the row in the posts table with id 2.
 
@@ -57,12 +63,14 @@ A nice way to test this out is in the terminal by typing ```rails console``` or 
 
 Within the class I can then define the relationships between tables and again naming conventions are important.  Below is an example for the Posts class:
 
-    class Post < ActiveRecord::Base
-      belongs_to :creator, foreign_key: 'user_id', class_name: 'User'
-      has_many :comments
-      has_many :post_categories
-      has_many :categories, through: :post_categories
-    end
+<% highlight code: "ruby" do %>
+class Post < ActiveRecord::Base
+  belongs_to :creator, foreign_key: 'user_id', class_name: 'User'
+  has_many :comments
+  has_many :post_categories
+  has_many :categories, through: :post_categories
+end
+<% end %>
 
 There is some important information to take note of from this.  The first line states a ```belongs_to``` relationship.  This means that the posts table has a many-to-one relationship to a table, in this case users, and uses a foreign key of user_id in posts to link to the primary key of id in users.  With normal Rails convention this line should read ```belongs_to :user``` but this is an example of configuration rather than convention in order to make the relationship more descriptive.  The line is essentially saying that creator is now the attribute to be used to represent the association rather than user_id.  Note that this does not alter the database column name and the foreign key is still user_id in the posts table. 
 
@@ -74,88 +82,96 @@ Okay, so that's the model layer taken care of and now I have to handle the url r
 
 If my application has a request to http://somuchtolearn.com/posts for example, I would need to have a statement such as ```resources :posts``` in my routes.rb file in order to handle the request.  Rails will assume I have a controller file called ```posts_controller.rb``` which has a class of PostController.  Therefore, ```resources :posts``` is a quick way to map all HTTP verbs and URLs to controller actions in my PostsController class.  The basic class with no controller actions looks like as follows:
 
-    class PostsController < ApplicationController
+<% highlight code: "ruby" do %>
+class PostsController < ApplicationController
 
-    end
+end
+<% end %>
     
 How do I know what the controller actions will be?  I can use ```rake routes``` in the terminal or type the url http://localhost:3000/rails/info/ to get a list of all the controller actions I'll need to manage and this is shown below:
 
-      HELPER        HTTP VERB       PATH                CONTROLLER#ACTION
+<% highlight code: "bash" do %>
+  HELPER        HTTP VERB       PATH                CONTROLLER#ACTION
 
-    posts_path        GET     /posts(.:format)            posts#index
-                      POST    /posts(.:format)            posts#create
-    new_post_path     GET     /posts/new(.:format)        posts#new
-    edit_post_path    GET     /posts/:id/edit(.:format)   posts#edit
-    post_path         GET     /posts/:id(.:format)        posts#show
-                      PATCH   /posts/:id(.:format)        posts#update
-                      PUT     /posts/:id(.:format)        posts#update
-                      DELETE  /posts/:id(.:format)        posts#destroy
+posts_path        GET     /posts(.:format)            posts#index
+                  POST    /posts(.:format)            posts#create
+new_post_path     GET     /posts/new(.:format)        posts#new
+edit_post_path    GET     /posts/:id/edit(.:format)   posts#edit
+post_path         GET     /posts/:id(.:format)        posts#show
+                  PATCH   /posts/:id(.:format)        posts#update
+                  PUT     /posts/:id(.:format)        posts#update
+                  DELETE  /posts/:id(.:format)        posts#destroy
+<% end %>
                       
 This is something I will be learning off by heart but I'm sure I'll be referring back to this quite a lot until I know it well!
 
 This could be fine tuned by using ```resources :posts, only: [:index, :show]``` to create only the specified routes or ```resources :posts, except: [:destroy]``` to create all routes except the one specified.  If I keep all of the controller actions, the basic class template I create should look as follows:
 
-    class PostsController < ApplicationController
-      def index
+<% highlight code: "ruby" do %>
+class PostsController < ApplicationController
+  def index
 
-      end
+  end
 
-      def show
+  def show
 
-      end
+  end
 
-      def new
+  def new
 
-      end
+  end
 
-      def create
+  def create
 
-      end
+  end
 
-      def edit
+  def edit
 
-      end
+  end
 
-      def update
+  def update
 
-      end
+  end
 
-      def destroy
+  def destroy
 
-      end
-    end
+  end
+end
+<% end %>
 
 I can then set about defining the rules for each request.  An example for handling the ```posts#index``` and ```posts#show``` controller actions would look as follows:
 
-    class PostsController < ApplicationController
-      def index
-        @posts = Post.all
-      end
+<% highlight code: "ruby" do %>
+class PostsController < ApplicationController
+  def index
+    @posts = Post.all
+  end
 
-      def show
-        @post = Post.find(params[:id])
-      end
+  def show
+    @post = Post.find(params[:id])
+  end
 
-      def new
+  def new
 
-      end
+  end
 
-      def create
+  def create
 
-      end
+  end
 
-      def edit
+  def edit
 
-      end
+  end
 
-      def update
+  def update
 
-      end
+  end
 
-      def destroy
+  def destroy
 
-      end
-    end
+  end
+end
+<% end %>
 
 You can see that I have created instance variables in the methods and this allows me to access them within my view templates which I will talk about next.
 
@@ -163,29 +179,31 @@ You can see that I have created instance variables in the methods and this allow
 
 If a user requests a url of say http://somuchtolearn.com/posts, this will be handled by the index method of the PostsController. In order to render this url, the controller requires a folder called posts under the views folder and within that folder there needs to be an index.html.erb file.  The template for this could be as follows:
 
-    <p class='lead'>
-        All Posts
-        <hr/>
-    </p>
+<% highlight code: "html" do %>
+<p class='lead'>
+    All Posts
+    <hr/>
+</p>
 
-    <%% @posts.each do |post| %>
-      <div class='row'>
-        <div class="span8 well">
-          <%% post.categories.each do |category| %>
-            <span class='badge'><%%= category.name %></span>
-          <%% end %>
-          <h4><%%= link_to post.title, post.url %></h4>
-          <p><%%= post.description %></p>
-          <p>
-            <span class='quiet'>posted by </span><%%= post.creator.username %>
-            <small>at <%%= post.created_at %></small>
-          </p>
-          <span>
-            <%%= link_to("#{post.comments.size} comments", post_path(post))%>
-          </span>
-        </div>
-      </div>
-    <%% end %>
+<%% @posts.each do |post| %>
+  <div class='row'>
+    <div class="span8 well">
+      <%% post.categories.each do |category| %>
+        <span class='badge'><%%= category.name %></span>
+      <%% end %>
+      <h4><%%= link_to post.title, post.url %></h4>
+      <p><%%= post.description %></p>
+      <p>
+        <span class='quiet'>posted by </span><%%= post.creator.username %>
+        <small>at <%%= post.created_at %></small>
+      </p>
+      <span>
+        <%%= link_to("#{post.comments.size} comments", post_path(post))%>
+      </span>
+    </div>
+  </div>
+<%% end %>
+<% end %>
 
 Note my use of @posts in this template which is the instance variable created in the index method of the PostsContoller class.  Given what I have defined so far in my controller class I would also need a show.html.erb view file but I don't need to go through that here.
 
@@ -193,10 +211,12 @@ Note my use of @posts in this template which is the instance variable created in
 
 Partials are an excellent way to extract code from my template that will be used repeatedly throughout my application - DRY springs to mind again!  For example, a lot of my views will use a header similar to the All Posts header above so I need to extract this code into a partial.  For this I can create a new folder called shared which indicates that the partial will be shared across all resources.  The file name for partials must begin with an underscore and in this case it could be _content_title.html.erb which would look as follows:
 
-    <p class='lead'>
-      <%%= title %>
-      <hr/>
-    </p>
+<% highlight code: "html" do %>
+<p class='lead'>
+  <%%= title %>
+  <hr/>
+</p>
+<% end %>
     
 My index.html.erb code at the top could now be changed to:
 
@@ -206,13 +226,17 @@ In order to call the partial I must use the render command and also note that in
 
 Another piece of code that I might be using again throughout my application is the category for badges as shown by this code:
 
-    <%% post.categories.each do |category| %>
-      <span class='badge'><%%= category.name %></span>
-    <%% end %>
+<% highlight code: "html" do %>
+<%% post.categories.each do |category| %>
+  <span class='badge'><%%= category.name %></span>
+<%% end %>
+<% end %>
     
 ```post.categories``` will return an array of categories associated with that post and the code above iterates through the array to print out each category.  The code above could be replaced with:
 
-    <%%= render post.categories %>
+<% highlight code: "ruby" do %>
+<%%= render post.categories %>
+<% end %>
 
 To access the relevant partial I again need to use the render keyword but Rails has a specific convention of where it will look for the partial file in this case.  This code...
 
@@ -220,13 +244,17 @@ To access the relevant partial I again need to use the render keyword but Rails 
 
 ...is the equivalent to the following Ruby code:
 
-    <%% post.categories.each do |category| %>
-      <%%= render 'categories/category', category: category %>
-    <%% end %>
+<% highlight code: "ruby" do %>
+<%% post.categories.each do |category| %>
+  <%%= render 'categories/category', category: category %>
+<%% end %>
+<% end %>
     
 This is another example of the power of conventions in rails.  Note that it will look for the partial in a folder called categories and the file name would be _category.html.erb.  The code in the partial would then be as follows (again note the matching variable names):
 
-    <span class='badge'><%%= category.name %></span>
+<% highlight code: "html" do %>
+<span class='badge'><%%= category.name %></span>
+<% end %>
     
 ##Done...Finally!
 

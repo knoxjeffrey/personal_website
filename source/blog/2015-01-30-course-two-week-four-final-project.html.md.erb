@@ -30,66 +30,74 @@ The PostIt! application allowed me to vote on posts and comments but there was n
 
 The code was fairly similar for creating a form on the fly and then submitting with Ajax but I had to add in logic to decide if the user had already voted:
 
-    <span id="like_button_<%%= post.slug %>">
-      <%% if post.already_voted_by_user?(current_user) %>
-        <%%= link_to post_vote_path(post, post.vote_object(current_user)), method: 'delete', remote: true do %>
-          <span class="fa fa-heart" aria-hidden="true"> <%%= post.votes.size %></span>
-          <%% end %>
-      <%% else %>
-        <%%= link_to post_votes_path(post), method: 'post', remote: true do %>
-          <span class="fa fa-heart-o" aria-hidden="true"> <%%= post.votes.size %></span>
-        <%% end %>
+<% highlight code: "html" do %>
+<span id="like_button_<%%= post.slug %>">
+  <%% if post.already_voted_by_user?(current_user) %>
+    <%%= link_to post_vote_path(post, post.vote_object(current_user)), method: 'delete', remote: true do %>
+      <span class="fa fa-heart" aria-hidden="true"> <%%= post.votes.size %></span>
       <%% end %>
-    </span>
+  <%% else %>
+    <%%= link_to post_votes_path(post), method: 'post', remote: true do %>
+      <span class="fa fa-heart-o" aria-hidden="true"> <%%= post.votes.size %></span>
+    <%% end %>
+  <%% end %>
+</span>
+<% end %>
     
 This needed some logic to pull the info out of the posts table and I added this in post.rb
 
-     ########## VOTE ########## 
-      #check if a user has already voted on a post
-      def already_voted_by_user?(current_user)
-        !post_vote_array(current_user).empty?
-      end
+<% highlight code: "ruby" do %>
+########## VOTE ########## 
+  #check if a user has already voted on a post
+  def already_voted_by_user?(current_user)
+    !post_vote_array(current_user).empty?
+  end
 
-      #return the id of the vote after it's confirmed that a user has already voted on a post
-      def vote_object(current_user)
-        post_vote_array(current_user).first.id
-      end
+  #return the id of the vote after it's confirmed that a user has already voted on a post
+  def vote_object(current_user)
+    post_vote_array(current_user).first.id
+  end
 
-      def post_vote_array(current_user)
-        self.votes.where(["user_id = ? and voteable_id = ? and voteable_type = ?", current_user.id, self.id, self.class.name])
-      end
-    ##########  END VOTE ##########
+  def post_vote_array(current_user)
+    self.votes.where(["user_id = ? and voteable_id = ? and voteable_type = ?", current_user.id, self.id, self.class.name])
+  end
+##########  END VOTE ##########
+<% end %>
 
 ##Ajax
 
 Handling the Ajax requests were fairly simple in the PostIt! application because I only had to get a handle on the number of votes to change it.  In this case I had to use Ajax to reload the whole block of code associated with the like button as seen above.  I was able to to get the heart image to change without any problems and that would hit the database but the problem would occur when I hit the button again.  Say I had issued a POST request on the first button press, it would then expect a DELETE request on the second button press but that code hadn't changed and so it was just staying as a POST request.  That's why I had to reload the whole block.  I have to admit I had some help with this from a Rails developer here in Edinburgh!  What I did in the end was move my like_button code into a ```_like_button.html.erb``` partial and then handled it in a ``change.js.erb``` file:
 
-    $('#like_button_<%%= @post.slug %>').replaceWith("<%%= escape_javascript render('posts/like_button', post: @post) %>");
+<% highlight code: "javascript" do %>
+$('#like_button_<%%= @post.slug %>').replaceWith("<%%= escape_javascript render('posts/like_button', post: @post) %>");
+<% end %>
     
 My actions in the VotesController looked like this with a call to render the js file:
 
-    def create
-      @vote = Vote.create(voteable: @post, creator: current_user)
+<% highlight code: "ruby" do %>
+def create
+  @vote = Vote.create(voteable: @post, creator: current_user)
 
-      respond_to do |format|
-        format.html do
-          redirect_to :back
-        end
-        format.js { render 'change' }
-      end
+  respond_to do |format|
+    format.html do
+      redirect_to :back
     end
+    format.js { render 'change' }
+  end
+end
 
-    def destroy
-      @vote = Vote.find_by(voteable: @post, creator: current_user)
-      @vote.destroy
+def destroy
+  @vote = Vote.find_by(voteable: @post, creator: current_user)
+  @vote.destroy
 
-      respond_to do |format|
-        format.html do
-          redirect_to :back
-        end
-        format.js { render 'change' }
-      end
+  respond_to do |format|
+    format.html do
+      redirect_to :back
     end
+    format.js { render 'change' }
+  end
+end
+<% end %>
 
 Now the button works seamlessly!
 
@@ -97,15 +105,19 @@ Now the button works seamlessly!
 
 The idea behind book marking a post is pretty much identical to voting on a post although there was a little more work to do for this.  After a user clicks on the bookmark link they can then look at all their bookmarks in their profile page.  The problem in this case is that when the user decides they no longer want that post to be bookmarked I want it to disappear from the bookmarks page without having to reload the page.  All that currently happens is the image changes to show that it is no longer bookmarked.  Therefore I had to add an extra handler around it just for the bookmarks page:
 
-    <%% @user.list_of_user_saved_posts.each do |post| %>
-      <div id='user-profile_<%%= post.slug %>' class='item'>
-        <%%= render 'posts/post', post: post %>
-      </div>
-    <%% end %>
+<% highlight code: "html" do %>
+<%% @user.list_of_user_saved_posts.each do |post| %>
+  <div id='user-profile_<%%= post.slug %>' class='item'>
+    <%%= render 'posts/post', post: post %>
+  </div>
+<%% end %>
+<% end %>
     
 and then I handled this in a js file:
 
-    $('#user-profile_<%%= @post.slug %>').remove();
+<% highlight code: "javascript" do %>
+$('#user-profile_<%%= @post.slug %>').remove();
+<% end %>
     
 Done!
 
@@ -113,30 +125,36 @@ Done!
 
 Another piece of functionality I added was to be able edit and delete posts and also to just delete comments.  Editing a post was something I did in the PostIt! application but the delete was new for me.  For example, to handle the delete for a post I needed to add an action in my PostsController
 
-    #all comments associated with post are automatically destroyed by dependent: :destroy in model
-    def destroy
-      @post.destroy
-      redirect_to posts_path
-    end
+<% highlight code: "ruby" do %>
+#all comments associated with post are automatically destroyed by dependent: :destroy in model
+def destroy
+  @post.destroy
+  redirect_to posts_path
+end
+<% end %>
     
 You'll notice my comment on this action and this takes advantage of another rails convention because if I delete a post then I obviously no longer want comments associated with that post in the database so I added this to my Post model;
 
-    has_many :comments, dependent: :destroy #removes all associated comments automatically
+<% highlight code: "ruby" do %>
+has_many :comments, dependent: :destroy #removes all associated comments automatically
+<% end %>
     
 So now when I delete a post from the database, all associated comments are automatically deleted from the comments table.  Nice!
 
-##Masonry Grid
+## Masonry Grid
 
 I wanted to add a bit of styling to my application and you'll notice it takes a bit of inspiration from Pinterest.  I achieved the look by using [Masonry](http://masonry.desandro.com/) which was pretty straight forward to use although there was one problem that I had to fix due to the images.  When I made the first request to my application the posts would all overlap but then any subsequent requests would be fine.  After a bit of studying I found a fix that required first installing ```gem 'imagesLoaded_rails'``` and then I added the following jQuery to ```application.js```
 
-    $(function(){
+<% highlight code: "javascript" do %>
+$(function(){
 
-      var $container = $('#container');
-      $container.imagesLoaded( function() {
-          $container.masonry();
-      });
+  var $container = $('#container');
+  $container.imagesLoaded( function() {
+      $container.masonry();
+  });
 
-    });  
+});
+<% end %>
     
 and this essentially triggers a callback after all child images have been loaded.
 
@@ -146,37 +164,41 @@ To improve the look of the application I wanted to add some images and I found a
 
 In my HTML I added code above the rest of the post to display the image:
 
-    <%% url = generate_url_attributes_preview(post.url) %>
+<% highlight code: "html" do %>
+<%% url = generate_url_attributes_preview(post.url) %>
 
-    <%% if !url.empty? %>
-      <%%= image_tag(url, class: "post-box-images") %>
-      <br>
-      <br>
-    <%% end %>
+<%% if !url.empty? %>
+  <%%= image_tag(url, class: "post-box-images") %>
+  <br>
+  <br>
+<%% end %>
+<% end %>
     
 and then in ```application_helper.rb``` I implemented the methods:
 
-    def generate_url_attributes_preview(post_url)
-      url = url_with_protocol(post_url.to_s)
-      begin
-        url_attributes = LinkThumbnailer.generate(url, attributes: [:images], http_timeout: 2, image_limit: 1, image_stats: false)
-        if !url_attributes.images.empty? && valid_image_url(url_attributes)
-          url_attributes.images.first.src.to_s
-        else
-          ''
-        end
-      rescue =>e
-        ''
-      end
+<% highlight code: "ruby" do %>
+def generate_url_attributes_preview(post_url)
+  url = url_with_protocol(post_url.to_s)
+  begin
+    url_attributes = LinkThumbnailer.generate(url, attributes: [:images], http_timeout: 2, image_limit: 1, image_stats: false)
+    if !url_attributes.images.empty? && valid_image_url(url_attributes)
+      url_attributes.images.first.src.to_s
+    else
+      ''
     end
-  
-    #return false if url starts with a / character
-    #I want to ignore these urls as it results in a localhost lookup
-    #
-    #example: /images/sample.jpg would be false
-    def valid_image_url(url)
-      !url.images.first.src.to_s.starts_with?('/')
-    end
+  rescue =>e
+    ''
+  end
+end
+
+#return false if url starts with a / character
+#I want to ignore these urls as it results in a localhost lookup
+#
+#example: /images/sample.jpg would be false
+def valid_image_url(url)
+  !url.images.first.src.to_s.starts_with?('/')
+end
+<% end %>
     
 In order to speed things up I only retrieved the first image for a url and didn't retrieve any info about the image.  I also set a time limit for the request.  You can see that I also handle exceptions and this is basically in the cases where the url cannot be found.  I wasn't too sure how to get this working as stated in the documentation because it says that the rescue should be ```LinkThumbnailer::BadUriFormat``` rather than what I have, ```=>e```.  I couldn't get this to work so from what I understand I have just implemented a general handler that will return an empty string if there are any problems and therefore no image will show.  To be honest this is actually how I want it to work anyway so this suits my purposes but I'd appreciate any feedback regarding any issues with doing it this way.
 

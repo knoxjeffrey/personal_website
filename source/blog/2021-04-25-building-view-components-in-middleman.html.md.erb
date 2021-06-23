@@ -19,14 +19,18 @@ Helpers in Middleman are another option but again there are expectations in Midd
 
 So, first things first, load and activate. I didn't want to manually require a new extension every time I wanted a new component so a neater solution was to keep them under a folder (a folder called `components` in this case) and load all extensions using a glob pattern from ```config.rb```:
 
-    Dir["./components/**/*.rb"].each { |file| load file }
+<% highlight code: "ruby" do %>
+Dir["./components/**/*.rb"].each { |file| load file }
+<% end %>
 
 and then activate all components by following a naming convention:
 
-    Pathname.new("./components").children.each do |entry|
-      return unless entry.directory?
-      activate "#{entry.basename.to_s}_component".to_sym
-    end
+<% highlight code: "ruby" do %>
+Pathname.new("./components").children.each do |entry|
+  return unless entry.directory?
+  activate "#{entry.basename.to_s}_component".to_sym
+end
+<% end %>
 
 where each folder for a component's code would have the same name as the extension followed by `_component`.
 
@@ -34,47 +38,55 @@ My site has a timeline component for example which sits at `components/timeline/
 
 This is a simple example of a component which looks as follows:
 
-    module Components
-      module Timeline
-        class TimelineComponent < Middleman::Extension
-          helpers do
-            def timeline(&block)
-              content_tag(:div, nil, class: "terminal-timeline", &block)
-            end
-          end
+<% highlight code: "ruby" do %>
+module Components
+  module Timeline
+    class TimelineComponent < Middleman::Extension
+      helpers do
+        def timeline(&block)
+          content_tag(:div, nil, class: "terminal-timeline", &block)
         end
       end
     end
+  end
+end
 
-    ::Middleman::Extensions.register(:timeline_component, Components::Timeline::TimelineComponent)
+::Middleman::Extensions.register(:timeline_component, Components::Timeline::TimelineComponent)
+<% end %>
 
 The HTML is created using [Padrino tag helpers](https://padrinorb.com/guides/application-helpers/tag-helpers/) which are a standard part of Middleman. You can see more of my components in [my repo](https://github.com/knoxjeffrey/personal_website/tree/main/components). These components are easy to call from erb view files like so:
 
-    <%% timeline do %>
-        ...
-    <%% end %>
+<% highlight code: "html" do %>
+<%% timeline do %>
+    ...
+<%% end %>
+<% end %>
 
 and generates the following HTML:
 
-    <div class="terminal-timeline">
-        ...
-    </div>
+<% highlight code: "html" do %>
+<div class="terminal-timeline">
+    ...
+</div>
+<% end %>
 
 This example is very simple and doesn't remove too much code from the erb view file but many of the components are more complicated and have many levels of nested HTML. Addtional helpers could also be added if there are variations in the types of timelines and any additional code logic for timelines can be grouped together in this extension. The components simplify things greatly and changes can easily be made from the one file to automatically update all the occurrences of that component across the site.
 
 As mentioned earlier, I also want the JS and CSS to live in the same component folder which can easily be achieved when using Webpack as my module bundler. For my entries I can once again use the glob pattern:
 
-    const glob = require("glob");
-    const path = require("path");
+<% highlight code: "javascript" do %>
+const glob = require("glob");
+const path = require("path");
 
+...
+
+entry: {
     ...
-
-    entry: {
-        ...
-        components: glob.sync(path.resolve(__dirname, "./components/**/*.js")),
-        components_css: glob.sync(path.resolve(__dirname, "./components/**/*.scss")),
-        ...
-    },
+    components: glob.sync(path.resolve(__dirname, "./components/**/*.js")),
+    components_css: glob.sync(path.resolve(__dirname, "./components/**/*.scss")),
+    ...
+},
+<% end %>
 
 which bundles files of ```components.js``` and ```components_css.css``` from all of the files ending in ```.js``` and ```.scss``` respectively in the ```components``` folder.
 

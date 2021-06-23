@@ -22,19 +22,25 @@ In order to demonstrate the leap forward that has been made, in this post I'll f
 
 [Netlify Lambda](https://github.com/netlify/netlify-lambda) is an additional package you can pull in which adds a simple webpack/babel build step. First step, install Netlify Lambda
 
-    yarn add netlify-lambda --dev
+<% highlight code: "bash" do %>
+yarn add netlify-lambda --dev
+<% end %>
 
 Then add a new script to `package.json`
 
-    "build_functions": "netlify-lambda build functions/development -c functions/webpack.functions.js"
+<% highlight code: "json" do %>
+"build_functions": "netlify-lambda build functions/development -c functions/webpack.functions.js"
+<% end %>
 
 Let me explain what this does. Netlify Functions need to live in a separate folder in your repo which is `functions` in my case. For functions I have 2 folders, `development` and `production`. `Development` is where I write my function code during development and `production` is where Netlify Lambda will output the code following the build step.
 
 In order to tell Netlify Lambda where to build to and also let Netlify know where to find the production functions during a build, you have to add to the `netlify.toml` file at the root of your repo.
 
-    [build]
-      functions = "functions/production"
-      ...
+<% highlight code: "toml" do %>
+[build]
+  functions = "functions/production"
+  ...
+<% end %>
 
 At this point when I was setting things up, it's not particularly clear how Netlify Lambda and Netlify Dev actually work together. I eventually came across [these docs](https://github.com/netlify/cli/blob/main/docs/netlify-dev.md) that made things clearer. Netlify Dev offers function builder detection where it automatically looks for scripts with `netlify-lambda build $SRCFOLDER` when you run the `netlify dev` command and will execute it. It will also watch the files in the `$SRCFOLDER` and run the build command again when any changes are made. 
 
@@ -42,15 +48,19 @@ I also add `functions/production/` to my `.gitignore` file because, as mentioned
 
 The final part of my `build_functions` command is `-c functions/webpack.functions.js`. Netlify Lambda has a default webpack config baked in but this is a way to extend it and add any additional configuration you need. In my case I have a simple addition
 
-    module.exports = {
-      optimization: { moduleIds: "hashed" }
-    };
+<% highlight code: "javascript" do %>
+module.exports = {
+  optimization: { moduleIds: "hashed" }
+};
+<% end %>
 
 I also have added a `functions/.babelrc` file in order to maintain a separate config file to the rest of my JavaScript whicin this case is
 
-    {
-      "plugins": ["@babel/plugin-transform-runtime"]
-    }
+<% highlight code: "json" do %>
+{
+  "plugins": ["@babel/plugin-transform-runtime"]
+}
+<% end %>
 
 and this allows me to run the modern async/await syntax in my functions.
 
@@ -58,20 +68,24 @@ For the function example I'm going to have a very simple hello world function wh
 
 First up, create the utility function at `functions/development/utils/random_number_generator.js`
 
-    export function randomNumberGenerator() {
-      return Math.floor(Math.random() * 10)
-    }
+<% highlight code: "javascript" do %>
+export function randomNumberGenerator() {
+  return Math.floor(Math.random() * 10)
+}
+<% end %>
 
 and then create your function at `functions/development/hello_world.js`
 
-    import { randomNumberGenerator } from "./utils/random_number_generator"
+<% highlight code: "javascript" do %>
+import { randomNumberGenerator } from "./utils/random_number_generator"
 
-    export async function handler(event, context) {
-      return {
-        statusCode: 200,
-        body: JSON.stringify({ message: `Hello world ${randomNumberGenerator()}` })
-      };
-    }
+export async function handler(event, context) {
+  return {
+    statusCode: 200,
+    body: JSON.stringify({ message: `Hello world ${randomNumberGenerator()}` })
+  };
+}
+<% end %>
 
 When you run `netlify dev`, you'll see the bundled production file generated at `functions/production/hello_world.js`. You can see the output of the function at `http://localhost:8888/.netlify/functions/hello_world` (your localhost port may vary depending on your Netlify Dev setup). Make a change and you'll see the success message in the terminal, refresh the page and you can see the update.
 
@@ -79,32 +93,40 @@ When you run `netlify dev`, you'll see the bundled production file generated at 
 
 The recent updates by Netlify have simplified things greatly. First up, disregard the changes made in the old way of doing things and ensure you have the latest version of Netlify CLI installed
 
-    npm install netlify-cli -g
+<% highlight code: "bash" do %>
+npm install netlify-cli -g
+<% end %>
 
 Now make the following updates to your `netlify.toml` file
 
-    [functions]
-      directory = "functions"
-      node_bundler = "esbuild"
+<% highlight code: "toml" do %>
+[functions]
+  directory = "functions"
+  node_bundler = "esbuild"
+<% end %>
 
 This makes use of [esbuild](https://esbuild.github.io/) which Netlify Dev is now using under the hood in order to bundle your Netlify Functions. It is very fast and I'm definitely noticing the difference in bundle times!
 
 The folder structure is also stripped down with my function living at `functions/hello_world.js`
 
-    import { randomNumberGenerator } from "./utils/random_number_generator"
+<% highlight code: "javascript" do %>
+import { randomNumberGenerator } from "./utils/random_number_generator"
 
-    export async function handler(event, context) {
-      return {
-        statusCode: 200,
-        body: JSON.stringify({ message: `Hello world ${randomNumberGenerator()}` })
-      };
-    }
+export async function handler(event, context) {
+  return {
+    statusCode: 200,
+    body: JSON.stringify({ message: `Hello world ${randomNumberGenerator()}` })
+  };
+}
+<% end %>
 
 and utility function at `functions/utils/random_number_generator.js`
 
-    export function randomNumberGenerator() {
-      return Math.floor(Math.random() * 10)
-    }
+<% highlight code: "javascript" do %>
+export function randomNumberGenerator() {
+  return Math.floor(Math.random() * 10)
+}
+<% end %>
 
 The `functions/.babelrc` and `functions/webpack.functions.js` files are no longer needed and I also have no need for an additional build script in `package.json`. Once again, run `netlify dev`, and you will see the output of the function at `http://localhost:8888/.netlify/functions/hello_world`. If you make any updates, you can see how quickly the changes take effect.
 

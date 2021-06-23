@@ -9,20 +9,22 @@ comments: true
 ##TomDoc Style
 I have been introduced to a code documentation specification called [TomDoc](http://tomdoc.org/) that at it's most descriptive looks like this:
 
-    # Public: Duplicate some text an arbitrary number of times.
-    #
-    # text  - The String to be duplicated.
-    # count - The Integer number of times to duplicate the text.
-    #
-    # Examples
-    #
-    #    multiplex('Tom', 4)
-    #    # => 'TomTomTomTom'
-    #
-    # Returns the duplicated String.
-    def multiplex(text, count)
-      text * count
-    end
+<% highlight code: "ruby" do %>
+# Public: Duplicate some text an arbitrary number of times.
+#
+# text  - The String to be duplicated.
+# count - The Integer number of times to duplicate the text.
+#
+# Examples
+#
+#    multiplex('Tom', 4)
+#    # => 'TomTomTomTom'
+#
+# Returns the duplicated String.
+def multiplex(text, count)
+  text * count
+end
+<% end %>
 
 <!--more-->
 

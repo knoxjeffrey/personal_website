@@ -17,31 +17,33 @@ Although with cards the structure is unlikely to change and wasn't such a big is
 
 A better way would have been to have only one place in the code that has knowledge of the structure of the array. So as an example I could have done this:
 
-    class Card
+<% highlight code: "ruby" do %>
+class Card
 
-      SUITS  = ['♥', '♦', '♠', '♣']
-      VALUES = [ 2, 3, 4, 5, 6, 7, 8, 9, 'J','Q','K','A']
+  SUITS  = ['♥', '♦', '♠', '♣']
+  VALUES = [ 2, 3, 4, 5, 6, 7, 8, 9, 'J','Q','K','A']
 
-      attr_reader :suit, :value
+  attr_reader :suit, :value
 
-      def initialize(suit, value)
-        @suit  = suit
-        @value = value
-      end
-      
-    end
-    
-    class Deck
+  def initialize(suit, value)
+    @suit  = suit
+    @value = value
+  end
+  
+end
 
-      require_relative 'card'
-      attr_reader :cards
+class Deck
 
-      def initialize
-        suits_and_values = Card::SUITS.product(Card::VALUES)
-        @cards = suits_and_values.map { |suit_and_value| Card.new(suit_and_value[0], suit_and_value[1]) }
-      end
+  require_relative 'card'
+  attr_reader :cards
 
-    end
+  def initialize
+    suits_and_values = Card::SUITS.product(Card::VALUES)
+    @cards = suits_and_values.map { |suit_and_value| Card.new(suit_and_value[0], suit_and_value[1]) }
+  end
+
+end
+<% end %>
     
 Now I have an array of Card objects and can just call cards.suit and cards.value without having to know anything about the structure of the array and if the order of the array structure is changed or new things added then my code will not break.
 

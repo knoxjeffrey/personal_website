@@ -16,7 +16,7 @@ In my previous post when I talked about the deployment pipeline I discussed usin
 
 ## Continuous Integration
 
-> Continuous Integration is a software development practice where members of a team integrate their work frequently, usually each person integrates at least daily - leading to multiple integrations per day. Each integration is verified by an automated build (including test) to detect integration errors as quickly as possible.
+Continuous Integration is a software development practice where members of a team integrate their work frequently, usually each person integrates at least daily - leading to multiple integrations per day. Each integration is verified by an automated build (including test) to detect integration errors as quickly as possible.
 
 [Clicking this article link](http://martinfowler.com/articles/continuousIntegration.html) will give you a thorough overview of continuous integration.  As mentioned in the quote, the big benefit of CI is that bugs can be found extremely quickly due to less back tracking.  When you have large time periods between integrations then multiple bugs can be introduced and often those bugs can interfere with each other therefore making bug tracking much more difficult and time consuming.
 
@@ -47,32 +47,36 @@ Now, I mentioned about the CI server above and in the Tealeaf Academy course I a
 
 Next, at the root of your application folder add a file ```circle.yml``` and I added the following code:
 
-    machine:
-      ruby:
-        version: 2.1.5
+<% highlight code: "yml" do %>
+machine:
+  ruby:
+    version: 2.1.5
 
-    deployment:
-      production:
-        branch: master
-        commands:
-          - heroku maintenance:on --app knoxjeffrey-myflix
-          - heroku pg:backups capture --app knoxjeffrey-myflix
-          - git push git@heroku.com:knoxjeffrey-myflix.git $CIRCLE_SHA1:refs/heads/master
-          - heroku run rake db:migrate --app knoxjeffrey-myflix
-          - heroku maintenance:off --app knoxjeffrey-myflix
-      staging:
-        branch: staging
-        commands:
-          - heroku maintenance:on --app knoxjeffrey-myflix-staging
-          - git push git@heroku.com:knoxjeffrey-myflix-staging.git $CIRCLE_SHA1:refs/heads/master
-          - heroku run rake db:migrate --app knoxjeffrey-myflix-staging
-          - heroku maintenance:off --app knoxjeffrey-myflix-staging
+deployment:
+  production:
+    branch: master
+    commands:
+      - heroku maintenance:on --app knoxjeffrey-myflix
+      - heroku pg:backups capture --app knoxjeffrey-myflix
+      - git push git@heroku.com:knoxjeffrey-myflix.git $CIRCLE_SHA1:refs/heads/master
+      - heroku run rake db:migrate --app knoxjeffrey-myflix
+      - heroku maintenance:off --app knoxjeffrey-myflix
+  staging:
+    branch: staging
+    commands:
+      - heroku maintenance:on --app knoxjeffrey-myflix-staging
+      - git push git@heroku.com:knoxjeffrey-myflix-staging.git $CIRCLE_SHA1:refs/heads/master
+      - heroku run rake db:migrate --app knoxjeffrey-myflix-staging
+      - heroku maintenance:off --app knoxjeffrey-myflix-staging
+<% end %>
 
 Just replace the name of my production and staging sites with your own and also change the ruby version to match what you are using.  For this to work you will need a master branch (there by default) and staging branch on your GitHub repository.
 
 I initially had an issue creating a staging branch because I already had a staging tag on GitHub after using Paratrooper [see previous post](../../../../2015/03/19/course-three-week-five-simple-deployment-pipeline/).  As I am no longer using Paratrooper I can just get rid of the tag by typing the following at the command prompt:
 
-    git tag -d staging
+<% highlight code: "bash" do %>
+git tag -d staging
+<% end %>
     
 Now when you merge to the staging and master branches Circle CI will run the entire test suite, deploy to your Heroku servers and let you know if it was successful or if there were errors.
 

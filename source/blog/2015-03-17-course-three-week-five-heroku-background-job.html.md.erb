@@ -19,8 +19,10 @@ This is pretty simple on my local environment but what happens when I want to de
 
 Within Procfile I can define the Rails server I wish to use as well as the worker.  In my case this will look like:
 
-    web: bundle exec rails server -p $PORT
-    worker: sidekiq
+<% highlight code: "ruby" do %>
+web: bundle exec rails server -p $PORT
+worker: sidekiq
+<% end %>
 
 If I pushed to Heroku now it would automatically start the processes I have defined but don't do that yet because you will be charged due to needing an extra dyno to run the worker. I'll show how to get around that in a bit.  You can type ```heroku ps``` in the terminal to see how many processes you currently have running.
 
@@ -34,31 +36,39 @@ One thing to keep in mind is that you can only utilize threads in Puma if the en
 
 Adding Puma to the web server is simple, just add the gem to the Gemfile:
 
-     gem 'puma'
+<% highlight code: "ruby" do %>
+gem 'puma'
+<% end %>
      
 and ```bundle install```.  Next I need to create a configuration file for Puma at ```config/puma.rb``` with the following code:
 
-    workers Integer(ENV['WEB_CONCURRENCY'] || 2)
-    threads_count = Integer(ENV['MAX_THREADS'] || 5)
-    threads threads_count, threads_count
+<% highlight code: "ruby" do %>
+workers Integer(ENV['WEB_CONCURRENCY'] || 2)
+threads_count = Integer(ENV['MAX_THREADS'] || 5)
+threads threads_count, threads_count
 
-    preload_app!
+preload_app!
 
-    rackup      DefaultRackup
-    port        ENV['PORT']     || 3000
-    environment ENV['RACK_ENV'] || 'development'
+rackup      DefaultRackup
+port        ENV['PORT']     || 3000
+environment ENV['RACK_ENV'] || 'development'
 
-    on_worker_boot do
-      ActiveRecord::Base.establish_connection
-    end
+on_worker_boot do
+  ActiveRecord::Base.establish_connection
+end
+<% end %>
 
 To use the Puma server I also need to make a change to my Procfile by replacing this:
 
-    web: bundle exec rails server -p $PORT
+<% highlight code: "ruby" do %>
+web: bundle exec rails server -p $PORT
+<% end %>
     
 with this:
 
-    web: bundle exec puma -C config/puma.rb
+<% highlight code: "ruby" do %>
+web: bundle exec puma -C config/puma.rb
+<% end %>
     
 Because I haven't set ```ENV["WEB_CONCURRENCY"]``` it will use the default value of 2 to have 2 Pumas running and therefore with a single Heroku web dyno I will now be running 2 servers.  Amazing!
 
@@ -66,20 +76,26 @@ Because I haven't set ```ENV["WEB_CONCURRENCY"]``` it will use the default value
 
 I mentioned above about the worker needing an extra dyno and there would be a cost to this.  However, when you use Puma as your webserver you can spawn Sidekiq workers within your web dyno as described in [this article](https://coderwall.com/p/fprnhg/free-background-jobs-on-heroku)(written for Unicorn but works the same).  All I have to do is change this:
 
-    on_worker_boot do
-      ActiveRecord::Base.establish_connection
-    end
+<% highlight code: "ruby" do %>
+on_worker_boot do
+  ActiveRecord::Base.establish_connection
+end
+<% end %>
     
 to this:
 
-    on_worker_boot do
-      @sidekiq_pid ||= spawn("bundle exec sidekiq -c 2")
-      ActiveRecord::Base.establish_connection
-    end
+<% highlight code: "ruby" do %>
+on_worker_boot do
+  @sidekiq_pid ||= spawn("bundle exec sidekiq -c 2")
+  ActiveRecord::Base.establish_connection
+end
+<% end %>
 
 Additionally I need to remove the following line from my Procfile:
 
-    worker: sidekiq
+<% highlight code: "ruby" do %>
+worker: sidekiq
+<% end %>
     
 ## Redis To Go
 
@@ -87,7 +103,9 @@ One last thing I need in order to enable background jobs on Heroku is to install
 
 The recent version of Sidekiq no longer has built in support for Reddis To Go so I need to run this line to set the environment variable on your production server:
 
-    heroku config:set REDIS_PROVIDER=REDISTOGO_URL
+<% highlight code: "ruby" do %>
+heroku config:set REDIS_PROVIDER=REDISTOGO_URL
+<% end %>
     
 # Foreman
 
@@ -95,28 +113,38 @@ It would be an advantage for my local webserver to load the same processes as my
 
 There may well be a better way to do this but in the end I use 2 Procfiles, ```Procfile``` and ```Procfile.dev```.  ```Procfile``` was simply:
 
-    web: bundle exec puma -C config/puma.rb
+<% highlight code: "ruby" do %>
+web: bundle exec puma -C config/puma.rb
+<% end %>
     
 and ```Procfile.dev```:
 
-    web: bundle exec puma -C config/puma.rb -p 3000
-    devlog: tail -f log/development.log
-    worker: redis-server
-    worker: sidekiq
+<% highlight code: "ruby" do %>
+web: bundle exec puma -C config/puma.rb -p 3000
+devlog: tail -f log/development.log
+worker: redis-server
+worker: sidekiq
+<% end %>
     
 Lastly to run my development web server and workers I have to type the following in the command prompt:
 
-    foreman start -f Procfile.dev
+<% highlight code: "bash" do %>
+foreman start -f Procfile.dev
+<% end %>
     
 This works fine but it's a bit of a pain to type this out every time so what I did was to add a new file to the root of my application called ```forman.sh``` with the following code:
 
-    #!/bin/bash
+<% highlight code: "bash" do %>
+#!/bin/bash
 
-    foreman start -f Procfile.dev
+foreman start -f Procfile.dev
+<% end %>
     
 and then from the command line from within the directory I typed
 
-    chmod +x ./foreman.sh
+<% highlight code: "bash" do %>
+chmod +x ./foreman.sh
+<% end %>
     
 which sets the script file into an executable that can be run in the shell.  Now all I have to type from the shell is ```./foreman.sh```
 
