@@ -7,7 +7,7 @@ class AssetHashImportFrom < ::Middleman::Extension
       # load the file as a string
       javascript_content = entry.read
       # fixes the issues where the asset hash strips the "./" from the start of the file
-      filtered_javascript_content = javascript_content.gsub(/from"(.+\.js)"/) { "from'./#{$1}'" }
+      filtered_javascript_content = javascript_content.gsub(/from"(.+?\.js)"/) { "from'./#{$1}'" }
       # write the changes
       entry.open("w") do |f|
         f.write(filtered_javascript_content)
