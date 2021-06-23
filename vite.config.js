@@ -30,7 +30,10 @@ export default ({ command, mode }) => {
           assetFileNames: "[name].css",
           chunkFileNames: "[name].js",
           entryFileNames: "[name].js",
-          format: "es"
+          format: "es",
+          manualChunks: {
+            game_vendor: ["crypto-js"]
+          }
         },
         plugins: [
           esbuild({
