@@ -32,7 +32,7 @@ export default ({ command, mode }) => {
           entryFileNames: "[name].js",
           format: "es",
           manualChunks: {
-            game_vendor: ["crypto-js"]
+            game_vendor: ["crypto-es"]
           }
         },
         plugins: [
