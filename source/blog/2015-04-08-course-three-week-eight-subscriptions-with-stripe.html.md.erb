@@ -101,7 +101,8 @@ class ExternalPaymentProcessor
 
 end
 <% end %>
-    
+
+
 ## Pulling Info From Stripe Response
 
 I mentioned above that I need to extract more information from the Stripe response when dealing with subscriptions because I need to store a Stripe customer reference within my ```Users``` table and also a reference id within my database.  This information will help me deal with failed payments that happen after the initial signup.  My customers on MyFLiX will be charged monthly and if one of those payments fail then I need a way to know which customer has failed the payment so I can lock them out of the application.  I also want to keep a log of customer payments within my database so a payment reference will need to be extracted for this.
