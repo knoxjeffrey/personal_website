@@ -1,6 +1,6 @@
 import { Controller } from "stimulus"
-import AES from "crypto-js/aes"
-import encUtf8 from "crypto-js/enc-utf8"
+import { AES } from "crypto-es/lib/aes"
+import { Utf8 } from 'crypto-es/lib/core.js'
 
 /**
  * @class Game.HIPSController
@@ -29,7 +29,7 @@ export default class HIPSController extends Controller {
     if (this.answerTarget.value === "128aes") {
       this.errorTarget.style.display = "none"
       const bytes = AES.decrypt(this.unlockTarget.innerHTML, "128aes")
-      this.unlockTarget.innerHTML = bytes.toString(encUtf8)
+      this.unlockTarget.innerHTML = bytes.toString(Utf8)
     } else {
       this.errorTarget.style.display = "block"
       this.errorTarget.innerHTML = `${this.answerTarget.value} is incorrect`
