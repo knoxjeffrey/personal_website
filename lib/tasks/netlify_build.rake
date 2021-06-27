@@ -14,15 +14,16 @@ namespace :netlify_build do
   end
 
   yarn_test = "yarn test --maxWorkers=2"
+  vite_build = "bin/vite build"
   middleman_build = "#{BUILD_ENVS} bundle exec middleman build"
 
   task :production, [:build_options] do |_task, args|
     build_headers("production")
-    sh "#{yarn_test} && #{bin/vite build} && #{PRODUCTION_ENVS} #{middleman_build} #{args[:build_options]}"
+    sh "#{yarn_test} && #{vite_build} && #{PRODUCTION_ENVS} #{middleman_build} #{args[:build_options]}"
   end
 
   task :branch, [:build_options] do |_task, args|
     build_headers("branch")
-    sh "#{yarn_test} &&  #{bin/vite build} && #{BRANCH_ENVS} #{middleman_build} #{args[:build_options]}"
+    sh "#{yarn_test} &&  #{vite_build} && #{BRANCH_ENVS} #{middleman_build} #{args[:build_options]}"
   end
 end
