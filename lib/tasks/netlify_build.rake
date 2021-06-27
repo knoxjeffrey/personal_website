@@ -14,7 +14,7 @@ namespace :netlify_build do
   end
 
   yarn_test = "yarn test --maxWorkers=2"
-  vite_build = "bin/vite build"
+  vite_build = "rake vite:clobber && rake vite:build"
   middleman_build = "#{BUILD_ENVS} bundle exec middleman build"
 
   task :production, [:build_options] do |_task, args|
