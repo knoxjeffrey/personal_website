@@ -6,7 +6,15 @@ export default defineConfig({
   build: {
     brotliSize: false,
     emptyOutDir: true,
-    minify: "esbuild"
+    minify: "esbuild",
+    rollupOptions: {
+      output: {
+        format: "es",
+        manualChunks: {
+          game_vendor: ["crypto-es"]
+        }
+      }
+    }
   },
   plugins: [
     esbuild({
@@ -18,6 +26,5 @@ export default defineConfig({
       ]
     }),
     RubyPlugin(),
-  ],
+  ]
 })
-
