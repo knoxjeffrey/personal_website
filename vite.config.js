@@ -13,15 +13,20 @@ export default defineConfig({
         manualChunks: {
           game_vendor: ["crypto-es"]
         }
-      }
+      },
+      plugins: [
+        esbuild({
+          target: [
+            "chrome64",
+            "firefox62",
+            "safari11.1",
+            "edge79"
+          ]
+        })
+      ],
     }
   },
   plugins: [
-    esbuild({
-      target: [
-        "es2020"
-      ]
-    }),
     RubyPlugin(),
   ]
 })
