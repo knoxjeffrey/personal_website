@@ -9,6 +9,7 @@ dist/
 functions/production/
 node_modules/
 source/netlify-headers
+tmp
 
 # Local Netlify folder
 .netlify
