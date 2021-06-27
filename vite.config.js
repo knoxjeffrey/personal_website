@@ -19,10 +19,7 @@ export default defineConfig({
   plugins: [
     esbuild({
       target: [
-        "chrome64",
-        "firefox62",
-        "safari11.1",
-        "edge79"
+        "es2020"
       ]
     }),
     RubyPlugin(),
