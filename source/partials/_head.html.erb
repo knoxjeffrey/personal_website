@@ -13,11 +13,12 @@
   <!-- Use the title from a page's frontmatter if it has one -->
   <title><%= current_page.data.title || "Jeff Knox" %></title>
   <meta name="description" content="<%= current_page.data.description || 'Jeff Knox personal website' %>">
-  <%= stylesheet_link_tag "main_css", "data-turbo-track": "reload" %>
-  <%= stylesheet_link_tag "components_css", "data-turbo-track": "reload" %>
+  <%= vite_client_tag %>
+  <%= vite_stylesheet_tag "main_css", "data-turbo-track": "reload" %>
+  <%= vite_stylesheet_tag "components_css", "data-turbo-track": "reload" %>
   <%= yield_content :page_head_css %>
-  <%= javascript_include_tag "main", "data-turbo-track": "reload", defer: true %>
-  <%= javascript_include_tag "components", "data-turbo-track": "reload", defer: true %>
+  <%= vite_javascript_tag "main", "data-turbo-track": "reload", defer: true %>
+  <%= vite_javascript_tag "components", "data-turbo-track": "reload", defer: true %>
   <%= yield_content :page_head_js %>
   <% if ENV["BUILD_TYPE"] == "production" %>
     <!-- Fathom - beautiful, simple website analytics -->

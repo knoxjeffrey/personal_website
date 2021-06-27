@@ -3,7 +3,7 @@ namespace :netlify_build do
 
   require "./lib/netlify/netlify_headers_builder.rb"
 
-  BUILD_ENVS = "NO_CONTRACTS=true RUBYOPT='-W0' PARALLEL_PROCESSOR_COUNT=2".freeze
+  BUILD_ENVS = "RACK_ENV=production NO_CONTRACTS=true RUBYOPT='-W0' PARALLEL_PROCESSOR_COUNT=2".freeze
   PRODUCTION_ENVS = "BUILD_TYPE=production".freeze
   BRANCH_ENVS = "BUILD_TYPE=branch".freeze
 
@@ -18,11 +18,11 @@ namespace :netlify_build do
 
   task :production, [:build_options] do |_task, args|
     build_headers("production")
-    sh "#{yarn_test} && #{PRODUCTION_ENVS} #{middleman_build} #{args[:build_options]}"
+    sh "#{yarn_test} && #{bin/vite build} && #{PRODUCTION_ENVS} #{middleman_build} #{args[:build_options]}"
   end
 
   task :branch, [:build_options] do |_task, args|
     build_headers("branch")
-    sh "#{yarn_test} && #{BRANCH_ENVS} #{middleman_build} #{args[:build_options]}"
+    sh "#{yarn_test} &&  #{bin/vite build} && #{BRANCH_ENVS} #{middleman_build} #{args[:build_options]}"
   end
 end

@@ -1,3 +1,6 @@
+require "vite_ruby"
+require "vite_padrino/tag_helpers"
+
 # Per-page layout changes
 page "/*.xml", layout: false
 page "/*.json", layout: false
@@ -16,6 +19,12 @@ Pathname.new("./components").children.each do |entry|
   return unless entry.directory?
   activate "#{entry.basename.to_s}_component".to_sym
 end
+
+# Vite configuration
+configure :development do
+  use ViteRuby::DevServerProxy, ssl_verify_none: true
+end
+helpers VitePadrino::TagHelpers
 
 activate :blog do |blog|
   blog.prefix = "blog"
@@ -36,14 +45,14 @@ end
 
 activate :directory_indexes
 
-activate :external_pipeline,
-         name: :webpack,
-         command: build? ? "yarn run build" : "yarn run start",
-         source: ".tmp/dist",
-         latency: 1
+# activate :external_pipeline,
+#          name: :webpack,
+#          command: build? ? "bin/vite build" : "yarn run start",
+#          source: ".tmp/dist",
+#          latency: 1
 
 configure :build do
-  activate :asset_hash
+  # activate :asset_hash
   activate :minify_html do |config|
     config.remove_quotes = false
     config.remove_input_attributes = false

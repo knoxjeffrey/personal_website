@@ -13,6 +13,8 @@ gem "rake"
 # This gem is a requirement of Middleman but the lock can be removed when this issue is resolved.
 gem "sassc", "2.1.0"
 gem "tzinfo-data", platforms: [:mswin, :mingw, :jruby, :x64_mingw]
+gem "vite_padrino"
+gem "vite_ruby"
 gem "wdm", "~> 0.1", platforms: [:mswin, :mingw, :x64_mingw]
 
 group :development do

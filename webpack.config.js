@@ -15,13 +15,6 @@ module.exports = function (env) {
     },
 
     entry: {
-      main: path.resolve(__dirname, "./source/assets/javascripts/main.js"),
-      components: glob.sync(path.resolve(__dirname, "./components/**/*.js")),
-      game: path.resolve(__dirname, "./source/assets/javascripts/game/game.js"),
-      main_css: path.resolve(__dirname, "./source/assets/stylesheets/main.css.scss"),
-      components_css: glob.sync(path.resolve(__dirname, "./components/**/*.scss")),
-      commento_css: path.resolve(__dirname, "./source/assets/stylesheets/commento.css.scss"),
-      game_css: path.resolve(__dirname, "./source/assets/stylesheets/game.css.scss")
     },
 
     output: {

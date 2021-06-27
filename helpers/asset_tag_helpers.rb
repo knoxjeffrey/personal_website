@@ -23,4 +23,16 @@ module AssetTagHelpers
     end
     super(*args, &block)
   end
+
+  def vite_asset_path(name, **options)
+    asset_path :css, vite_manifest.path_for(name, **options)
+  end
+
+  def vite_preload_tag(*sources, crossorigin:)
+    sources.map { |source|
+      href = asset_path(:js, source)
+      try(:request).try(:send_early_hints, 'Link' => %(<#{ href }>; rel=modulepreload; as=script; crossorigin=#{ crossorigin }))
+      tag(:link, rel: 'modulepreload', href: href, as: 'script', crossorigin: crossorigin)
+    }.join("\n").html_safe
+  end
 end

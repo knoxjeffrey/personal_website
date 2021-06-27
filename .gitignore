@@ -15,3 +15,9 @@ source/netlify-headers
 
 # Game
 /game/make-your-mark/
+
+# Vite Ruby
+/source/vite
+/source/vite-dev
+/source/vite-test
+
