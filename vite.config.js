@@ -41,7 +41,9 @@ export default ({ command, mode }) => {
           }),
           globImport()
         ],
-      }
+      },
+      sourcemap: true,
+      manifest: true
     },
     server: {
       port: "3333"
