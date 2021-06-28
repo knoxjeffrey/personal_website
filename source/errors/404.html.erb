@@ -9,7 +9,7 @@ canonical: false
 <% end %>
 
 <% content_for :page_head_js do %>
-  <%= javascript_include_tag "game", "data-turbo-track": "reload", defer: true %>
+  <%= vite_javascript_tag "game", "data-turbo-track": "reload", defer: true %>
 <% end %>
 
 <h1>404 - Page not found</h1>

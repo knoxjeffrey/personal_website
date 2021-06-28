@@ -1,1 +1,2 @@
+vite: bin/vite dev
 web: bundle exec middleman serve -p 3000

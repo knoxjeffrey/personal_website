@@ -9,9 +9,16 @@ dist/
 functions/production/
 node_modules/
 source/netlify-headers
+tmp
 
 # Local Netlify folder
 .netlify
 
 # Game
 /game/make-your-mark/
+
+# Vite Ruby
+/source/vite
+/source/vite-dev
+/source/vite-test
+

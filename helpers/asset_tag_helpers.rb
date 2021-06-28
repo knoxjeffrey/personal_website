@@ -23,4 +23,15 @@ module AssetTagHelpers
     end
     super(*args, &block)
   end
+  
+  # Vite Ruby padrino helpers call asset_path with just the path and not the file type.
+  # If only 1 argument then forward to suprt asset_path with the file type and path. Otherwise just
+  # forward on to super
+  def asset_path(*args)
+    if args.size == 1
+      super(File.extname(args[0]).delete(".").to_sym, args[0])
+    else
+      super(*args)
+    end
+  end
 end
