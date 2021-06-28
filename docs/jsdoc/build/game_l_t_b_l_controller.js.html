@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>game/controllers/m_y_m_controller.js - Documentation</title>
+    <title>game/l_t_b_l_controller.js - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -34,7 +34,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">game/controllers/m_y_m_controller.js</h1>
+    <h1 class="page-title">game/l_t_b_l_controller.js</h1>
     
 
     
@@ -47,21 +47,35 @@
             <pre class="prettyprint source linenums"><code>import { Controller } from "stimulus"
 
 /**
- * @class Game.MYMController
- * @classdesc Stimulus controller for /game/make-your-mark.
+ * @class Game.LTBLController
+ * @classdesc Stimulus controller for /game/let-there-be-light.
  * @extends Controller
  */
-export default class MYMController extends Controller {
+export default class LTBLController extends Controller {
   /** 
-   * Add a performance mark with the path of the next puzzle
-   * Type `performance.getEntriesByType("mark")` in the console and you will get the next path.
+   * Triggered by a click event on a hidden pixel on the page.
+   * Get the current background color of the &lt;body> tag.
+   * If it hasn't changed then naviagte to /game/make-it-brighter-before-you-can-continue/ which is a hint
+   * If it has changed but isn't white then navigate to /game/try-another-color/ which is another hint
+   * If it is white then navigate to the next puzzle.
    * 
    * @instance
-   * @memberof Game.MYMController
+   * @memberof Game.LTBLController
    * @returns {void} N/A
    * */
-  connect() {
-    performance.mark("/game/responsive-design/")
+  next() {
+    const body = document.querySelector("body")
+    const backgroundColor = window.getComputedStyle(body).getPropertyValue("background-color")
+    switch (backgroundColor) {
+      case "rgb(34, 34, 37)":
+        location.href = "/game/make-it-brighter-before-you-can-continue/"
+        break;
+      case "rgb(255, 255, 255)":
+        location.href = "/game/go-to-the-source/"
+        break;
+      default:
+        location.href = "/game/try-another-color/"
+    }                                    
   }
 }
 </code></pre>
