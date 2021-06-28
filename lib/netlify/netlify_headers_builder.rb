@@ -31,7 +31,7 @@ module Netlify
     def path_headers
       [
         { path: "/*", headers: ALL_PAGES_HEADERS },
-        { path: "/compiled-assets/*", headers: ALL_PAGES_HEADERS + HASHED_ASSETS_HEADERS }
+        { path: "/vite/assets/*", headers: ALL_PAGES_HEADERS + HASHED_ASSETS_HEADERS }
       ]
     end
 
