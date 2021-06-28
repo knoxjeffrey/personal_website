@@ -32,7 +32,7 @@
     }
   },
   "source": {
-    "include": ["../../source/assets/javascripts"],
+    "include": ["../../frontend"],
     "includePattern": ".+.js?$"
   }
 }
