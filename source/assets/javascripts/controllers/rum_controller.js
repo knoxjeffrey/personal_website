@@ -6,7 +6,7 @@ import Perfume from "perfume.js"
  * @classdesc Stimulus controller to track Core Vitals and display results on page.
  * @extends Controller
  */
-export default class extends Controller {
+export default class RUMController extends Controller {
   /**
    * Will be set on `initialize` with the current Unix timestamp in milliseconds
    * 

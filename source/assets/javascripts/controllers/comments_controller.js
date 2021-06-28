@@ -5,7 +5,7 @@ import { Controller } from "stimulus"
  * @classdesc Stimulus controller to initialise Commento to allow users to view and make comments.
  * @extends Controller
  */
-export default class extends Controller {
+export default class CommentsController extends Controller {
   /**
    * @property {Function} load - targets the button to load comments
    * @property {Function} commento - targets the div to initialise Commento

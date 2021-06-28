@@ -16,8 +16,8 @@
   <%= stylesheet_link_tag "main_css", "data-turbo-track": "reload" %>
   <%= stylesheet_link_tag "components_css", "data-turbo-track": "reload" %>
   <%= yield_content :page_head_css %>
-  <%= javascript_include_tag "main", "data-turbo-track": "reload", defer: true %>
-  <%= javascript_include_tag "components", "data-turbo-track": "reload", defer: true %>
+  <%= javascript_include_tag "main", type: "module", "data-turbo-track": "reload", defer: true %>
+  <%= javascript_include_tag "components", type: "module", "data-turbo-track": "reload", defer: true %>
   <%= yield_content :page_head_js %>
   <% if ENV["BUILD_TYPE"] == "production" %>
     <!-- Fathom - beautiful, simple website analytics -->

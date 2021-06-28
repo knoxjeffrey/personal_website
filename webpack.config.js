@@ -1,7 +1,7 @@
 const glob = require("glob");
 const path = require("path");
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const TerserPlugin = require("terser-webpack-plugin");
+const { ESBuildMinifyPlugin } = require('esbuild-loader');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = function (env) {
@@ -18,10 +18,10 @@ module.exports = function (env) {
       main: path.resolve(__dirname, "./source/assets/javascripts/main.js"),
       components: glob.sync(path.resolve(__dirname, "./components/**/*.js")),
       game: path.resolve(__dirname, "./source/assets/javascripts/game/game.js"),
-      main_css: path.resolve(__dirname, "./source/assets/stylesheets/main.css.scss"),
-      components_css: glob.sync(path.resolve(__dirname, "./components/**/*.scss")),
-      commento_css: path.resolve(__dirname, "./source/assets/stylesheets/commento.css.scss"),
-      game_css: path.resolve(__dirname, "./source/assets/stylesheets/game.css.scss")
+      main_css: path.resolve(__dirname, "./source/assets/stylesheets/main.css"),
+      components_css: path.resolve(__dirname, "./source/assets/stylesheets/components.css"),
+      commento_css: path.resolve(__dirname, "./source/assets/stylesheets/commento.css"),
+      game_css: path.resolve(__dirname, "./source/assets/stylesheets/game.css")
     },
 
     output: {
@@ -42,18 +42,9 @@ module.exports = function (env) {
         return {
           minimize: true,
           minimizer: [
-            new TerserPlugin({
-              extractComments: true,
-              terserOptions: {
-                compress: {
-                  pure_funcs: [
-                    "console.log"
-                  ]
-                },
-                output: {
-                  comments: false
-                }
-              }
+            new ESBuildMinifyPlugin({
+              target: "es2015",
+              css: true
             })
           ],
           moduleIds: "deterministic"
@@ -63,14 +54,14 @@ module.exports = function (env) {
 
     module: {
       rules: [
-        { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader" },
+        { test: /\.js$/, exclude: /node_modules/, loader: "esbuild-loader" },
         {
-          test: /\.(sa|sc|c)ss$/,
+          test: /(\.css)$/,
+          exclude: /node_modules/,
           use: [
             MiniCssExtractPlugin.loader,
             "css-loader",
-            "postcss-loader",
-            "sass-loader",
+            "postcss-loader"
           ],
         }
       ]
