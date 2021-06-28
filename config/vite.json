@@ -1,6 +1,7 @@
 {
   "all": {
-    "publicDir": "source",
+    "buildCacheDir": "source/cache/vite-last-build",
+    "publicDir": "source/cache",
     "sourceCodeDir": "frontend",
     "watchAdditionalPaths": ["components/**/*"]
   },
