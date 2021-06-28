@@ -4,8 +4,6 @@
   "description": "",
   "private": true,
   "scripts": {
-    "start": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --mode development --env.development --watch --progress --color",
-    "build": "./node_modules/webpack/bin/webpack.js --mode production --env.production --bail -p",
     "test": "jest ./spec/javascripts"
   },
   "repository": {
