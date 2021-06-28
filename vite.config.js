@@ -1,4 +1,5 @@
 import esbuild from "rollup-plugin-esbuild"
+import FullReload from 'vite-plugin-full-reload'
 import { defineConfig } from "vite"
 import RubyPlugin from "vite-plugin-ruby"
 
@@ -25,6 +26,7 @@ export default defineConfig({
         "safari11.1",
       ]
     }),
+    FullReload(["source/**/*"], { delay: 1000 }),
     RubyPlugin(),
   ]
 })
