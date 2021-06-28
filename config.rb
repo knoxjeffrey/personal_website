@@ -6,9 +6,7 @@ page "/*.xml", layout: false
 page "/*.json", layout: false
 page "/*.txt", layout: false
 
-config[:css_dir]      = "compiled-assets"
 config[:images_dir]   = "assets/images"
-config[:js_dir]       = "compiled-assets"
 
 proxy "_headers", "netlify-headers", ignore: true
 proxy "_redirects", "netlify-redirects", ignore: true
@@ -45,14 +43,7 @@ end
 
 activate :directory_indexes
 
-# activate :external_pipeline,
-#          name: :webpack,
-#          command: build? ? "bin/vite build" : "yarn run start",
-#          source: ".tmp/dist",
-#          latency: 1
-
 configure :build do
-  # activate :asset_hash
   activate :minify_html do |config|
     config.remove_quotes = false
     config.remove_input_attributes = false
