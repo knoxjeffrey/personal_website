@@ -23,16 +23,15 @@ module AssetTagHelpers
     end
     super(*args, &block)
   end
-
-  def vite_asset_path(name, **options)
-    asset_path :css, vite_manifest.path_for(name, **options)
-  end
-
-  def vite_preload_tag(*sources, crossorigin:)
-    sources.map { |source|
-      href = asset_path(:js, source)
-      try(:request).try(:send_early_hints, 'Link' => %(<#{ href }>; rel=modulepreload; as=script; crossorigin=#{ crossorigin }))
-      tag(:link, rel: 'modulepreload', href: href, as: 'script', crossorigin: crossorigin)
-    }.join("\n").html_safe
+  
+  # Vite Ruby padrino helpers call asset_path with just the path and not the file type.
+  # If only 1 argument then forward to suprt asset_path with the file type and path. Otherwise just
+  # forward on to super
+  def asset_path(*args)
+    if args.size == 1
+      super(File.extname(args[0]).delete(".").to_sym, args[0])
+    else
+      super(*args)
+    end
   end
 end
