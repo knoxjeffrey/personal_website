@@ -1,0 +1,50 @@
+---
+title: Dropping Webpack for Vite
+date: 2021-06-29 22:23
+tags:
+  - Software engineering
+  - JavaScript
+---
+I have been using the [Middleman external pipeline](https://middlemanapp.com/advanced/external-pipeline/) with [Webpack](https://webpack.js.org/) to bundle my JavaScript and SCSS files and this approach has been working well after I worked my way through all of the complexities of the initial Webpack configuration. But with so many bundlers available at the moment I thought it was time to see how things could be improved.
+
+<!--more-->
+
+What I was hoping for was to reduce the number of dependencies installed so there is less effort required to patch them. A faster local dev server would also be a benefit, as would a faster build time. This is how I started the journey
+
+<% table caption: "" do %>\
+  <% table_head do %>
+    <tr>
+      <th>Dependencies</th>
+      <th>1225</th>
+    </tr>
+    <tr>
+      <th>Dev server time</th>
+      <th>8.26s</th>
+    </tr>
+    <tr>
+      <th>Netlify build time</th>
+      <th>21.05s</th>
+    </tr>
+    <tr>
+      <th>Netlify cache size</th>
+      <th>234.9MB</th>
+    </tr>
+    <tr>
+      <th>Javascript files</th>
+    </tr>
+    <tr>
+      <th>main.js</th>
+      <th>24.5kb</th>
+    </tr>
+    <tr>
+      <th>components.js</th>
+      <th>14.7kb</th>
+    </tr>
+    <tr>
+      <th>game.js</th>
+      <th>15.6kb</th>
+    </tr>
+  <% end %>
+<% end %>
+
+To clarify some points in the table, firstly the dev server time is the time for both Middleman and Webpack to run so the site is available to view. The build time is not the full Netlify deploy time which includes downloading and extracting the cache, the Middleman build and uploading the site. This time is purely for the build as it's a more consistent and relevant measure. 1225 is a crazy number of node modules given that I have a grand total of 24 devDependencies and dependencies!
