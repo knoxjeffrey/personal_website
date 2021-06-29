@@ -14,9 +14,6 @@ tmp
 # Local Netlify folder
 .netlify
 
-# Netlify cache folder
-/source/cache
-
 # Game
 /game/make-your-mark/
 
