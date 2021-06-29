@@ -45,3 +45,9 @@
 [functions]
   directory = "functions"
   node_bundler = "esbuild"
+
+[[plugins]]
+  package = "netlify-plugin-cache"
+    [plugins.inputs]
+    # Optional (but highly recommended). Defaults to [".cache"].
+    paths = ["source/vite"]
