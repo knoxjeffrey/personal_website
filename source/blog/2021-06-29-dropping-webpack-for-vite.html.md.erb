@@ -48,4 +48,4 @@ What I was hoping for was to reduce the number of dependencies installed so ther
   <% end %>
 <% end %>
 
-To clarify some points in the table, firstly the dev server time is the time for both Middleman and Webpack to run so the site is available to view. The build time is not the full Netlify deploy time which includes downloading and extracting the cache, the Middleman build and uploading the site. This time is purely for the build as it's a more consistent and relevant measure. 1225 is a crazy number of node modules given that I have a grand total of 24 devDependencies and dependencies!
+To clarify some points in the table, firstly, the dev server time is the time for both Middleman and Webpack to run and the site is available to view. The build time is not the full Netlify deploy time which includes downloading and extracting the cache, the Middleman build plus asset bundling and finally uploading the site. In this case the time is purely for the Middleman build and asset bundling as it's a more consistent and relevant measure. 1225 is a crazy number of node modules given that I have a grand total of 24 devDependencies and dependencies!
