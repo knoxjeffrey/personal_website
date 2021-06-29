@@ -13,7 +13,7 @@ The HTML, JavaScript and CSS live together rather than being spread about in dif
 
 View components are not something that exist for the Middleman static site generator but it's something I fancied trying to implement on my site which is built with Middleman. I wanted something that could be configured once and continue to work when adding new Ruby code, JavaScript and CSS.
 
-In terms of creating the HTML, there were a few approaches that could be taken. Partials for example, are a well used pattern for reusing similar code and locals can be passed to tailor their content and appearance. Partials however would really need to live in their own folder in order to work with Middleman so not really suitable for the goal of grouping the code with JavaScript and CSS. Partials are also slow so I would rather avoid their use for components which will be called extensively on every page.
+In terms of creating the HTML, there were a few approaches that could be taken. Partials for example, are a well used pattern for reusing similar code and locals can be passed to tailor their content and appearance. Partials however would really need to live in their own folder in order to work with Middleman so not really suitable for the goal of grouping the code with JavaScript and CSS. Partials are also less performant so I would rather avoid their use for components which will be called extensively on every page.
 
 Helpers in Middleman are another option but again there are expectations in Middleman about where the code should sit and it is generally within a `helpers` folder at the root of the project. However, helpers can also sit within Middleman extensions where you can add a helpers block. The extensions are good because they can sit anywhere within the code base and simply have to be required and activated in Middleman so this looked like a good area to experiment on.
 
@@ -91,5 +91,159 @@ entry: {
 which bundles files of ```components.js``` and ```components_css.css``` from all of the files ending in ```.js``` and ```.scss``` respectively in the ```components``` folder.
 
 This is a simple solution for my codebase at the moment. If the number of components grew to the point where the JS and CSS bundles became very large then I would need to look at ways of splitting them up but this isn't an issue at the moment.
+
+## Benchmark
+
+I mentioned previously about partials being less performant and I thought it would be interesting to perform some benchmark testing against a simple button component I have which renders HTML something like
+
+<% highlight code: "html" do %>
+<button class="btn btn-default">Default</button>
+<% end %>
+
+Below are benchmark tests agsinst rendering this HTML via a partial in comparison to my component.
+
+<% table caption: "" do %>  
+  <% table_head do %>
+    <tr>
+      <th></th>
+      <th>user</th>
+      <th>system</th>
+      <th>total</th>
+      <th>real</th>
+    </tr>
+  <% end %>
+  
+  <% table_body do %>
+    <tr>
+      <th>100 times</th>
+    </tr>
+    <tr>
+      <th>Partial</th>
+      <td>0.086290</td>
+      <td>0.000340</td>
+      <td>0.086630</td>
+      <td>(0.086687)</td>
+    </tr>
+    <tr>
+      <th>Component</th>
+      <td>0.001114</td>
+      <td>0.000043</td>
+      <td>0.001157</td>
+      <td>(0.001114)</td>
+    </tr>
+
+    <tr>
+      <th>500 times</th>
+    </tr>
+    <tr>
+      <th>Partial</th>
+      <td>0.443698</td>
+      <td>0.004322</td>
+      <td>0.448020</td>
+      <td>(0.449804)</td>
+    </tr>
+    <tr>
+      <th>Component</th>
+      <td>0.005451</td>
+      <td>0.000066</td>
+      <td>0.005517</td>
+      <td>(0.005542)</td>
+    </tr>
+
+    <tr>
+      <th>1000 times</th>
+    </tr>
+    <tr>
+      <th>Partial</th>
+      <td>0.878199</td>
+      <td>0.005667</td>
+      <td>0.883866</td>
+      <td>(0.886939)</td>
+    </tr>
+    <tr>
+      <th>Component</th>
+      <td>0.011255</td>
+      <td>0.000210</td>
+      <td>0.011465</td>
+      <td>(0.011431)</td>
+    </tr>
+
+    <tr>
+      <th>5000 times</th>
+    </tr>
+    <tr>
+      <th>Partial</th>
+      <td>4.211261</td>
+      <td>0.015211</td>
+      <td>4.226472</td>
+      <td>(4.229765)</td>
+    </tr>
+    <tr>
+      <th>Component</th>
+      <td>0.053359</td>
+      <td>0.000282</td>
+      <td>0.053641</td>
+      <td>(0.053803)</td>
+    </tr>
+
+    <tr>
+      <th>10000 times</th>
+    </tr>
+    <tr>
+      <th>Partial</th>
+      <td>8.217367</td>
+      <td>0.022930</td>
+      <td>8.240297</td>
+      <td>(8.238036)</td>
+    </tr>
+    <tr>
+      <th>Component</th>
+      <td>0.103162</td>
+      <td>0.000494</td>
+      <td>0.103656</td>
+      <td>(0.103661)</td>
+    </tr>
+
+    <tr>
+      <th>25000 times</th>
+    </tr>
+    <tr>
+      <th>Partial</th>
+      <td>20.676865</td>
+      <td>0.061173</td>
+      <td>20.738038</td>
+      <td>(20.732092)</td>
+    </tr>
+    <tr>
+      <th>Component</th>
+      <td>0.255417</td>
+      <td>0.000819</td>
+      <td>0.256236</td>
+      <td>(0.256320)</td>
+    </tr>
+
+    <tr>
+      <th>50000 times</th>
+    </tr>
+    <tr>
+      <th>Partial</th>
+      <td>41.146729</td>
+      <td>0.126237</td>
+      <td>41.272966</td>
+      <td>(41.263908)</td>
+    </tr>
+    <tr>
+      <th>Component</th>
+      <td>0.493842</td>
+      <td>0.001792</td>
+      <td>0.495634</td>
+      <td>(0.495767)</td>
+    </tr>
+  <% end %>
+<% end %>
+
+As you can see, the performance starts to become more noticeable on a larger site. Take the last example of 50000 calls. Say you have 10 components per page and therefore 5000 pages which is a reasonably large static site. The component approach using the above benchmarks will save in the region of 41 seconds in the build time which is a nice saving.
+
+This test was on my laptop which has 4 cores and 16GB of memory. Consider a Netlify build on their standard machine which utilises up to 2 cores and 6GB of memory and you'll see even greater time savings than demonstrated above.
 
 I'm very happy with how this is working and hopefully this provides inspiration to others. Please feel free to look at [my repo](https://github.com/knoxjeffrey/personal_website) to dig into the code.
