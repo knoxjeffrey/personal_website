@@ -51,3 +51,39 @@ What I was hoping for was a simpler configuration and to reduce the number of de
 To clarify some points in the table, firstly, the dev server time is the time for both Middleman and Webpack to run and the site is available to view. The build time is not the full Netlify deploy time which includes downloading and extracting the cache, the Middleman build plus asset bundling and finally uploading the site. In this case, the time is purely for the Middleman build and asset bundling as it's a more consistent and relevant measure. 1225 is a crazy number of node modules given that I have a grand total of 24 devDependencies and dependencies!
 
 ## Webpack out, Vite in
+
+After doing some research I decided that [Vite](https://vitejs.dev/) looked like a great option with no bundling required for local dev work and [Rollup](https://rollupjs.org/guide/en/) for production bundling along with [esbuild](https://esbuild.github.io/) for transpilation and minification.
+
+If you have time it would be worth reading [this post](/blog/building-view-components-in-middleman/) on how I'm using View Components in my Middleman setup as it gives some context around my current Webpack setup.
+
+So to start with I needed to install vite with ```yarn add vite --dev``` and then change my scripts in ```package.json`:
+
+<% highlight code: "json" do %>
+"scripts": {
+  "dev": "vite dev",
+  "build": "vite build"
+}
+<% end %>
+
+and my external pipeline shouldn't need much changed in ```config.rb```
+
+<% highlight code: "ruby" do %>
+activate :external_pipeline,
+         name: :vite,
+         command: build? ? "yarn run build" : "yarn run dev",
+         source: ".tmp/dist",
+         latency: 1
+<% end %>
+
+Or will it? At this point I noticed the ```source: ".tmp/dist"``` part of the setup and it reminded me that for the external pipeline to work it needs the bundler to output files in dev to a temp folder. This meant that the no bundle approach of Vite in dev wouldn't work.
+
+As a temporary measure I changed the ```dev``` script to
+
+<% highlight code: "json" do %>
+"scripts": {
+  "dev": "vite build --watch",
+  "build": "vite build"
+}
+<% end %>
+
+so Vite would bundle my JS and CSS but also rebundle and reload the page when I changed JS or CSS in development. I had an idea to work on at the end of this to write some Rack middleware that could intercept requests to JS and CSS file and send them to Vite so that the original technique would work but for now I just wanted to get it all working and maybe this would be faster anyway in comparison to Webpack.
