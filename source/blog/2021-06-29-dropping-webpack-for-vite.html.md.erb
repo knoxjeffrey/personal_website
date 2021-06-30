@@ -116,3 +116,17 @@ module.exports = {
   ]
 }
 <% end %>
+
+The ```postcss-import``` is pretty self explanatory for SASS users but ```postcss-import-ext-glob``` was added to allow me to use a glob syntax to import all of the CSS files in my components directory. The ```components_css.css``` file is pretty simple
+
+<% highlight code: "css" do %>
+@import-glob "../../../components/**/*.css" 
+<% end %>
+
+I needed to do something similar to import all of my JS files from the component directory in a ```components.js``` file
+
+<% highlight code: "javascript" do %>
+const modules = import.meta.globEager("../../components/**/*.js")
+<% end %>
+
+If you've read my view components blog post you'll see that I was previously doing these glob imports within in my ```webpack.config.js``` file.
