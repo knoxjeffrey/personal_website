@@ -186,3 +186,19 @@ export default ({ command, mode }) => {
   }
 }
 <% end %>
+
+At the top of the file I check if the mode is currently in development so I can decide whether or not to minify my JavaScript and if it's in production then I need to state that I was to use esbuild for transpiling and minifying plus add a plugins section for the build
+
+<% highlight code: "javascript" do %>
+plugins: [
+  esbuild({
+    target: "es2015"
+  })
+],
+<% end %>
+
+Turning off ```brotliSize``` speeds up the build by not displaying the compressed size of file in the build output. ```emptyOutDir``` means the output directory defined in ```outDir``` if cleared out when the build starts. 
+
+```rollupOptions.input``` is straight forward and gives a name for the bundled assets and a path. For the ```output```, ```assetFileNames``` is the output of the non JS files which in my case will just be for CSS. The ```chunkFileNames``` is the output config for chunks which are common modules shared between multiple ```input``` files that get extracted so the same code isn't repeated across multiple bundled files. The ```entryFileNames``` is simply the config for how to output the JS files set in ```input```.
+
+I've set the ```format``` as ```es``` to output in es format and finally I've added some additional config for ```manualChunks``` so that ```crypto-es``` gets extracted into it's own chunk.
