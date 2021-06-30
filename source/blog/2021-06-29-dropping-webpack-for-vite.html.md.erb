@@ -117,7 +117,7 @@ module.exports = {
 }
 <% end %>
 
-The ```postcss-import``` is pretty self explanatory for SASS users but ```postcss-import-ext-glob``` was added to allow me to use a glob syntax to import all of the CSS files in my components directory. The ```components_css.css``` file is pretty simple
+The ```postcss-import``` is pretty self explanatory for SASS users but I added ```postcss-import-ext-glob``` to allow me to use a glob syntax to import all of the CSS files in my components directory. The ```components_css.css``` file is pretty simple
 
 <% highlight code: "css" do %>
 @import-glob "../../../components/**/*.css" 
@@ -130,3 +130,59 @@ const modules = import.meta.globEager("../../components/**/*.js")
 <% end %>
 
 If you've read my view components blog post you'll see that I was previously doing these glob imports within in my ```webpack.config.js``` file.
+
+## Vite config
+The final piece of the puzzle was the ```vite.config.js``` file but first I installed ```rollup-plugin-esbuild``` so esbuild is used in the build rather than Terser.
+
+<% highlight code: "javascript" do %>
+import esbuild from "rollup-plugin-esbuild"
+
+export default ({ command, mode }) => {
+  let minifySetting
+
+  if (mode === "development") {
+    minifySetting = false  
+  } else {
+    minifySetting = "esbuild" 
+  }
+
+  return {
+    build: {
+      brotliSize: false,
+      emptyOutDir: true,
+      minify: minifySetting,
+      outDir: ".tmp/dist/assets",
+      rollupOptions: {
+        input: {
+          "components": "./source/assets/javascripts/components.js",
+          "main": "./source/assets/javascripts/main.js",
+          "game": "./source/assets/javascripts/game/game.js",
+          "commento_css": "./source/assets/stylesheets/commento.css",
+          "components_css": "./source/assets/stylesheets/components.css",
+          "game_css": "./source/assets/stylesheets/game.css",
+          "main_css": "./source/assets/stylesheets/main.css",
+        },
+        output: {
+          assetFileNames: "[name].css",
+          chunkFileNames: "[name].js",
+          entryFileNames: "[name].js",
+          format: "es",
+          manualChunks: {
+            game_vendor: ["crypto-es"]
+          }
+        },
+        plugins: [
+          esbuild({
+            target: "es2015"
+          })
+        ],
+      },
+      sourcemap: true,
+      manifest: true
+    },
+    server: {
+      port: "3333"
+    }
+  }
+}
+<% end %>
