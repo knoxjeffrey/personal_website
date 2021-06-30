@@ -166,10 +166,7 @@ export default ({ command, mode }) => {
           assetFileNames: "[name].css",
           chunkFileNames: "[name].js",
           entryFileNames: "[name].js",
-          format: "es",
-          manualChunks: {
-            game_vendor: ["crypto-es"]
-          }
+          format: "es"
         },
         plugins: [
           esbuild({
@@ -201,4 +198,4 @@ Turning off ```brotliSize``` speeds up the build by not displaying the compresse
 
 ```rollupOptions.input``` is straight forward and gives a name for the bundled assets and a path. For the ```output```, ```assetFileNames``` is the output of the non JS files which in my case will just be for CSS. The ```chunkFileNames``` is the output config for chunks which are common modules shared between multiple ```input``` files that get extracted so the same code isn't repeated across multiple bundled files. The ```entryFileNames``` is simply the config for how to output the JS files set in ```input```.
 
-I've set the ```format``` as ```es``` to output in es format and finally I've added some additional config for ```manualChunks``` so that ```crypto-es``` gets extracted into it's own chunk.
+I've set the ```format``` as ```es``` to output in es format, turned on sourcemaps and manifest files as well as setting the port for the Vite server.
