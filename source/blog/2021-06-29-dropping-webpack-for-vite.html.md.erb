@@ -77,7 +77,7 @@ activate :external_pipeline,
 
 Or will it? At this point I noticed the ```source: ".tmp/dist"``` part of the setup and it reminded me that for the external pipeline to work it needs the bundler to output files in dev to a temp folder. This meant that the no bundle approach of Vite in dev wouldn't work.
 
-As a temporary measure I changed the ```dev``` script to
+As a temporary measure I changed the ```dev``` script
 
 <% highlight code: "json" do %>
 "scripts": {
@@ -86,4 +86,33 @@ As a temporary measure I changed the ```dev``` script to
 }
 <% end %>
 
-so Vite would bundle my JS and CSS but also rebundle and reload the page when I changed JS or CSS in development. I had an idea to work on at the end of this to write some Rack middleware that could intercept requests to JS and CSS file and send them to Vite so that the original technique would work but for now I just wanted to get it all working and maybe this would be faster anyway in comparison to Webpack.
+so Vite would bundle my JS and CSS but also rebundle and reload the page when I changed JS or CSS in development. I had an idea to work on at the end of this to write some Rack middleware that could intercept requests to JS and CSS files and send them to the Vite dev server so that the original technique would work but for now I just wanted to get it all working and maybe this would be faster anyway in comparison to Webpack.
+
+## PostCSS
+Vite also works with PostCSS out of the box. I was already using PostCSS with this ```postcss.config.js``` config
+
+<% highlight code: "javascript" do %>
+module.exports = {
+  plugins: [
+    require("postcss-preset-env")({
+      browsers: "last 2 versions",
+    })
+  ]
+}
+<% end %>
+
+After doing a bit more reading about PostCSS I realise that there were many plugins to extend the functionality and allow it to do much of what I would be needing from SCSS.
+
+My SCSS files at this point were really just pure CSS anyway with some use of ```@import``` so it was pretty easy to make the switch and I added some new dependencies ```yarn add postcss-import postcss-import-ext-glob --dev``` and updated my config file
+
+<% highlight code: "javascript" do %>
+module.exports = {
+  plugins: [
+    require("postcss-import-ext-glob"),
+    require("postcss-import"),
+    require("postcss-preset-env")({
+      browsers: "last 2 versions",
+    })
+  ]
+}
+<% end %>
