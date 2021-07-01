@@ -56,7 +56,7 @@ After doing some research I decided that [Vite](https://vitejs.dev/) looked like
 
 If you have time it would be worth reading [this post](/blog/building-view-components-in-middleman/) on how I'm using View Components in my Middleman setup as it gives some context around my current Webpack setup.
 
-So to start with I needed to install vite with ```yarn add vite --dev``` and then change my scripts in ```package.json`:
+So to start with I needed to install vite with `yarn add vite --dev` and then change my scripts in \`package.json\`:
 
 <% highlight code: "json" do %>
 "scripts": {
@@ -65,7 +65,7 @@ So to start with I needed to install vite with ```yarn add vite --dev``` and the
 }
 <% end %>
 
-and my external pipeline shouldn't need much changed in ```config.rb```
+and my external pipeline shouldn't need much changed in `config.rb`
 
 <% highlight code: "ruby" do %>
 activate :external_pipeline,
@@ -75,9 +75,9 @@ activate :external_pipeline,
          latency: 1
 <% end %>
 
-Or will it? At this point I noticed the ```source: ".tmp/dist"``` part of the setup and it reminded me that for the external pipeline to work it needs the bundler to output files in dev to a temp folder. This meant that the no bundle approach of Vite in dev wouldn't work.
+Or will it? At this point I noticed the `source: ".tmp/dist"` part of the setup and it reminded me that for the external pipeline to work it needs the bundler to output files in dev to a temp folder. This meant that the no bundle approach of Vite in dev wouldn't work.
 
-As a temporary measure I changed the ```dev``` script
+As a temporary measure I changed the `dev` script
 
 <% highlight code: "json" do %>
 "scripts": {
@@ -89,11 +89,12 @@ As a temporary measure I changed the ```dev``` script
 so Vite would bundle my JS and CSS but also rebundle and reload the page when I changed JS or CSS in development. I had an idea to work on at the end of this to write some Rack middleware that could intercept requests to JS and CSS files and send them to the Vite dev server so that the original technique would work but for now I just wanted to get it all working and maybe this would be faster anyway in comparison to Webpack.
 
 ## PostCSS
-Vite also works with PostCSS out of the box. I was already using PostCSS with this ```postcss.config.js``` config
+
+Vite also works with PostCSS out of the box. I was already using PostCSS with this `postcss.config.js` config
 
 <% highlight code: "javascript" do %>
 module.exports = {
-  plugins: [
+  plugins: \[
     require("postcss-preset-env")({
       browsers: "last 2 versions",
     })
@@ -103,11 +104,11 @@ module.exports = {
 
 After doing a bit more reading about PostCSS I realise that there were many plugins to extend the functionality and allow it to do much of what I would be needing from SCSS.
 
-My SCSS files at this point were really just pure CSS anyway with some use of ```@import``` so it was pretty easy to make the switch and I added some new dependencies ```yarn add postcss-import postcss-import-ext-glob --dev``` and updated my config file
+My SCSS files at this point were really just pure CSS anyway with some use of `@import` so it was pretty easy to make the switch and I added some new dependencies `yarn add postcss-import postcss-import-ext-glob --dev` and updated my config file
 
 <% highlight code: "javascript" do %>
 module.exports = {
-  plugins: [
+  plugins: \[
     require("postcss-import-ext-glob"),
     require("postcss-import"),
     require("postcss-preset-env")({
@@ -117,22 +118,23 @@ module.exports = {
 }
 <% end %>
 
-The ```postcss-import``` is pretty self explanatory for SASS users but I added ```postcss-import-ext-glob``` to allow me to use a glob syntax to import all of the CSS files in my components directory. The ```components_css.css``` file is pretty simple
+The `postcss-import` is pretty self explanatory for SASS users but I added `postcss-import-ext-glob` to allow me to use a glob syntax to import all of the CSS files in my components directory. The `components_css.css` file is pretty simple
 
 <% highlight code: "css" do %>
 @import-glob "../../../components/**/*.css" 
 <% end %>
 
-I needed to do something similar to import all of my JS files from the component directory in a ```components.js``` file
+I needed to do something similar to import all of my JS files from the component directory in a `components.js` file
 
 <% highlight code: "javascript" do %>
 const modules = import.meta.globEager("../../components/**/*.js")
 <% end %>
 
-If you've read my view components blog post you'll see that I was previously doing these glob imports within in my ```webpack.config.js``` file.
+If you've read my view components blog post you'll see that I was previously doing these glob imports within in my `webpack.config.js` file.
 
 ## Vite config
-The final piece of the puzzle was the ```vite.config.js``` file but first I installed ```rollup-plugin-esbuild``` so esbuild is used in the build rather than Terser.
+
+The final piece of the puzzle was the `vite.config.js` file but first I installed `rollup-plugin-esbuild` so esbuild is used in the build rather than Terser.
 
 <% highlight code: "javascript" do %>
 import esbuild from "rollup-plugin-esbuild"
@@ -141,7 +143,7 @@ export default ({ command, mode }) => {
   let minifySetting
 
   if (mode === "development") {
-    minifySetting = false  
+    minifySetting = false\
   } else {
     minifySetting = "esbuild" 
   }
@@ -163,12 +165,12 @@ export default ({ command, mode }) => {
           "main_css": "./source/assets/stylesheets/main.css",
         },
         output: {
-          assetFileNames: "[name].css",
-          chunkFileNames: "[name].js",
-          entryFileNames: "[name].js",
+          assetFileNames: "\[name].css",
+          chunkFileNames: "\[name].js",
+          entryFileNames: "\[name].js",
           format: "es"
         },
-        plugins: [
+        plugins: \[
           esbuild({
             target: "es2015"
           })
@@ -187,23 +189,82 @@ export default ({ command, mode }) => {
 At the top of the file I check if the mode is currently in development so I can decide whether or not to minify my JavaScript and if it's in production then I need to state that I was to use esbuild for transpiling and minifying plus add a plugins section for the build
 
 <% highlight code: "javascript" do %>
-plugins: [
+plugins: \[
   esbuild({
     target: "es2015"
   })
 ],
 <% end %>
 
-Turning off ```brotliSize``` speeds up the build by not displaying the compressed size of file in the build output. ```emptyOutDir``` means the output directory defined in ```outDir``` if cleared out when the build starts. 
+Turning off `brotliSize` speeds up the build by not displaying the compressed size of file in the build output. `emptyOutDir` means the output directory defined in `outDir` if cleared out when the build starts. 
 
-```rollupOptions.input``` is straight forward and gives a name for the bundled assets and a path. For the ```output```, ```assetFileNames``` is the output of the non JS files which in my case will just be for CSS. The ```chunkFileNames``` is the output config for chunks which are common modules shared between multiple ```input``` files that get extracted so the same code isn't repeated across multiple bundled files. The ```entryFileNames``` is simply the config for how to output the JS files set in ```input```.
+`rollupOptions.input` is straight forward and gives a name for the bundled assets and a path. For the `output`, `assetFileNames` is the output of the non JS files which in my case will just be for CSS. The `chunkFileNames` is the output config for chunks which are common modules shared between multiple `input` files that get extracted so the same code isn't repeated across multiple bundled files. The `entryFileNames` is simply the config for how to output the JS files set in `input`.
 
-I've set the ```format``` as ```es``` to output in es format, turned on sourcemaps and manifest files as well as setting the port for the Vite server.
+I've set the `format` as `es` to output in es format, turned on sourcemaps and manifest files as well as setting the port for the Vite server.
 
 ## Running the dev server
-So now I started the Middleman server which also starts the Vite dev server through the external pipeline config and I get my first errors. I haven't added ```type: "module"``` to all of my script tags to make import/export work. I updated all of the JavaScript tag helpers to look similar to this
+
+So now I started the Middleman server which also starts the Vite dev server through the external pipeline config and I got my first errors. I haven't added `type: "module"` to all of my script tags to make import/export work. I updated all of the JavaScript tag helpers to look similar to this
 
 <% highlight code: "ruby" do %>
 <%= javascript_include_tag "game", type: "module", defer: true %>
 <% end %>
 
+Now it all works! Well, apart from an issue when I made changes to my assets which does the re-bundling but then all the CSS files got dropped from the bundle meaning I would have to restart the server on every asset change which is pretty rubbish. It looks like this issue has been fixed now though with this [PR](https://github.com/vitejs/vite/pull/3887).
+
+## Middleman build
+
+In my Middleman build config I add a setting the for asset hashing and minifying HTML
+
+<% highlight code: "ruby" do %>
+configure :build do
+  activate :asset_hash
+  activate :minify_html do |config|
+    config.remove_quotes = false
+    config.remove_input_attributes = false
+    config.remove_style_attributes = false
+    config.remove_link_attributes = false
+  end
+<% end %>
+
+and it turns out this was causing a problem with the final JS bundle. When I pushed my changes up to Netlify I was getting an error in the console:
+
+<% highlight code: "bash" do %>
+Uncaught TypeError: Failed to resolve module specifier "controller-ed1223ae.js". Relative references must start with either "/", "./", or "../".
+<% end %>
+
+When I look in the bundled code of one of my JS files I could see it starting with ```import{C as F,A as j}from"controller-ed1223ae.js"``` which is missing the ```./``` from the start. If I remove ```activate :asset_hash``` from the config then I get my import correctly as ``````import{C as F,A as j}from"controller.js"``` although I lose the asset hashing.
+
+To fix this so I can still asset hash, I added a new config line right after ```activate :asset_hash```
+
+<% highlight code: "ruby" do %>
+activate :asset_hash_import_from
+<% end %>
+
+and added ```require "./lib/asset_hash_import_from"``` to the top of the config file.
+
+I created this as a new Middleman extension to be triggered after a Middleman build
+
+<% highlight code: "ruby" do %>
+class AssetHashImportFrom < ::Middleman::Extension
+
+  def after_build
+    Pathname.new("./build/assets").children.each do |entry|
+      next if entry.directory?
+      next unless entry.extname == ".js"
+      # load the file as a string
+      javascript_content = entry.read
+      # fixes the issues where the asset hash strips the "./" from the start of the file
+      filtered_javascript_content = javascript_content.gsub(/from"(.+?\.js)"/) { "from'./#{$1}'" }
+      # write the changes
+      entry.open("w") do |f|
+        f.write(filtered_javascript_content)
+      end
+    end
+  end
+end
+
+::Middleman::Extensions.register(:asset_hash_import_from, AssetHashImportFrom)
+<% end %>
+
+and simply targets my built assets and fixes up those imports to add the ```./``` to the start. Send that off to Netlify and it all works!
