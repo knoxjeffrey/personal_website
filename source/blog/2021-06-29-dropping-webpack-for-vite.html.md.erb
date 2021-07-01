@@ -270,7 +270,7 @@ and simply targets my built assets and fixes up those imports to add the `./` to
 
 ## Webpack Purge
 
-With Vite at least working (although with improvements to be made), it was time to remove all the Webpack and Babel related code. I could drop the \`\`\`.babelrc\`\`\` and \`\`\`webpack.config.js\`\`\` files and then remove the following packages
+With Vite at least working (although with improvements to be made), it was time to remove all the Webpack and Babel related code. I could drop the ```.babelrc``` and ```webpack.config.js``` files and then remove the following packages
 
 * @babel/core
 * @babel/plugin-transform-runtime
@@ -296,3 +296,51 @@ Deploy again and now my Jest tests failed during the Netlify build because I no 
 
 With that done, everything now works so it's time to do a comparison against Webpack to see if this has achieved the goal of reducing the number of dependencies and a faster dev server and build
 
+<% table caption: "" do %>
+  <% table_body do %>
+    <tr>
+      <th>Dependencies</th>
+      <td>1054</td>
+    </tr>
+    <tr>
+      <th>Dev server time</th>
+      <td>6.43s</td>
+    </tr>
+    <tr>
+      <th>Netlify build time</th>
+      <td>12.45s</td>
+    </tr>
+    <tr>
+      <th>Netlify cache size</th>
+      <td>234.9MB</td>
+    </tr>
+    <tr>
+      <th>Javascript files</th>
+      <td></td>
+    </tr>
+    <tr>
+      <th>main.js</th>
+      <td>3.3kb</td>
+    </tr>
+    <tr>
+      <th>components.js</th>
+      <td>10.5kb</td>
+    </tr>
+    <tr>
+      <th>game.js</th>
+      <td>1kb</td>
+    </tr>
+    <tr>
+      <th>controller.js</th>
+      <td>20.9kb</td>
+    </tr>
+    <tr>
+      <th>game_vendor.js</th>
+      <td>4.7kb</td>
+    </tr>
+  <% end %>
+<% end %>
+
+That's looking very promising and certainly worth pursuing to spend more time improving things:
+
+* 
