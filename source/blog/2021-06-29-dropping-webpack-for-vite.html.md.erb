@@ -213,6 +213,7 @@ So now I started the Middleman server which also starts the Vite dev server thro
 Now it all works! Well, apart from an issue when I made changes to my assets which does the re-bundling but then all the CSS files got dropped from the bundle meaning I would have to restart the server on every asset change which is pretty rubbish. It looks like this issue has been fixed now though with this [PR](https://github.com/vitejs/vite/pull/3887).
 
 ## Middleman build
+
 In my Middleman build config I add a setting the for asset hashing and minifying HTML
 
 <% highlight code: "ruby" do %>
@@ -270,7 +271,7 @@ and simply targets my built assets and fixes up those imports to add the `./` to
 
 ## Webpack Purge
 
-With Vite at least working (although with improvements to be made), it was time to remove all the Webpack and Babel related code. I could drop the ```.babelrc``` and ```webpack.config.js``` files and then remove the following packages
+With Vite at least working (although with improvements to be made), it was time to remove all the Webpack and Babel related code. I could drop the `.babelrc` and `webpack.config.js` files and then remove the following packages
 
 * @babel/core
 * @babel/plugin-transform-runtime
@@ -286,11 +287,11 @@ With Vite at least working (although with improvements to be made), it was time 
 * webpack-cli
 * webpack-dev-server
 
-Deploy again and now my Jest tests failed during the Netlify build because I no longer had babel to perform transforms for my tests. Turns out this is easy to fix by ```yarn install esbuild-jest --dev``` and adding the following to the end of your Jest config in ```package.json```
+Deploy again and now my Jest tests failed during the Netlify build because I no longer had babel to perform transforms for my tests. Turns out this is easy to fix by `yarn install esbuild-jest --dev` and adding the following to the end of your Jest config in `package.json`
 
 <% highlight code: "json" do %>
 "transform": { 
-  "\\.js?$": "esbuild-jest"
+  "\.js?$": "esbuild-jest"
 }
 <% end %>
 
@@ -349,3 +350,6 @@ That's looking very promising and certainly worth pursuing to spend more time im
 * 39.5MB smaller - 17% improvement
 * 14.5kb less JavaScript shipped overall - 26% improvement
 
+At this point I wanted to come back to the dev server and work on a way to potentially use Rack Middleware to make the no bundle approach work. When I was researching this I came across [Vite Ruby](https://vite-ruby.netlify.app/) and I realised this looked to be a better solution for what I needed. In fact, it looked  very very good and it was time to park this PR and start a new one to implement Vite Ruby and then do a direct comparison. 
+
+In a similar fashion, I'm going to finish up on this post and you can check out my findings with Vite Ruby in my next post!
