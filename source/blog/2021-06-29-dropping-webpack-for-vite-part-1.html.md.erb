@@ -1,11 +1,11 @@
 ---
-title: Dropping Webpack for Vite
+title: Dropping Webpack for Vite Part 1
 date: 2021-06-29 22:23
 tags:
   - Software engineering
   - JavaScript
 ---
-I have been using the [Middleman external pipeline](https://middlemanapp.com/advanced/external-pipeline/) with [Webpack](https://webpack.js.org/) to bundle my JavaScript and SCSS files and this approach has been working well after I worked my way through all of the complexities of the initial Webpack configuration. But with so many bundlers available at the moment I thought it was time to see how things could be improved.
+I have been using the [Middleman external pipeline](https://middlemanapp.com/advanced/external-pipeline/) with [Webpack](https://webpack.js.org/) to bundle my JavaScript and SCSS files and this approach has been working well after I eventually worked my way through all of the complexities of the initial Webpack configuration. But with so many bundlers available at the moment I thought it was time to see how things could be improved.
 
 <!--more-->
 
@@ -48,7 +48,7 @@ What I was hoping for was a simpler configuration and to reduce the number of de
   <% end %>
 <% end %>
 
-To clarify some points in the table, firstly, the dev server time is the time for both Middleman and Webpack to run and the site is available to view. The build time is not the full Netlify deploy time which includes downloading and extracting the cache, the Middleman build plus asset bundling and finally uploading the site. In this case, the time is purely for the Middleman build and asset bundling as it's a more consistent and relevant measure. 1225 is a crazy number of node modules given that I have a grand total of 24 devDependencies and dependencies!
+To clarify some points in the table, firstly, the dev server time is the time for both Middleman and Webpack to run and the site is available to view. The build time is not the full Netlify deploy time which includes downloading and extracting the cache, the Middleman build plus asset bundling and finally uploading the site. In this case, the time is purely for the Middleman build and asset bundling as it's a more consistent and relevant measure. 1225 is a crazy number of node modules given that I have a grand total of 24 devDependencies and dependencies but that seems to be how things are with JavaScript!
 
 ## Webpack out, Vite in
 
@@ -102,7 +102,7 @@ module.exports = {
 }
 <% end %>
 
-After doing a bit more reading about PostCSS I realise that there were many plugins to extend the functionality and allow it to do much of what I would be needing from SCSS.
+After doing a bit more reading about PostCSS I realised that there were many plugins to extend the functionality and allow it to do much of what I would be needing from SCSS in the future.
 
 My SCSS files at this point were really just pure CSS anyway with some use of `@import` so it was pretty easy to make the switch and I added some new dependencies `yarn add postcss-import postcss-import-ext-glob --dev` and updated my config file
 
@@ -172,7 +172,12 @@ export default ({ command, mode }) => {
         },
         plugins: \[
           esbuild({
-            target: "es2015"
+            target: [
+              "chrome64",
+              "edge79",
+              "firefox62",
+              "safari11.1",
+            ]
           })
         ],
       },
@@ -186,17 +191,22 @@ export default ({ command, mode }) => {
 }
 <% end %>
 
-At the top of the file I check if the mode is currently in development so I can decide whether or not to minify my JavaScript and if it's in production then I need to state that I was to use esbuild for transpiling and minifying plus add a plugins section for the build
+At the top of the file I check if the mode is currently in development so I can decide whether or not to minify my JavaScript and if it's in production then I need to state that I want to use esbuild for transpiling and minifying plus add a plugins section for the build
 
 <% highlight code: "javascript" do %>
 plugins: \[
   esbuild({
-    target: "es2015"
+    target: [
+      "chrome64",
+      "edge79",
+      "firefox62",
+      "safari11.1",
+    ]
   })
 ],
 <% end %>
 
-Turning off `brotliSize` speeds up the build by not displaying the compressed size of file in the build output. `emptyOutDir` means the output directory defined in `outDir` if cleared out when the build starts. 
+Turning off `brotliSize` speeds up the build by not displaying the compressed size of file in the build output. `emptyOutDir` means the output directory defined in `outDir` is cleared out when the build starts. 
 
 `rollupOptions.input` is straight forward and gives a name for the bundled assets and a path. For the `output`, `assetFileNames` is the output of the non JS files which in my case will just be for CSS. The `chunkFileNames` is the output config for chunks which are common modules shared between multiple `input` files that get extracted so the same code isn't repeated across multiple bundled files. The `entryFileNames` is simply the config for how to output the JS files set in `input`.
 
@@ -233,7 +243,7 @@ and it turns out this was causing a problem with the final JS bundle. When I pus
 Uncaught TypeError: Failed to resolve module specifier "controller-ed1223ae.js". Relative references must start with either "/", "./", or "../".
 <% end %>
 
-When I look in the bundled code of one of my JS files I could see it starting with `import{C as F,A as j}from"controller-ed1223ae.js"` which is missing the `./` from the start. If I remove `activate :asset_hash` from the config then I get my import correctly as import{C as F,A as j}from"controller.js"` although I lose the asset hashing.
+When I look in the bundled code of one of my JS files I could see it starting with `import{C as F,A as j}from"controller-ed1223ae.js"` which is missing the `./` from the start. If I remove `activate :asset_hash` from the config then I get my import correctly as ```import{C as F,A as j}from"./controller.js"``` although I lose the asset hashing.
 
 To fix this so I can still asset hash, I added a new config line right after `activate :asset_hash`
 
@@ -295,7 +305,7 @@ Deploy again and now my Jest tests failed during the Netlify build because I no 
 }
 <% end %>
 
-With that done, everything now works so it's time to do a comparison against Webpack to see if this has achieved the goal of reducing the number of dependencies and a faster dev server and build
+With that done, everything now works so it's time to do a comparison against Webpack to see if this has achieved the goal of reducing the number of dependencies and a faster dev server and build.
 
 <% table caption: "" do %>
   <% table_body do %>
