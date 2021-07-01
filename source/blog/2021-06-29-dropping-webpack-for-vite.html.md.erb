@@ -285,3 +285,14 @@ With Vite at least working (although with improvements to be made), it was time 
 * webpack
 * webpack-cli
 * webpack-dev-server
+
+Deploy again and now my Jest tests failed during the Netlify build because I no longer had babel to perform transforms for my tests. Turns out this is easy to fix by ```yarn install esbuild-jest --dev``` and adding the following to the end of your Jest config in ```package.json```
+
+<% highlight code: "json" do %>
+"transform": { 
+  "\\.js?$": "esbuild-jest"
+}
+<% end %>
+
+With that done, everything now works so it's time to do a comparison against Webpack to see if this has achieved the goal of reducing the number of dependencies and a faster dev server and build
+
