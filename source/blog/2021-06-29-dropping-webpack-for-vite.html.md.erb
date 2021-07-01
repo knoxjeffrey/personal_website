@@ -213,7 +213,6 @@ So now I started the Middleman server which also starts the Vite dev server thro
 Now it all works! Well, apart from an issue when I made changes to my assets which does the re-bundling but then all the CSS files got dropped from the bundle meaning I would have to restart the server on every asset change which is pretty rubbish. It looks like this issue has been fixed now though with this [PR](https://github.com/vitejs/vite/pull/3887).
 
 ## Middleman build
-
 In my Middleman build config I add a setting the for asset hashing and minifying HTML
 
 <% highlight code: "ruby" do %>
@@ -233,15 +232,15 @@ and it turns out this was causing a problem with the final JS bundle. When I pus
 Uncaught TypeError: Failed to resolve module specifier "controller-ed1223ae.js". Relative references must start with either "/", "./", or "../".
 <% end %>
 
-When I look in the bundled code of one of my JS files I could see it starting with ```import{C as F,A as j}from"controller-ed1223ae.js"``` which is missing the ```./``` from the start. If I remove ```activate :asset_hash``` from the config then I get my import correctly as ``````import{C as F,A as j}from"controller.js"``` although I lose the asset hashing.
+When I look in the bundled code of one of my JS files I could see it starting with `import{C as F,A as j}from"controller-ed1223ae.js"` which is missing the `./` from the start. If I remove `activate :asset_hash` from the config then I get my import correctly as import{C as F,A as j}from"controller.js"` although I lose the asset hashing.
 
-To fix this so I can still asset hash, I added a new config line right after ```activate :asset_hash```
+To fix this so I can still asset hash, I added a new config line right after `activate :asset_hash`
 
 <% highlight code: "ruby" do %>
 activate :asset_hash_import_from
 <% end %>
 
-and added ```require "./lib/asset_hash_import_from"``` to the top of the config file.
+and added `require "./lib/asset_hash_import_from"` to the top of the config file.
 
 I created this as a new Middleman extension to be triggered after a Middleman build
 
@@ -255,7 +254,7 @@ class AssetHashImportFrom < ::Middleman::Extension
       # load the file as a string
       javascript_content = entry.read
       # fixes the issues where the asset hash strips the "./" from the start of the file
-      filtered_javascript_content = javascript_content.gsub(/from"(.+?\.js)"/) { "from'./#{$1}'" }
+      filtered_javascript_content = javascript_content.gsub(/from"(.+?.js)"/) { "from'./#{$1}'" }
       # write the changes
       entry.open("w") do |f|
         f.write(filtered_javascript_content)
@@ -267,4 +266,22 @@ end
 ::Middleman::Extensions.register(:asset_hash_import_from, AssetHashImportFrom)
 <% end %>
 
-and simply targets my built assets and fixes up those imports to add the ```./``` to the start. Send that off to Netlify and it all works!
+and simply targets my built assets and fixes up those imports to add the `./` to the start. Send that off to Netlify and it all works!
+
+## Webpack Purge
+
+With Vite at least working (although with improvements to be made), it was time to remove all the Webpack and Babel related code. I could drop the \`\`\`.babelrc\`\`\` and \`\`\`webpack.config.js\`\`\` files and then remove the following packages
+
+* @babel/core
+* @babel/plugin-transform-runtime
+* @babel/preset-env
+* babel-loader
+* clean-webpack-plugin
+* css-loader
+* mini-css-extract-plugin
+* node-sass
+* postcss-loader
+* terser-webpack-plugin
+* webpack
+* webpack-cli
+* webpack-dev-server
