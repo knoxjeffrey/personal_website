@@ -1,0 +1,365 @@
+---
+title: Dropping Webpack for Vite Part 1
+date: 2021-06-29 22:23
+tags:
+  - Software engineering
+  - JavaScript
+---
+I have been using the [Middleman external pipeline](https://middlemanapp.com/advanced/external-pipeline/) with [Webpack](https://webpack.js.org/) to bundle my JavaScript and SCSS files and this approach has been working well after I eventually worked my way through all of the complexities of the initial Webpack configuration. But with so many bundlers available at the moment I thought it was time to see how things could be improved.
+
+<!--more-->
+
+What I was hoping for was a simpler configuration and to reduce the number of dependencies installed so there is less effort required to patch them. A faster local dev server would also be a benefit, as would a faster build time. This is how I started the journey
+
+<% table caption: "" do %>
+  <% table_body do %>
+    <tr>
+      <th>Dependencies</th>
+      <td>1225</td>
+    </tr>
+    <tr>
+      <th>Dev server time</th>
+      <td>8.26s</td>
+    </tr>
+    <tr>
+      <th>Netlify build time</th>
+      <td>21.05s</td>
+    </tr>
+    <tr>
+      <th>Netlify cache size</th>
+      <td>234.9MB</td>
+    </tr>
+    <tr>
+      <th>Javascript files</th>
+      <td></td>
+    </tr>
+    <tr>
+      <th>main.js</th>
+      <td>24.5kb</td>
+    </tr>
+    <tr>
+      <th>components.js</th>
+      <td>14.7kb</td>
+    </tr>
+    <tr>
+      <th>game.js</th>
+      <td>15.6kb</td>
+    </tr>
+  <% end %>
+<% end %>
+
+To clarify some points in the table, firstly, the dev server time is the time for both Middleman and Webpack to run and the site is available to view. The build time is not the full Netlify deploy time which includes downloading and extracting the cache, the Middleman build plus asset bundling and finally uploading the site. In this case, the time is purely for the Middleman build and asset bundling as it's a more consistent and relevant measure. 1225 is a crazy number of node modules given that I have a grand total of 24 devDependencies and dependencies but that seems to be how things are with JavaScript!
+
+## Webpack out, Vite in
+
+After doing some research I decided that [Vite](https://vitejs.dev/) looked like a great option with no bundling required for local dev work and [Rollup](https://rollupjs.org/guide/en/) for production bundling along with [esbuild](https://esbuild.github.io/) for transpilation and minification.
+
+If you have time it would be worth reading [this post](/blog/building-view-components-in-middleman/) on how I'm using View Components in my Middleman setup as it gives some context around my current Webpack setup.
+
+So to start with I needed to install vite with `yarn add vite --dev` and then change my scripts in \`package.json\`:
+
+<% highlight code: "json" do %>
+"scripts": {
+  "dev": "vite dev",
+  "build": "vite build"
+}
+<% end %>
+
+and my external pipeline shouldn't need much changed in `config.rb`
+
+<% highlight code: "ruby" do %>
+activate :external_pipeline,
+         name: :vite,
+         command: build? ? "yarn run build" : "yarn run dev",
+         source: ".tmp/dist",
+         latency: 1
+<% end %>
+
+Or will it? At this point I noticed the `source: ".tmp/dist"` part of the setup and it reminded me that for the external pipeline to work it needs the bundler to output files in dev to a temp folder. This meant that the no bundle approach of Vite in dev wouldn't work.
+
+As a temporary measure I changed the `dev` script
+
+<% highlight code: "json" do %>
+"scripts": {
+  "dev": "vite build --watch",
+  "build": "vite build"
+}
+<% end %>
+
+so Vite would bundle my JS and CSS but also rebundle and reload the page when I changed JS or CSS in development. I had an idea to work on at the end of this to write some Rack middleware that could intercept requests to JS and CSS files and send them to the Vite dev server so that the original technique would work but for now I just wanted to get it all working and maybe this would be faster anyway in comparison to Webpack.
+
+## PostCSS
+
+Vite also works with PostCSS out of the box. I was already using PostCSS with this `postcss.config.js` config
+
+<% highlight code: "javascript" do %>
+module.exports = {
+  plugins: \[
+    require("postcss-preset-env")({
+      browsers: "last 2 versions",
+    })
+  ]
+}
+<% end %>
+
+After doing a bit more reading about PostCSS I realised that there were many plugins to extend the functionality and allow it to do much of what I would be needing from SCSS in the future.
+
+My SCSS files at this point were really just pure CSS anyway with some use of `@import` so it was pretty easy to make the switch and I added some new dependencies `yarn add postcss-import postcss-import-ext-glob --dev` and updated my config file
+
+<% highlight code: "javascript" do %>
+module.exports = {
+  plugins: \[
+    require("postcss-import-ext-glob"),
+    require("postcss-import"),
+    require("postcss-preset-env")({
+      browsers: "last 2 versions",
+    })
+  ]
+}
+<% end %>
+
+The `postcss-import` is pretty self explanatory for SASS users but I added `postcss-import-ext-glob` to allow me to use a glob syntax to import all of the CSS files in my components directory. The `components_css.css` file is pretty simple
+
+<% highlight code: "css" do %>
+@import-glob "../../../components/**/*.css" 
+<% end %>
+
+I needed to do something similar to import all of my JS files from the component directory in a `components.js` file
+
+<% highlight code: "javascript" do %>
+const modules = import.meta.globEager("../../components/**/*.js")
+<% end %>
+
+If you've read my view components blog post you'll see that I was previously doing these glob imports within in my `webpack.config.js` file.
+
+## Vite config
+
+The final piece of the puzzle was the `vite.config.js` file but first I installed `rollup-plugin-esbuild` so esbuild is used in the build rather than Terser.
+
+<% highlight code: "javascript" do %>
+import esbuild from "rollup-plugin-esbuild"
+
+export default ({ command, mode }) => {
+  let minifySetting
+
+  if (mode === "development") {
+    minifySetting = false\
+  } else {
+    minifySetting = "esbuild" 
+  }
+
+  return {
+    build: {
+      brotliSize: false,
+      emptyOutDir: true,
+      minify: minifySetting,
+      outDir: ".tmp/dist/assets",
+      rollupOptions: {
+        input: {
+          "components": "./source/assets/javascripts/components.js",
+          "main": "./source/assets/javascripts/main.js",
+          "game": "./source/assets/javascripts/game/game.js",
+          "commento_css": "./source/assets/stylesheets/commento.css",
+          "components_css": "./source/assets/stylesheets/components.css",
+          "game_css": "./source/assets/stylesheets/game.css",
+          "main_css": "./source/assets/stylesheets/main.css",
+        },
+        output: {
+          assetFileNames: "\[name].css",
+          chunkFileNames: "\[name].js",
+          entryFileNames: "\[name].js",
+          format: "es"
+        },
+        plugins: \[
+          esbuild({
+            target: [
+              "chrome64",
+              "edge79",
+              "firefox62",
+              "safari11.1",
+            ]
+          })
+        ],
+      },
+      sourcemap: true,
+      manifest: true
+    },
+    server: {
+      port: "3333"
+    }
+  }
+}
+<% end %>
+
+At the top of the file I check if the mode is currently in development so I can decide whether or not to minify my JavaScript and if it's in production then I need to state that I want to use esbuild for transpiling and minifying plus add a plugins section for the build
+
+<% highlight code: "javascript" do %>
+plugins: \[
+  esbuild({
+    target: [
+      "chrome64",
+      "edge79",
+      "firefox62",
+      "safari11.1",
+    ]
+  })
+],
+<% end %>
+
+Turning off `brotliSize` speeds up the build by not displaying the compressed size of file in the build output. `emptyOutDir` means the output directory defined in `outDir` is cleared out when the build starts. 
+
+`rollupOptions.input` is straight forward and gives a name for the bundled assets and a path. For the `output`, `assetFileNames` is the output of the non JS files which in my case will just be for CSS. The `chunkFileNames` is the output config for chunks which are common modules shared between multiple `input` files that get extracted so the same code isn't repeated across multiple bundled files. The `entryFileNames` is simply the config for how to output the JS files set in `input`.
+
+I've set the `format` as `es` to output in es format, turned on sourcemaps and manifest files as well as setting the port for the Vite server.
+
+## Running the dev server
+
+So now I started the Middleman server which also starts the Vite dev server through the external pipeline config and I got my first errors. I haven't added `type: "module"` to all of my script tags to make import/export work. I updated all of the JavaScript tag helpers to look similar to this
+
+<% highlight code: "ruby" do %>
+<%= javascript_include_tag "game", type: "module", defer: true %>
+<% end %>
+
+Now it all works! Well, apart from an issue when I made changes to my assets which does the re-bundling but then all the CSS files got dropped from the bundle meaning I would have to restart the server on every asset change which is pretty rubbish. It looks like this issue has been fixed now though with this [PR](https://github.com/vitejs/vite/pull/3887).
+
+## Middleman build
+
+In my Middleman build config I add a setting the for asset hashing and minifying HTML
+
+<% highlight code: "ruby" do %>
+configure :build do
+  activate :asset_hash
+  activate :minify_html do |config|
+    config.remove_quotes = false
+    config.remove_input_attributes = false
+    config.remove_style_attributes = false
+    config.remove_link_attributes = false
+  end
+<% end %>
+
+and it turns out this was causing a problem with the final JS bundle. When I pushed my changes up to Netlify I was getting an error in the console:
+
+<% highlight code: "bash" do %>
+Uncaught TypeError: Failed to resolve module specifier "controller-ed1223ae.js". Relative references must start with either "/", "./", or "../".
+<% end %>
+
+When I look in the bundled code of one of my JS files I could see it starting with `import{C as F,A as j}from"controller-ed1223ae.js"` which is missing the `./` from the start. If I remove `activate :asset_hash` from the config then I get my import correctly as ```import{C as F,A as j}from"./controller.js"``` although I lose the asset hashing.
+
+To fix this so I can still asset hash, I added a new config line right after `activate :asset_hash`
+
+<% highlight code: "ruby" do %>
+activate :asset_hash_import_from
+<% end %>
+
+and added `require "./lib/asset_hash_import_from"` to the top of the config file.
+
+I created this as a new Middleman extension to be triggered after a Middleman build
+
+<% highlight code: "ruby" do %>
+class AssetHashImportFrom < ::Middleman::Extension
+
+  def after_build
+    Pathname.new("./build/assets").children.each do |entry|
+      next if entry.directory?
+      next unless entry.extname == ".js"
+      # load the file as a string
+      javascript_content = entry.read
+      # fixes the issues where the asset hash strips the "./" from the start of the file
+      filtered_javascript_content = javascript_content.gsub(/from"(.+?.js)"/) { "from'./#{$1}'" }
+      # write the changes
+      entry.open("w") do |f|
+        f.write(filtered_javascript_content)
+      end
+    end
+  end
+end
+
+::Middleman::Extensions.register(:asset_hash_import_from, AssetHashImportFrom)
+<% end %>
+
+and simply targets my built assets and fixes up those imports to add the `./` to the start. Send that off to Netlify and it all works!
+
+## Webpack Purge
+
+With Vite at least working (although with improvements to be made), it was time to remove all the Webpack and Babel related code. I could drop the `.babelrc` and `webpack.config.js` files and then remove the following packages
+
+* @babel/core
+* @babel/plugin-transform-runtime
+* @babel/preset-env
+* babel-loader
+* clean-webpack-plugin
+* css-loader
+* mini-css-extract-plugin
+* node-sass
+* postcss-loader
+* terser-webpack-plugin
+* webpack
+* webpack-cli
+* webpack-dev-server
+
+Deploy again and now my Jest tests failed during the Netlify build because I no longer had babel to perform transforms for my tests. Turns out this is easy to fix by `yarn install esbuild-jest --dev` and adding the following to the end of your Jest config in `package.json`
+
+<% highlight code: "json" do %>
+"transform": { 
+  "\.js?$": "esbuild-jest"
+}
+<% end %>
+
+With that done, everything now works so it's time to do a comparison against Webpack to see if this has achieved the goal of reducing the number of dependencies and a faster dev server and build.
+
+<% table caption: "" do %>
+  <% table_body do %>
+    <tr>
+      <th>Dependencies</th>
+      <td>1054</td>
+    </tr>
+    <tr>
+      <th>Dev server time</th>
+      <td>6.43s</td>
+    </tr>
+    <tr>
+      <th>Netlify build time</th>
+      <td>12.45s</td>
+    </tr>
+    <tr>
+      <th>Netlify cache size</th>
+      <td>195.5MB</td>
+    </tr>
+    <tr>
+      <th>Javascript files</th>
+      <td></td>
+    </tr>
+    <tr>
+      <th>main.js</th>
+      <td>3.3kb</td>
+    </tr>
+    <tr>
+      <th>components.js</th>
+      <td>10.5kb</td>
+    </tr>
+    <tr>
+      <th>game.js</th>
+      <td>1kb</td>
+    </tr>
+    <tr>
+      <th>controller.js</th>
+      <td>20.9kb</td>
+    </tr>
+    <tr>
+      <th>game_vendor.js</th>
+      <td>4.7kb</td>
+    </tr>
+  <% end %>
+<% end %>
+
+That's looking very promising and certainly worth pursuing to spend more time improving things:
+
+* 171 fewer dependencies - 14% improvement
+* 1.83s faster dev server - 22% improvement
+* 8.6s faster build - 41% improvement
+* 39.5MB smaller - 17% improvement
+* 14.5kb less JavaScript shipped overall - 26% improvement
+
+At this point I wanted to come back to the dev server and work on a way to potentially use Rack Middleware to make the no bundle approach work. When I was researching this I came across [Vite Ruby](https://vite-ruby.netlify.app/) and I realised this looked to be a better solution for what I needed. In fact, it looked  very very good and it was time to park this PR and start a new one to implement Vite Ruby and then do a direct comparison. 
+
+In a similar fashion, I'm going to finish up on this post and you can check out my findings with Vite Ruby in my next post!
