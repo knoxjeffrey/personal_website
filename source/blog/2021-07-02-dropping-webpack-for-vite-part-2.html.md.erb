@@ -43,9 +43,9 @@ helpers VitePadrino::TagHelpers
 
 I also had to swap all of my instances of `javascript_include_tag`, `stylesheet_link_tag` and `asset_path` with `vite_javascript_tag`, `vite_stylesheet_tag` and `vite_asset_path` respectively. Also, to make the hot module reloading work you simply have to add `<%= vite_client_tag %>` somewhere so that it will be picked up on all pages.
 
-Vite Ruby is similar in approach to [Webpacker](https://edgeguides.rubyonrails.org/webpacker.html) with convention over configuration and all entry point assets are placed in ```frontend/entrypoints```. You can read in my [previous post](/blog/dropping-webpack-for-vite-part-1/) how I changed the configuration of my assets to use glob imports from within the asset files themselves rather than using Webpack so I performed the same setup for this. Therefore it was pretty simple to move my assets to the new ```frontend/entrypoints``` folder and all the other required assets under the ```frontend``` folder.
+Vite Ruby is similar in approach to [Webpacker](https://edgeguides.rubyonrails.org/webpacker.html) with convention over configuration and all entry point assets are placed in `frontend/entrypoints`. You can read in my [previous post](/blog/dropping-webpack-for-vite-part-1/) how I changed the configuration of my assets to use glob imports from within the asset files themselves rather than using Webpack so I performed the same setup for this. Therefore it was pretty simple to move my assets to the new `frontend/entrypoints` folder and all the other required assets under the `frontend` folder.
 
-Vite Ruby automatically creates a ```config/vite.json``` file as part of the installer and mine used the defaults settings except for adding ```"watchAdditionalPaths": \["components/\*\*/*"]``` so the dev server would automatically reload the page when I make changes in my assets in the components folder which is where I have my view components.
+Vite Ruby automatically creates a `config/vite.json` file as part of the installer and mine used the defaults settings except for adding `"watchAdditionalPaths": \["components/\*\*/*"]` so the dev server would automatically reload the page when I make changes in my assets in the components folder which is where I have my view components.
 
 <% highlight code: "json" do %>
 {
@@ -66,7 +66,7 @@ Vite Ruby automatically creates a ```config/vite.json``` file as part of the ins
 }
 <% end %>
 
-My ```vite.config.js``` is stripped down compared to the last post because of the Vite Ruby conventions so I don't need the input and output part of the configuration
+My `vite.config.js` is stripped down compared to the last post because of the Vite Ruby conventions so I don't need the input and output part of the configuration
 
 <% highlight code: "javascript" do %>
 import esbuild from "rollup-plugin-esbuild"
@@ -83,12 +83,12 @@ export default defineConfig({
       output: {
         format: "es",
         manualChunks: {
-          game_vendor: ["crypto-es"]
+          game_vendor: \["crypto-es"]
         }
       }
     }
   },
-  plugins: [
+  plugins: \[
     esbuild({
       target: [
         "chrome64",
@@ -103,4 +103,14 @@ export default defineConfig({
 })
 <% end %>
 
-The main difference you'll see from the last post is the addition of ```vite-plugin-ruby``` which I've added and setup to reload the page on every file change within the ```source``` folder which is really handy.
+The main difference you'll see from the last post is the addition of `vite-plugin-ruby` which I've added and setup to reload the page on every file change within the `source` folder which is really handy.
+
+## Drop Webpack
+
+With Vite Ruby setup I could remove all the Webpack configuration like I demonstrated in the previous post. I could also remove the Middleman external pipeline from ```config.rb``` as well as ```config[:css_dir]``` and ```config[:js_dir]``` and finally ```activate :asset_hash``` because all the hashing was now handled by Vite. Removing ```activate :asset_hash``` eliminated the bug I had in the previous post with the asset hashed path which was another bonus.
+
+I now have to run 2 commands to get things working in development
+* bin/vite dev
+* bundle exec middleman serve
+
+which normally can be a bit of a pain but I use 
