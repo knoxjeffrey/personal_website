@@ -23,7 +23,7 @@ gem "vite_padrino"
 gem "vite_ruby"
 <% end %>
 
-and then ```bundle install```. Then run the Vite Ruby installer ```bundle exec vite install``` and sets up all the necessary configuration as well as creating a demo JavaScript file.
+and then `bundle install`. Then run the Vite Ruby installer `bundle exec vite install` and sets up all the necessary configuration as well as creating a demo JavaScript file.
 
 The next thing to do was to get Middleman using the Vite Ruby DevServerProxy and the Padrino tag helpers
 
@@ -39,4 +39,68 @@ end
 helpers VitePadrino::TagHelpers
 <% end %>
 
-I also had to swap all of my instances of ```javascript_include_tag```, ```stylesheet_link_tag``` and ```asset_path``` with ```vite_javascript_tag```, ```vite_stylesheet_tag``` and ```vite_asset_path``` respectively.
+## Configuration
+
+I also had to swap all of my instances of `javascript_include_tag`, `stylesheet_link_tag` and `asset_path` with `vite_javascript_tag`, `vite_stylesheet_tag` and `vite_asset_path` respectively. Also, to make the hot module reloading work you simply have to add `<%= vite_client_tag %>` somewhere so that it will be picked up on all pages.
+
+Vite Ruby is similar in approach to [Webpacker](https://edgeguides.rubyonrails.org/webpacker.html) with convention over configuration and all entry point assets are placed in ```frontend/entrypoints```. You can read in my [previous post](/blog/dropping-webpack-for-vite-part-1/) how I changed the configuration of my assets to use glob imports from within the asset files themselves rather than using Webpack so I performed the same setup for this. Therefore it was pretty simple to move my assets to the new ```frontend/entrypoints``` folder and all the other required assets under the ```frontend``` folder.
+
+Vite Ruby automatically creates a ```config/vite.json``` file as part of the installer and mine used the defaults settings except for adding ```"watchAdditionalPaths": \["components/\*\*/*"]``` so the dev server would automatically reload the page when I make changes in my assets in the components folder which is where I have my view components.
+
+<% highlight code: "json" do %>
+{
+  "all": {
+    "publicDir": "source",
+    "sourceCodeDir": "frontend",
+    "watchAdditionalPaths": ["components/**/*"]
+  },
+  "development": {
+    "autoBuild": true,
+    "publicOutputDir": "vite-dev",
+    "port": 3036
+  },
+  "test": {
+    "autoBuild": true,
+    "publicOutputDir": "vite-test"
+  }
+}
+<% end %>
+
+My ```vite.config.js``` is stripped down compared to the last post because of the Vite Ruby conventions so I don't need the input and output part of the configuration
+
+<% highlight code: "javascript" do %>
+import esbuild from "rollup-plugin-esbuild"
+import FullReload from 'vite-plugin-full-reload'
+import { defineConfig } from "vite"
+import RubyPlugin from "vite-plugin-ruby"
+
+export default defineConfig({
+  build: {
+    brotliSize: false,
+    emptyOutDir: true,
+    minify: "esbuild",
+    rollupOptions: {
+      output: {
+        format: "es",
+        manualChunks: {
+          game_vendor: ["crypto-es"]
+        }
+      }
+    }
+  },
+  plugins: [
+    esbuild({
+      target: [
+        "chrome64",
+        "edge79",
+        "firefox62",
+        "safari11.1",
+      ]
+    }),
+    FullReload(["source/**/*"], { delay: 1000 }),
+    RubyPlugin(),
+  ]
+})
+<% end %>
+
+The main difference you'll see from the last post is the addition of ```vite-plugin-ruby``` which I've added and setup to reload the page on every file change within the ```source``` folder which is really handy.
