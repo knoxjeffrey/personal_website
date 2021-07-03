@@ -13,3 +13,30 @@ My [previous post](/blog/dropping-webpack-for-vite-part-1/) walked through my pr
 What was it that I saw in Vite Ruby that I thought could really help? It was the [DevServerProxy](https://github.com/ElMassimo/vite_ruby/blob/main/vite_ruby/lib/vite_ruby/dev_server_proxy.rb) which inherits from `Rack::Proxy` and relays asset requests to the Vite development server which is exactly what I thought I might need to write myself in order to make Vite work in development mode with no bundling. The best part was this was only a small part of it, with potentially less configuration required, helpers to make it work with Middleman and improved performance with module preloading imports within the bundled JavaScript assets.
 
 Vite Ruby is the core library but there was also a [Padrino Integration](https://vite-ruby.netlify.app/guide/padrino.html) which looked like it would help with Middleman and bring with it tag helpers, hot module reloading and smart output with module preloading as mentioned above. The [Middleman helper methods](https://middlemanapp.com/basics/helper-methods/) are all build upon [Padrino helpers](http://padrinorb.com/guides/application-helpers/overview/) so it looked like a good bet that this integration would work well.
+
+## Installation
+
+The first thing to do is add the new Gems
+
+<% highlight code: "ruby" do %>
+gem "vite_padrino"
+gem "vite_ruby"
+<% end %>
+
+and then ```bundle install```. Then run the Vite Ruby installer ```bundle exec vite install``` and sets up all the necessary configuration as well as creating a demo JavaScript file.
+
+The next thing to do was to get Middleman using the Vite Ruby DevServerProxy and the Padrino tag helpers
+
+<% highlight code: "ruby" do %>
+require "vite_ruby"
+require "vite_padrino/tag_helpers"
+
+...
+
+configure :development do
+  use ViteRuby::DevServerProxy, ssl_verify_none: true
+end
+helpers VitePadrino::TagHelpers
+<% end %>
+
+I also had to swap all of my instances of ```javascript_include_tag```, ```stylesheet_link_tag``` and ```asset_path``` with ```vite_javascript_tag```, ```vite_stylesheet_tag``` and ```vite_asset_path``` respectively.
