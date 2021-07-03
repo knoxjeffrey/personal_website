@@ -107,7 +107,7 @@ The main difference you'll see from the last post is the addition of `vite-plugi
 
 ## Drop Webpack
 
-With Vite Ruby setup I could remove all the Webpack configuration like I demonstrated in the previous post. I could also remove the Middleman external pipeline from `config.rb` as well as `config[:css_dir]` and `config[:js_dir]` and finally `activate :asset_hash` because all the hashing was now handled by Vite. Removing `activate :asset_hash` eliminated the bug I had in the previous post with the asset hashed path which was another bonus.
+With Vite Ruby setup I could remove all the Webpack configuration like I demonstrated in the previous post. I could also remove the Middleman external pipeline from `config.rb` as well as `config[:css_dir]` and `config[:js_dir]` and finally `activate :asset_hash` because all the hashing was now handled by Vite. Removing `activate :asset_hash` eliminated the bug I had in the previous post with the asset hashed path which was another bonus. Finally, my ```dev``` and ```build``` scripts could be removed from ```package.json```.
 
 ## Run in development
 
@@ -137,4 +137,4 @@ def asset_path(*args)
 end
 <% end %>
 
-and this sorted things out.
+and this sorted things out. Everything was working now and I felt it was a big improvement on where I ended up with the previous post. The next thing was to make some tweaks to the build.
