@@ -6,6 +6,8 @@ tags:
   - JavaScript
   - Netlify
 ---
-My [previous post](/blog/dropping-webpack-for-vite-part-1/) walked through my progress with swapping [Webapck](https://webpack.js.org/) for [Vite](https://vitejs.dev/) through the [Middleman external pipeline](https://middlemanapp.com/advanced/external-pipeline/). I was able to quickly see great performance improvements, reduced dev server and build times and a decent drop in the number of JavaScript dependencies. But there were still some issues and I knew I could improve things.
+My [previous post](/blog/dropping-webpack-for-vite-part-1/) walked through my progress with swapping [Webapck](https://webpack.js.org/) for [Vite](https://vitejs.dev/) using the [Middleman external pipeline](https://middlemanapp.com/advanced/external-pipeline/). I was able to quickly see great performance improvements, reduced dev server and build times and a decent drop in the number of JavaScript dependencies. But there were still some issues and I knew I could improve things. Especially when I discovered [Vite Ruby](https://vite-ruby.netlify.app/).
 
 <!--more-->
+
+What was it that I saw in Vite Ruby that I thought could really help? It was the [DevServerProxy](https://github.com/ElMassimo/vite_ruby/blob/main/vite_ruby/lib/vite_ruby/dev_server_proxy.rb) which inherits from ```Rack::Proxy``` and relays asset requests to the Vite development server which is exactly what I thought I might need to write myself in order to make Vite work in development mode with no bundling. The best part was this was only a small part of it, with potentially less configuration required, helpers to make it work with Middleman and improved performance with preloading imports within the bundled JavaScript assets.
