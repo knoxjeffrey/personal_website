@@ -167,3 +167,52 @@ which would instruct Netlify to cache the contents of the ```source/vite``` fold
 <% end %>
 
 which is where the information would be saved about the last build so Vite would know whether or not to rebuild the assets. Now I could remove ```rake vite:clobber``` from my build command and on the majority of my builds, Netlify simply pulls the assets from its cache rather than having to build from scratch.
+
+## Performance
+
+In the last post I gave the performance improvements using Vite over my Webpack setup and I'll do the same comparison below between Vite Ruby and Webpack.
+
+<% table caption: "" do %>
+  <% table_body do %>
+    <tr>
+      <th>Dependencies</th>
+      <td>1053</td>
+    </tr>
+    <tr>
+      <th>Dev server time</th>
+      <td>4.18s</td>
+    </tr>
+    <tr>
+      <th>Netlify build time</th>
+      <td>7.4s</td>
+    </tr>
+    <tr>
+      <th>Netlify cache size</th>
+      <td>199.1MB</td>
+    </tr>
+    <tr>
+      <th>Javascript files</th>
+      <td></td>
+    </tr>
+    <tr>
+      <th>main.js</th>
+      <td>15.8kb</td>
+    </tr>
+    <tr>
+      <th>components.js</th>
+      <td>10.5kb</td>
+    </tr>
+    <tr>
+      <th>game.js</th>
+      <td>1kb</td>
+    </tr>
+    <tr>
+      <th>controller.js</th>
+      <td>8.6kb</td>
+    </tr>
+    <tr>
+      <th>game_vendor.js</th>
+      <td>4.8kb</td>
+    </tr>
+  <% end %>
+<% end %>
