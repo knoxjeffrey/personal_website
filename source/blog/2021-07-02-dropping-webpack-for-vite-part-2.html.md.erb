@@ -138,3 +138,32 @@ end
 <% end %>
 
 and this sorted things out. Everything was working now and I felt it was a big improvement on where I ended up with the previous post. The next thing was to make some tweaks to the build.
+
+## Middleman build
+
+I had to add some additional config for my Middleman build on Netlify. Before running the middleman build command I had to run ```rake vite:clobber && bin/vite build``` to build the assets. I noticed that Vite was building in dev mode when I did this but this was fixed by passing in a ```RACK_ENV=production``` environment variable and this made Vite build in production mode.
+
+## Better Netlify build
+
+You'll notice that I was having to create my assets from scratch on every build even if they weren't changing. I new in Netlify there was a way to cache files between builds which I reckoned I could take advantage of to improve the speed of the build even further.
+
+To make this work easily, I added a new package ```yarn add netlify-plugin-cache --dev``` and added the following to the end of my ```netlify.toml``` file
+
+<% highlight code: "json" do %>
+[[plugins]]
+  package = "netlify-plugin-cache"
+    [plugins.inputs]
+    # Optional (but highly recommended). Defaults to [".cache"].
+    paths = ["source/vite"]
+<% end %>
+
+which would instruct Netlify to cache the contents of the ```source/vite``` folder between builds. I also added a new section to my ```config/vite.json``` file
+
+<% highlight code: "json" do %>
+{
+  "all": {
+    "buildCacheDir": "source/vite/last-build",
+    ...
+<% end %>
+
+which is where the information would be saved about the last build so Vite would know whether or not to rebuild the assets. Now I could remove ```rake vite:clobber``` from my build command and on the majority of my builds, Netlify simply pulls the assets from its cache rather than having to build from scratch.
