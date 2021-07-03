@@ -107,10 +107,34 @@ The main difference you'll see from the last post is the addition of `vite-plugi
 
 ## Drop Webpack
 
-With Vite Ruby setup I could remove all the Webpack configuration like I demonstrated in the previous post. I could also remove the Middleman external pipeline from ```config.rb``` as well as ```config[:css_dir]``` and ```config[:js_dir]``` and finally ```activate :asset_hash``` because all the hashing was now handled by Vite. Removing ```activate :asset_hash``` eliminated the bug I had in the previous post with the asset hashed path which was another bonus.
+With Vite Ruby setup I could remove all the Webpack configuration like I demonstrated in the previous post. I could also remove the Middleman external pipeline from `config.rb` as well as `config[:css_dir]` and `config[:js_dir]` and finally `activate :asset_hash` because all the hashing was now handled by Vite. Removing `activate :asset_hash` eliminated the bug I had in the previous post with the asset hashed path which was another bonus.
+
+## Run in development
 
 I now have to run 2 commands to get things working in development
+
 * bin/vite dev
 * bundle exec middleman serve
 
-which normally can be a bit of a pain but I use 
+which normally can be a bit of a pain but I use [overmind](https://github.com/DarthSim/overmind) and setup my ```Procfile.dev``` like so
+
+<% highlight code: "bash" do %>
+vite: bin/vite dev
+web: bundle exec middleman serve
+<% end %>
+
+and can run both servers with the one command ```overmind s``` but can still easily step into byebug for example by typing ```overmind connect web```.
+
+With that all set I ran ```overmind s``` and I immediately came across and error to do with ```asset_path``` which was part of the Vite Padrino tag helpers. It appears they are being passed only 1 argument in Vite Padrino whereas they should be passed a minimum of 2. It turns out the type wasn't being passed which would be something like ```:js```, ```:css```, etc. This was easy enough to quickly fix in my Middleman helpers by overriding ```asset_path``` before passing onto ```super```
+
+<% highlight code: "ruby" do %>
+def asset_path(*args)
+  if args.size == 1
+    super(File.extname(args[0]).delete(".").to_sym, args[0])
+  else
+    super(*args)
+  end
+end
+<% end %>
+
+and this sorted things out.
