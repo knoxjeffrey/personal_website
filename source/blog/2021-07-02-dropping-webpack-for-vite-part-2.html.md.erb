@@ -6,11 +6,11 @@ tags:
   - JavaScript
   - Netlify
 ---
-My [previous post](/blog/dropping-webpack-for-vite-part-1/) walked through my progress with swapping [Webapck](https://webpack.js.org/) for [Vite](https://vitejs.dev/) using the [Middleman external pipeline](https://middlemanapp.com/advanced/external-pipeline/). I was able to quickly see great performance improvements, reduced dev server and build times and a decent drop in the number of JavaScript dependencies. But there were still some issues and I knew I could improve things. Especially when I discovered [Vite Ruby](https://vite-ruby.netlify.app/).
+My [previous post](/blog/dropping-webpack-for-vite-part-1/) walked through my progress with swapping [Webapck](https://webpack.js.org/) for [Vite](https://vitejs.dev/) using the [Middleman external pipeline](https://middlemanapp.com/advanced/external-pipeline/). I was able to quickly see great performance improvements, reduced dev server and build times and a decent drop in the number of JavaScript dependencies. But there were still some issues and I knew I could improve things. Especially after I discovered [Vite Ruby](https://vite-ruby.netlify.app/).
 
 <!--more-->
 
-What was it that I saw in Vite Ruby that I thought could really help? It was the [DevServerProxy](https://github.com/ElMassimo/vite_ruby/blob/main/vite_ruby/lib/vite_ruby/dev_server_proxy.rb) which inherits from `Rack::Proxy` and relays asset requests to the Vite development server which is exactly what I thought I might need to write myself in order to make Vite work in development mode with no bundling. The best part was this was only a small part of it, with potentially less configuration required, helpers to make it work with Middleman and improved performance with module preloading imports within the bundled JavaScript assets.
+What was it that I saw in Vite Ruby that I thought could really help? It was the [DevServerProxy](https://github.com/ElMassimo/vite_ruby/blob/main/vite_ruby/lib/vite_ruby/dev_server_proxy.rb) which inherits from `Rack::Proxy` and relays asset requests to the Vite development server which is exactly what I thought I might need to write myself in order to make Vite work in development mode with no bundling. The best thing was that this was only a small part of it, with potentially less configuration required, helpers to make it work with Middleman and improved performance with module preloading imports within the bundled JavaScript assets.
 
 Vite Ruby is the core library but there was also a [Padrino Integration](https://vite-ruby.netlify.app/guide/padrino.html) which looked like it would help with Middleman and bring with it tag helpers, hot module reloading and smart output with module preloading as mentioned above. The [Middleman helper methods](https://middlemanapp.com/basics/helper-methods/) are all build upon [Padrino helpers](http://padrinorb.com/guides/application-helpers/overview/) so it looked like a good bet that this integration would work well.
 
@@ -23,7 +23,7 @@ gem "vite_padrino"
 gem "vite_ruby"
 <% end %>
 
-and then `bundle install`. Then run the Vite Ruby installer `bundle exec vite install` and sets up all the necessary configuration as well as creating a demo JavaScript file.
+and then `bundle install`. Then run the Vite Ruby installer `bundle exec vite install` which sets up all the necessary configuration as well as creating a demo JavaScript file.
 
 The next thing to do was to get Middleman using the Vite Ruby DevServerProxy and the Padrino tag helpers
 
@@ -39,13 +39,14 @@ end
 helpers VitePadrino::TagHelpers
 <% end %>
 
+
 ## Configuration
 
-I also had to swap all of my instances of `javascript_include_tag`, `stylesheet_link_tag` and `asset_path` with `vite_javascript_tag`, `vite_stylesheet_tag` and `vite_asset_path` respectively. Also, to make the hot module reloading work you simply have to add `<%= vite_client_tag %>` somewhere so that it will be picked up on all pages.
+I also had to swap all of my instances of `javascript_include_tag`, `stylesheet_link_tag` and `asset_path` with `vite_javascript_tag`, `vite_stylesheet_tag` and `vite_asset_path` respectively. Also, to make the hot module reloading work you simply have to add ```<%%= vite_client_tag %>``` somewhere so that it will be picked up on all pages.
 
-Vite Ruby is similar in approach to [Webpacker](https://edgeguides.rubyonrails.org/webpacker.html) with convention over configuration and all entry point assets are placed in `frontend/entrypoints`. You can read in my [previous post](/blog/dropping-webpack-for-vite-part-1/) how I changed the configuration of my assets to use glob imports from within the asset files themselves rather than using Webpack so I performed the same setup for this. Therefore it was pretty simple to move my assets to the new `frontend/entrypoints` folder and all the other required assets under the `frontend` folder.
+Vite Ruby is similar in approach to [Webpacker](https://edgeguides.rubyonrails.org/webpacker.html) with convention over configuration and all entry point assets are placed in `frontend/entrypoints`. You can read in my [previous post](/blog/dropping-webpack-for-vite-part-1/) how I changed the configuration of my assets to use glob imports from within the asset files themselves rather than using Webpack, as well as swapping from SCSS to PostCSS so I performed the same setup again for this test. Therefore it was pretty simple to move my assets to the new `frontend/entrypoints` folder and all the other required assets under the `frontend` folder.
 
-Vite Ruby automatically creates a `config/vite.json` file as part of the installer and mine used the defaults settings except for adding `"watchAdditionalPaths": \["components/\*\*/*"]` so the dev server would automatically reload the page when I make changes in my assets in the components folder which is where I have my view components.
+Vite Ruby automatically creates a `config/vite.json` file as part of the installer and mine used the default settings except for adding `"watchAdditionalPaths": ["components/**/*"]` so the dev server would automatically reload the page when I make changes in my assets in the components folder which is where I have my view components.
 
 <% highlight code: "json" do %>
 {
@@ -83,12 +84,12 @@ export default defineConfig({
       output: {
         format: "es",
         manualChunks: {
-          game_vendor: \["crypto-es"]
+          game_vendor: ["crypto-es"]
         }
       }
     }
   },
-  plugins: \[
+  plugins: [
     esbuild({
       target: [
         "chrome64",
@@ -225,7 +226,7 @@ Again, there looks to be good improvements vs using Webpack
 * 35.8MB smaller Netlify cache - 15% improvement
 * 14.1kb less JavaScript shipped overall - 26% improvement
 
-and vs my build in the previous post
+and vs what I ended up with in the previous post
 
 * 2.25s faster dev server - 35% improvement
 * 5.05s faster build - 40% improvement

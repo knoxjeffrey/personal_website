@@ -94,7 +94,7 @@ Vite also works with PostCSS out of the box. I was already using PostCSS with th
 
 <% highlight code: "javascript" do %>
 module.exports = {
-  plugins: \[
+  plugins: [
     require("postcss-preset-env")({
       browsers: "last 2 versions",
     })
@@ -108,7 +108,7 @@ My SCSS files at this point were really just pure CSS anyway with some use of `@
 
 <% highlight code: "javascript" do %>
 module.exports = {
-  plugins: \[
+  plugins: [
     require("postcss-import-ext-glob"),
     require("postcss-import"),
     require("postcss-preset-env")({
@@ -165,12 +165,12 @@ export default ({ command, mode }) => {
           "main_css": "./source/assets/stylesheets/main.css",
         },
         output: {
-          assetFileNames: "\[name].css",
-          chunkFileNames: "\[name].js",
-          entryFileNames: "\[name].js",
+          assetFileNames: "[name].css",
+          chunkFileNames: "[name].js",
+          entryFileNames: "[name].js",
           format: "es"
         },
-        plugins: \[
+        plugins: [
           esbuild({
             target: [
               "chrome64",
@@ -194,7 +194,7 @@ export default ({ command, mode }) => {
 At the top of the file I check if the mode is currently in development so I can decide whether or not to minify my JavaScript and if it's in production then I need to state that I want to use esbuild for transpiling and minifying plus add a plugins section for the build
 
 <% highlight code: "javascript" do %>
-plugins: \[
+plugins: [
   esbuild({
     target: [
       "chrome64",
@@ -217,10 +217,28 @@ I've set the `format` as `es` to output in es format, turned on sourcemaps and m
 So now I started the Middleman server which also starts the Vite dev server through the external pipeline config and I got my first errors. I haven't added `type: "module"` to all of my script tags to make import/export work. I updated all of the JavaScript tag helpers to look similar to this
 
 <% highlight code: "ruby" do %>
-<%= javascript_include_tag "game", type: "module", defer: true %>
+<%%= javascript_include_tag "game", type: "module", defer: true %>
 <% end %>
 
 Now it all works! Well, apart from an issue when I made changes to my assets which does the re-bundling but then all the CSS files got dropped from the bundle meaning I would have to restart the server on every asset change which is pretty rubbish. It looks like this issue has been fixed now though with this [PR](https://github.com/vitejs/vite/pull/3887).
+
+With this all running I could see that all my vendor code was getting bundled into a separate `vendor.js` file. This is done because this code is much less likely to change as frequently and therefore if it's a separate file then it'll stay cached in the browser for longer. However, I have a [section of my site that has a fun puzzle game](/blog/having-fun-with-the-404-page/) and it has vendor code that I don't really want getting pulled into my main page loads. You can handle this by specifying `manualChunks` in the Rollup options output
+
+<% highlight code: "javascript" do %>
+rollupOptions: {
+  input: {
+    ...
+  },
+  output: {
+    ...
+    manualChunks: {
+      game_vendor: ["crypto-es"]
+    }
+  }
+}
+<% end %>
+
+Any vendor code I have specific to the game can be added to the `game_vendor` array and that creates a separate vendor bundle that will only get loaded on the game part of the site.
 
 ## Middleman build
 
@@ -357,7 +375,7 @@ That's looking very promising and certainly worth pursuing to spend more time im
 * 171 fewer dependencies - 14% improvement
 * 1.83s faster dev server - 22% improvement
 * 8.6s faster build - 41% improvement
-* 39.5MB smaller - 17% improvement
+* 39.5MB smaller Netlify cache - 17% improvement
 * 14.5kb less JavaScript shipped overall - 26% improvement
 
 At this point I wanted to come back to the dev server and work on a way to potentially use Rack Middleware to make the no bundle approach work. When I was researching this I came across [Vite Ruby](https://vite-ruby.netlify.app/) and I realised this looked to be a better solution for what I needed. In fact, it looked  very very good and it was time to park this PR and start a new one to implement Vite Ruby and then do a direct comparison. 
