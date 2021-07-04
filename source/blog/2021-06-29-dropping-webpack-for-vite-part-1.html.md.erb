@@ -143,7 +143,7 @@ export default ({ command, mode }) => {
   let minifySetting
 
   if (mode === "development") {
-    minifySetting = false\
+    minifySetting = false
   } else {
     minifySetting = "esbuild" 
   }
@@ -380,4 +380,4 @@ That's looking very promising and certainly worth pursuing to spend more time im
 
 At this point I wanted to come back to the dev server and work on a way to potentially use Rack Middleware to make the no bundle approach work. When I was researching this I came across [Vite Ruby](https://vite-ruby.netlify.app/) and I realised this looked to be a better solution for what I needed. In fact, it looked  very very good and it was time to park this PR and start a new one to implement Vite Ruby and then do a direct comparison. 
 
-In a similar fashion, I'm going to finish up on this post and you can check out my findings with Vite Ruby in my next post!
+In a similar fashion, I'm going to finish up on this post and you can check out my findings with Vite Ruby [in my next post](/blog/dropping-webpack-for-vite-part-2/)!

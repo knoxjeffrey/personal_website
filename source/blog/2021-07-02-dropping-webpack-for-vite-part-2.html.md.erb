@@ -12,7 +12,7 @@ My [previous post](/blog/dropping-webpack-for-vite-part-1/) walked through my pr
 
 What was it that I saw in Vite Ruby that I thought could really help? It was the [DevServerProxy](https://github.com/ElMassimo/vite_ruby/blob/main/vite_ruby/lib/vite_ruby/dev_server_proxy.rb) which inherits from `Rack::Proxy` and relays asset requests to the Vite development server which is exactly what I thought I might need to write myself in order to make Vite work in development mode with no bundling. The best thing was that this was only a small part of it, with potentially less configuration required, helpers to make it work with Middleman and improved performance with module preloading imports within the bundled JavaScript assets.
 
-Vite Ruby is the core library but there was also a [Padrino Integration](https://vite-ruby.netlify.app/guide/padrino.html) which looked like it would help with Middleman and bring with it tag helpers, hot module reloading and smart output with module preloading as mentioned above. The [Middleman helper methods](https://middlemanapp.com/basics/helper-methods/) are all build upon [Padrino helpers](http://padrinorb.com/guides/application-helpers/overview/) so it looked like a good bet that this integration would work well.
+Vite Ruby is the core library but there was also a [Padrino Integration](https://vite-ruby.netlify.app/guide/padrino.html) which looked like it would help with Middleman and bring with it tag helpers, hot module reloading and smart output with module preloading as mentioned above. The [Middleman helper methods](https://middlemanapp.com/basics/helper-methods/) are all built upon [Padrino helpers](http://padrinorb.com/guides/application-helpers/overview/) so it looked like a good bet that this integration would work well.
 
 ## Installation
 
@@ -146,7 +146,7 @@ I had to add some additional config for my Middleman build on Netlify. Before ru
 
 ## Better Netlify build
 
-You'll notice that I was having to create my assets from scratch on every build even if they weren't changing. I new in Netlify there was a way to cache files between builds which I reckoned I could take advantage of to improve the speed of the build even further.
+You'll notice that I was having to create my assets from scratch on every build even if they weren't changing. I knew in Netlify there was a way to cache files between builds which I reckoned I could take advantage of to improve the speed of the build even further.
 
 To make this work easily, I added a new package ```yarn add netlify-plugin-cache --dev``` and added the following to the end of my ```netlify.toml``` file
 
@@ -167,7 +167,7 @@ which would instruct Netlify to cache the contents of the ```source/vite``` fold
     ...
 <% end %>
 
-which is where the information would be saved about the last build so Vite would know whether or not to rebuild the assets. Now I could remove ```rake vite:clobber``` from my build command and on the majority of my builds, Netlify simply pulls the assets from its cache rather than having to build from scratch.
+which is where the information would be saved about the last build so Vite would know whether or not to rebuild the assets. Now I could remove ```rake vite:clobber``` from my build command and on the majority of my builds, Netlify simply pulls the assets from its cache rather than having to build from scratch, unless there is a change in the assets.
 
 ## Performance
 
