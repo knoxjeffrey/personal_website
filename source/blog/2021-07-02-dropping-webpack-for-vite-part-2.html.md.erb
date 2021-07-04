@@ -216,3 +216,18 @@ In the last post I gave the performance improvements using Vite over my Webpack 
     </tr>
   <% end %>
 <% end %>
+
+Again, there looks to be good improvements vs using Webpack
+
+* 171 fewer dependencies - 14% improvement
+* 4.08s faster dev server - 49% improvement
+* 13.65s faster build - 65% improvement
+* 35.8MB smaller Netlify cache - 15% improvement
+* 14.1kb less JavaScript shipped overall - 26% improvement
+
+and vs my build in the previous post
+
+* 2.25s faster dev server - 35% improvement
+* 5.05s faster build - 40% improvement
+
+I'm very happy with the setup I have now and I achieved every one of the aims I had for making this change. The configuration is much simpler, I have fewer dependencies, the dev server is faster and the build is faster. As a bonus, I'm also shipping less JavaScript and my Netlify cache is smaller which can help improve overall build time even further because there is less to download and extract. My full end to end Netlify build and deploy time for this small site of 163 files is now roughly around 30s which is pretty darn good!
