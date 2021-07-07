@@ -9,8 +9,9 @@ const client = new faunadb.Client({
 })
 
 export async function handler(event, context) {
-  console.log(process.env.CONTEXT)
-  const collectionName = process.env.CONTEXT === "dev" ? "RealUserMetrics_Dev" : "RealUserMetrics"
+  console.log(event.headers.host)
+  const prodHost = "www.jeffreyknox.dev"
+  const collectionName = event.headers.host === prodHost ? "RealUserMetrics" : "RealUserMetrics_Dev"
 
   const rumMetrics = JSON.parse(event.body)
   const { identifier, timeZone, ...strippedRumMetrics } = rumMetrics;
