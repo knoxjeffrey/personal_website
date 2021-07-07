@@ -9,6 +9,9 @@ const client = new faunadb.Client({
 })
 
 export async function handler(event, context) {
+  console.log(process.env.CONTEXT)
+  const collectionName = process.env.CONTEXT === "dev" ? "RealUserMetrics_Dev" : "RealUserMetrics"
+
   const rumMetrics = JSON.parse(event.body)
   const { identifier, timeZone, ...strippedRumMetrics } = rumMetrics;
   const browser = Bowser.parse(rumMetrics.userAgent);
@@ -26,12 +29,13 @@ export async function handler(event, context) {
 
   return client.query(
     q.Create(
-      q.Collection("RealUserMetrics"),
-      rumMetricsForAnalytics
+      q.Collection(collectionName),
+      { data: rumMetricsForAnalytics }
     )
   )
   .then((response) => {
-    console.log("success", response)
+    console.log("success")
+    return { statusCode: 200 };
   }).catch((error) => {
     console.log("error", error)
   })
