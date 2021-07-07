@@ -36,6 +36,7 @@
     "@hotwired/turbo": "^7.0.0-beta.4",
     "bowser": "^2.11.0",
     "crypto-es": "^1.2.7",
+    "faunadb": "^4.3.0",
     "perfume.js": "^6.2.0",
     "prismjs": "^1.23.0",
     "sha.js": "^2.4.11",

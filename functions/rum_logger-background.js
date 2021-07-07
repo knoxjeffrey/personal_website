@@ -1,8 +1,18 @@
 import { countryFromTimeZone } from "./utils/country_data"
 import Bowser from "bowser"
+import faunadb from "faunadb"
 import shaJS from "sha.js"
 
+const q = faunadb.query
+const client = new faunadb.Client({
+  secret: process.env.FAUNADB_SECRET
+})
+
 export async function handler(event, context) {
+  console.log(event.headers.host)
+  const prodHost = "www.jeffreyknox.dev"
+  const collectionName = event.headers.host === prodHost ? "RealUserMetrics" : "RealUserMetrics_Dev"
+
   const rumMetrics = JSON.parse(event.body)
   const { identifier, timeZone, ...strippedRumMetrics } = rumMetrics;
   const browser = Bowser.parse(rumMetrics.userAgent);
@@ -17,4 +27,17 @@ export async function handler(event, context) {
   }
   
   console.log(rumMetricsForAnalytics)
+
+  return client.query(
+    q.Create(
+      q.Collection(collectionName),
+      { data: rumMetricsForAnalytics }
+    )
+  )
+  .then((response) => {
+    console.log("success")
+    return { statusCode: 200 };
+  }).catch((error) => {
+    console.log("error", error)
+  })
 }
