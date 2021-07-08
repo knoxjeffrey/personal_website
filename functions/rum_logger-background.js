@@ -3,10 +3,14 @@ import Bowser from "bowser"
 import faunadb from "faunadb"
 import shaJS from "sha.js"
 
+const {
+  FAUNADB_SECRET
+} = process.env
+
 const prodHost = "www.jeffreyknox.dev"
 const q = faunadb.query
 const client = new faunadb.Client({
-  secret: process.env.FAUNADB_SECRET
+  secret: FAUNADB_SECRET
 })
 
 export async function handler(event, context) {
