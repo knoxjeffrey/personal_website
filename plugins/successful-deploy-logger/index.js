@@ -1,9 +1,9 @@
 const {
-  BUILD_ID
+  DEPLOY_ID
 } = process.env
 
 module.exports = {
   onSuccess: () => {
-    console.log(BUILD_ID)
+    console.log(DEPLOY_ID)
   },
 }
