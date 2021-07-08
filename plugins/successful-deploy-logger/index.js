@@ -1,5 +1,9 @@
+const {
+  BUILD_ID
+} = process.env
+
 module.exports = {
-  onSuccess: ({ utils }) => {
-    console.log(utils)
+  onSuccess: () => {
+    console.log(BUILD_ID)
   },
 }
