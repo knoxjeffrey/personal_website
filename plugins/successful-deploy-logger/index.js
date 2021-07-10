@@ -7,6 +7,7 @@ const {
 
 module.exports = {
   onSuccess: () => {
+    console.log(`${DEPLOY_PRIME_URL}/.netlify/functions/netlify_deploy_logger-background`)
     fetch(`${DEPLOY_PRIME_URL}/.netlify/functions/netlify_deploy_logger-background`, { 
       method: "POST",
       body: JSON.stringify(DEPLOY_ID)
