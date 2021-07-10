@@ -20,7 +20,7 @@ const getDeploy = async (deploy_id) => {
 
 export async function handler(event, _context) {
   const collectionName = event.headers.host === prodHost ? "NetlifyDeployData" : "NetlifyDeployData_Dev"
-
+  console.log(JSON.parse(event.body))
   let deploy = await getDeploy(JSON.parse(event.body))
   const { id, build_id, branch, context, deploy_time, created_at } = deploy
 
