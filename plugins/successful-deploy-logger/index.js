@@ -10,12 +10,14 @@ module.exports = {
     console.log(`${DEPLOY_PRIME_URL}/.netlify/functions/netlify_deploy_logger-background`)
     fetch(`${DEPLOY_PRIME_URL}/.netlify/functions/netlify_deploy_logger-background`, { 
       method: "POST",
-      body: JSON.stringify(DEPLOY_ID)
+      body: DEPLOY_ID
     })
       .then(responseCheck => {
+        console.log(responseCheck)
         if (!responseCheck.ok) { throw Error(responseCheck.status); }
       })
       .catch(error => {
+        console.log(error)
         console.warn(error)
       });
   },
