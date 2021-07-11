@@ -27,8 +27,9 @@ export async function handler(event, _context) {
       { data: { id, build_id, branch, context, deploy_time, created_at } }
     )
   )
-  .then((_response) => {
-    return { statusCode: 200 };
+  .then((response) => {
+    console.log(response.status)
+    return { statusCode: response.status };
   }).catch((error) => {
     console.log("error", error)
   })
