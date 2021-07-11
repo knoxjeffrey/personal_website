@@ -10,13 +10,13 @@ const callNetlifyDeloyLogger = async () => {
     method: "POST",
     body: DEPLOY_ID
   })
-  if (response.ok) return console.log("success")
+  if (response.ok) return console.log("Success")
   console.log(response.status)
 }
 
 module.exports = {
   onSuccess: async () => {
-    console.log("calling Netlify deploy logger background function")
-    await callNetlifyDeloyLogger();
+    console.log("Calling Netlify deploy logger background function")
+    callNetlifyDeloyLogger();
   }
 }

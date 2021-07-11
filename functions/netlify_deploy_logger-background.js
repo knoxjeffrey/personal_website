@@ -7,7 +7,6 @@ const {
   SITE_ID
 } = process.env
 
-const prodHost = "www.jeffreyknox.dev"
 const q = faunadb.query
 const client = new faunadb.Client({
   secret: FAUNADB_SECRET
@@ -19,18 +18,16 @@ const getDeploy = async (deploy_id) => {
 }
 
 export async function handler(event, _context) {
-  const collectionName = event.headers.host === prodHost ? "NetlifyDeployData" : "NetlifyDeployData_Dev"
-  console.log(event.body)
-  let deploy = await getDeploy(event.body)
+  const deploy = await getDeploy(event.body)
   const { id, build_id, branch, context, deploy_time, created_at } = deploy
 
   return client.query(
     q.Create(
-      q.Collection(collectionName),
+      q.Collection("NetlifyDeployData"),
       { data: { id, build_id, branch, context, deploy_time, created_at } }
     )
   )
-  .then((response) => {
+  .then((_response) => {
     return { statusCode: 200 };
   }).catch((error) => {
     console.log("error", error)
