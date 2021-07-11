@@ -43,8 +43,9 @@ module Netlify
 
     # We want basic auth on all builds except for production
     def non_production_headers(build_context)
-      return [] if build_context == PRODUCTION_BUILD_CONTEXT
-      BASIC_AUTH_HEADERS
+      # return [] if build_context == PRODUCTION_BUILD_CONTEXT
+      # BASIC_AUTH_HEADERS
+      []
     end
   end
 end
