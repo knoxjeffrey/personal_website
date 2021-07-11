@@ -17,6 +17,6 @@ const callNetlifyDeloyLogger = async () => {
 module.exports = {
   onSuccess: async () => {
     console.log("Calling Netlify deploy logger background function")
-    callNetlifyDeloyLogger();
+    await callNetlifyDeloyLogger();
   }
 }
