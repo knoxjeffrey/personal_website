@@ -5,20 +5,18 @@ const {
   DEPLOY_PRIME_URL
 } = process.env
 
+const callNetlifyDeloyLogger = async () => {
+  const response = await fetch(`${DEPLOY_PRIME_URL}/.netlify/functions/netlify_deploy_logger-background`, { 
+    method: "POST",
+    body: DEPLOY_ID
+  })
+  if (response.ok) return console.log("success")
+  console.log(response.status)
+}
+
 module.exports = {
-  onSuccess: () => {
-    console.log(`${DEPLOY_PRIME_URL}/.netlify/functions/netlify_deploy_logger-background`)
-    fetch(`${DEPLOY_PRIME_URL}/.netlify/functions/netlify_deploy_logger-background`, { 
-      method: "POST",
-      body: DEPLOY_ID
-    })
-      .then(responseCheck => {
-        console.log(responseCheck)
-        if (!responseCheck.ok) { throw Error(responseCheck.status); }
-      })
-      .catch(error => {
-        console.log(error)
-        console.warn(error)
-      });
-  },
+  onSuccess: async () => {
+    console.log("calling Netlify deploy logger background function")
+    await callNetlifyDeloyLogger();
+  }
 }
