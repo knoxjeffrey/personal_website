@@ -28,7 +28,7 @@ export async function handler(event, _context) {
     )
   )
   .then((response) => {
-    console.log(response.status)
+    console.log(response)
     return { statusCode: response.status };
   }).catch((error) => {
     console.log("error", error)
