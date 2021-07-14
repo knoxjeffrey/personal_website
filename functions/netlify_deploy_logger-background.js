@@ -20,7 +20,7 @@ const getDeploy = async (deploy_id) => {
 
 export async function handler(event, _context) {
   const payload = JSON.parse(event.body)
-  if ("dfd" !== FUNCTION_SECRET) return console.log("Not Authorised")
+  if (payload.secret !== FUNCTION_SECRET) return console.log("Not Authorised")
 
   const deploy = await getDeploy(payload.deploy_id)
   const { id, build_id, branch, context, deploy_time, created_at } = deploy
