@@ -3,6 +3,7 @@ import faunadb from "faunadb"
 
 const {
   FAUNADB_SECRET,
+  FUNCTION_SECRET,
   NETLIFY_API_TOKEN,
   SITE_ID
 } = process.env
@@ -18,7 +19,10 @@ const getDeploy = async (deploy_id) => {
 }
 
 export async function handler(event, _context) {
-  const deploy = await getDeploy(event.body)
+  const payload = JSON.parse(event.body)
+  if (payload.secret !== FUNCTION_SECRET) return console.log("Not Authorised")
+
+  const deploy = await getDeploy(payload.deploy_id)
   const { id, build_id, branch, context, deploy_time, created_at } = deploy
 
   return client.query(
