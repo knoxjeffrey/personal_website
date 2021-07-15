@@ -28,7 +28,7 @@ export async function handler(event, _context) {
   return client.query(
     q.Create(
       q.Collection("NetlifyDeployData"),
-      { data: { id, build_id, branch, context, deploy_time, created_at } }
+      { data: { id, branch, context, deploy_time, created_at } }
     )
   )
   .then((_response) => {
