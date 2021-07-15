@@ -23,7 +23,7 @@ export async function handler(event, _context) {
   if (payload.secret !== FUNCTION_SECRET) return console.log("Not Authorised")
 
   const deploy = await getDeploy(payload.deploy_id)
-  const { id, build_id, branch, context, deploy_time, created_at } = deploy
+  const { id, branch, context, deploy_time, created_at } = deploy
 
   return client.query(
     q.Create(
