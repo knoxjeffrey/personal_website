@@ -7,7 +7,7 @@ tags:
   - Ruby
   - JavaScript
 ---
-I've found it useful in the past to keep track of build times because it can be easy to introduce code over time that drives the build time up. By the time you notice that this is becoming a pain point, it's very difficult to track down the offending pieces of code to resolve the issue.
+I've found it useful in the past to keep a close eye on build times because it can be easy to introduce code over time that drives the build time up. By the time you notice that this is becoming a pain point, it's very difficult to track down the offending pieces of code to resolve the issue.
 
 <!--more-->
 
@@ -17,12 +17,12 @@ What I would like to do is store the build data at the end of each build and the
 
 ## The tech stack
 
-This post is going to pull together multiple features of Netlify and [Supabase](https://supabase.io/) so there'll be plenty to get stuck into
+This post is going to pull together multiple features of Netlify and [Supabase](https://supabase.io/) so there'll be plenty to get stuck into:
 
-* Netlify [Build Plugin](https://www.netlify.com/products/build/plugins/) to pull the build identifier
-* Netlify [Background Function](https://docs.netlify.com/functions/background-functions/) for the Build Plugin to send the data to
-* Netlify [API](https://docs.netlify.com/api/get-started/) called within the Background Function to fetch the data  associated with the build identifier
-* Supabase [API](https://supabase.io/docs/guides/api) called within the Background Function to push the build data to Supabase
+* A Netlify [Build Plugin](https://www.netlify.com/products/build/plugins/) to pull the build identifier
+* A Netlify [Background Function](https://docs.netlify.com/functions/background-functions/) for the Build Plugin to send the data to
+* The Netlify [API](https://docs.netlify.com/api/get-started/) called within the Background Function to fetch the data  associated with the build identifier
+* The Supabase [API](https://supabase.io/docs/guides/api) called within the Background Function to push the build data to Supabase
 * More info about working with Supabase in local development including adding [pgAdmin](https://www.pgadmin.org/) to the [Docker](https://www.docker.com/) container as well as pulling the schema and data down from Supabase production to local and vice-versa.
 
 Time to get started!
