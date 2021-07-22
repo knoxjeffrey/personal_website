@@ -36,6 +36,7 @@
   },
   "dependencies": {
     "@hotwired/turbo": "^7.0.0-beta.4",
+    "@supabase/supabase-js": "^1.20.0",
     "bowser": "^2.11.0",
     "crypto-es": "^1.2.7",
     "faunadb": "^4.3.0",

@@ -165,6 +165,7 @@ PLATFORMS
 
 DEPENDENCIES
   builder
+  dotenv
   middleman (~> 4.4)
   middleman-autoprefixer (~> 2.7)
   middleman-blog
@@ -182,4 +183,4 @@ DEPENDENCIES
   wdm (~> 0.1)
 
 BUNDLED WITH
-   2.1.4
+   2.2.15
