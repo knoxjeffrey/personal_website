@@ -26,3 +26,7 @@ This post is going to pull together multiple features of Netlify and [Supabase](
 * More info about working with Supabase in local development including adding [pgAdmin](https://www.pgadmin.org/) to the [Docker](https://www.docker.com/) container as well as pulling the schema and data down from Supabase production to local and vice-versa.
 
 Time to get started!
+
+## Netlify Build Plugin
+
+I only want to log the build details if the build is successful which can be done using the `onSuccess` event handler for Build Plugins. When this event fires I will get the deploy id and POST the id to a Netlify Background Function.
