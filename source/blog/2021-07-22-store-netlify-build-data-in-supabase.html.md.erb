@@ -1,0 +1,28 @@
+---
+title: Store Netlify build data in Supabase
+date: 2021-07-22 20:19
+tags:
+  - Software engineering
+  - Netlify
+  - Ruby
+  - JavaScript
+---
+I've found it useful in the past to keep track of build times because it can be easy to introduce code over time that drives the build time up. By the time you notice that this is becoming a pain point, it's very difficult to track down the offending pieces of code to resolve the issue.
+
+<!--more-->
+
+[Netlify](https://www.netlify.com/) does keep a record of the builds in their UI but it's difficult and slow to manually click through and figure out any kind of pattern. There's also the [Netlify API](https://open-api.netlify.com/) which you could query directly to look at records over time but again this can be tricky because you can't drill down in the API queries to search by date, build time, etc.
+
+What I would like to do is store the build data at the end of each build and then I can build my own graphical interface to query and drill down into the data as I please. This post will focus on the first piece of the puzzle, storing the data but I plan on following up soon with another post using [d3.js](https://d3js.org/) to visualise the data.
+
+## The tech stack
+
+This post is going to pull together multiple features of Netlify and [Supabase](https://supabase.io/) so there'll be plenty to get stuck into
+
+* Netlify [Build Plugin](https://www.netlify.com/products/build/plugins/) to pull the build identifier
+* Netlify [Background Function](https://docs.netlify.com/functions/background-functions/) for the Build Plugin to send the data to
+* Netlify [API](https://docs.netlify.com/api/get-started/) called within the Background Function to fetch the data  associated with the build identifier
+* Supabase [API](https://supabase.io/docs/guides/api) called within the Background Function to push the build data to Supabase
+* More info about working with Supabase in local development including adding [pgAdmin](https://www.pgadmin.org/) to the [Docker](https://www.docker.com/) container as well as pulling the schema and data down from Supabase production to local and vice-versa.
+
+Time to get started!
