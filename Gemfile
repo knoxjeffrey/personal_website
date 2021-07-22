@@ -18,6 +18,7 @@ gem "vite_ruby"
 gem "wdm", "~> 0.1", platforms: [:mswin, :mingw, :x64_mingw]
 
 group :development do
+  gem "dotenv"
   gem "pry-byebug"
   gem "rubocop", "~> 0.92.0", require: false
   gem "rubocop-performance", require: false

@@ -2,6 +2,7 @@
 .byebug_history
 .cache
 .DS_Store
+.env
 .sass-cache
 yarn-error.log
 /build
@@ -22,3 +23,7 @@ tmp
 /source/vite-dev
 /source/vite-test
 
+# Supabase
+.supabase/README.md
+.supabase/docker/**/*
+!.supabase/docker/docker-compose.yml
