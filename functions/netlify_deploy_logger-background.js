@@ -12,14 +12,14 @@ const {
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
-const getDeploy = async (deploy_id) => {
+const getDeploy = async deploy_id => {
   const client = new NetlifyAPI(NETLIFY_API_TOKEN)
   return await client.getSiteDeploy({ site_id: SITE_ID, deploy_id })
 }
 
-const buildContext = context => {
+const buildContext = (branch, context) => {
   if (context === "production") return context
-  return (context.startsWith("cms/") ? "cms" : context)
+  return (branch.startsWith("cms/") ? "cms" : context)
 }
 
 const getDummyDeploy = () => {
@@ -47,7 +47,13 @@ export async function handler(event, _context) {
     const deploy = await getDeploy(payload.deploy_id)
     const { id, branch, context, deploy_time, created_at } = deploy
 
-    dataToInsert = { deploy_id: id, branch, context: buildContext(context), deploy_time, created_at }
+    dataToInsert = {
+      deploy_id: id,
+      branch,
+      context: buildContext(branch, context),
+      deploy_time,
+      created_at
+    }
   }
 
   const { data, error } = await supabase
