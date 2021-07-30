@@ -51,6 +51,3 @@
     [plugins.inputs]
     # Optional (but highly recommended). Defaults to [".cache"].
     paths = ["source/vite"]
-
-[[plugins]]
-  package = "/plugins/successful-deploy-logger"
