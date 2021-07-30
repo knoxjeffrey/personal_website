@@ -69,3 +69,31 @@ module.exports = {
   }
 }
 <% end %>
+
+You can find more information on Netlify build environment variables [here](https://docs.netlify.com/configure-builds/environment-variables/)
+but I fetch the `DEPLOY_PRIME_URL` to ensure I'm POSTing to the function that is specific to my
+Deploy Preview or Production build.
+
+Another thing you might notice is that I include a `FUNCTION_SECRET` in my POST. The function is going
+to be inserting data into my production Supabase database and the Netlify Function endpoint is public
+so really now anyone could be hitting it and POSTing goodness knows what to my database.
+
+By including a secret environment variable in the Netlify UI I can fetch it in this Build Plugin, send
+it in the POST to the function and the function will also be set up to pull the `FUNCTION_SECRET`
+from Netlify. Therefore, I will be able to check the `secret` in the request to see if it matches the one
+from the Netlify UI. If not then the function will exit before trying any database operation.
+
+## Netlify Background Function
+
+A question you may be asking is, why a background function and not a normal function? A large benefit
+for my use case is that a Background Function will return an immediate 202 client response on successful
+invocation and then continue running in the background until it completes. This keeps my builds super
+speedy, with the Build Plugin completing in well under 500ms. Additionally, retries are built into
+Background Functions meaning if the first attempt fails, the system retries on 2 more occassions which
+makes my logging more resilient. A final point is that this data is purely for my logging purposes and
+I'm in no hurry to get the info back to a user for example so I'm happy for the function to sit in
+a queue for a short while.
+
+For the longer term, one thing I would like to investigate further with Background Functions is how to
+identify that the function has failed on the 3rd and final attempt as I'd like at that point to be
+logging the fail information, reporting to Slack, etc for later diagnosis.
