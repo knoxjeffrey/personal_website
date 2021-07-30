@@ -2,8 +2,6 @@ import NetlifyAPI from "netlify"
 import { createClient } from "@supabase/supabase-js"
 
 const {
-  DEPLOY_ID,
-  DEPLOY_PRIME_URL,
   CONTEXT,
   FUNCTION_SECRET,
   NETLIFY_API_TOKEN,
@@ -38,10 +36,8 @@ const sample = arr => arr[Math.floor(Math.random() * arr.length)]
 const randomIntFromInterval = (min, max) => Math.floor(Math.random() * (max - min + 1) + min)
 
 export async function handler(event, _context) {
-  console.log(event)
-  console.log(_context)
-  console.log(DEPLOY_ID)
-  console.log(DEPLOY_PRIME_URL)
+  console.log(event.body.payload)
+
 
   // let dataToInsert = {}
   
