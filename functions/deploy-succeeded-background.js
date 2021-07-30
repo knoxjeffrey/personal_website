@@ -2,6 +2,8 @@ import NetlifyAPI from "netlify"
 import { createClient } from "@supabase/supabase-js"
 
 const {
+  DEPLOY_ID,
+  DEPLOY_PRIME_URL,
   CONTEXT,
   FUNCTION_SECRET,
   NETLIFY_API_TOKEN,
@@ -36,29 +38,34 @@ const sample = arr => arr[Math.floor(Math.random() * arr.length)]
 const randomIntFromInterval = (min, max) => Math.floor(Math.random() * (max - min + 1) + min)
 
 export async function handler(event, _context) {
-  let dataToInsert = {}
+  console.log(event)
+  console.log(_context)
+  console.log(DEPLOY_ID)
+  console.log(DEPLOY_PRIME_URL)
+
+  // let dataToInsert = {}
   
-  if (CONTEXT === "dev") {
-    dataToInsert = getDummyDeploy()
-  } else {
-    const payload = JSON.parse(event.body)
-    if (payload.secret !== FUNCTION_SECRET) return console.log("Not Authorised")
+  // if (CONTEXT === "dev") {
+  //   dataToInsert = getDummyDeploy()
+  // } else {
+  //   const payload = JSON.parse(event.body)
+  //   if (payload.secret !== FUNCTION_SECRET) return console.log("Not Authorised")
 
-    const deploy = await getDeploy(payload.deploy_id)
-    const { id, branch, context, deploy_time, created_at } = deploy
+  //   const deploy = await getDeploy(payload.deploy_id)
+  //   const { id, branch, context, deploy_time, created_at } = deploy
 
-    dataToInsert = {
-      deploy_id: id,
-      branch,
-      context: buildContext(branch, context),
-      deploy_time,
-      created_at
-    }
-  }
+  //   dataToInsert = {
+  //     deploy_id: id,
+  //     branch,
+  //     context: buildContext(branch, context),
+  //     deploy_time,
+  //     created_at
+  //   }
+  // }
 
-  const { data, error } = await supabase
-    .from("netlify_deploy_data")
-    .insert([dataToInsert])
+  // const { data, error } = await supabase
+  //   .from("netlify_deploy_data")
+  //   .insert([dataToInsert])
   
-  if (error) return console.log("error", error)
+  // if (error) return console.log("error", error)
 }
