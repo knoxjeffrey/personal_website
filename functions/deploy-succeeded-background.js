@@ -1,21 +1,12 @@
-import NetlifyAPI from "netlify"
 import { createClient } from "@supabase/supabase-js"
 
 const {
   CONTEXT,
-  FUNCTION_SECRET,
-  NETLIFY_API_TOKEN,
-  SITE_ID,
   SUPABASE_ANON_KEY,
   SUPABASE_URL
 } = process.env
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-
-const getDeploy = async deploy_id => {
-  const client = new NetlifyAPI(NETLIFY_API_TOKEN)
-  return await client.getSiteDeploy({ site_id: SITE_ID, deploy_id })
-}
 
 const buildContext = (branch, context) => {
   if (context === "production") return context
@@ -41,11 +32,8 @@ export async function handler(event, _context) {
   if (CONTEXT === "dev") {
     dataToInsert = getDummyDeploy()
   } else {
-    const payload = JSON.parse(event.body)
-    if (payload.secret !== FUNCTION_SECRET) return console.log("Not Authorised")
-
-    const deploy = await getDeploy(payload.deploy_id)
-    const { id, branch, context, deploy_time, created_at } = deploy
+    const payload = JSON.parse(event.body).payload
+    const { id, branch, context, deploy_time, created_at } = payload
 
     dataToInsert = {
       deploy_id: id,
