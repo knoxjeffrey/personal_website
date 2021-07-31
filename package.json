@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/knoxjeffrey/personal_website#readme",
   "devDependencies": {
+    "dotenv": "^10.0.0",
     "esbuild": "^0.12.10",
     "esbuild-jest": "^0.5.0",
     "jest": "^27.0.1",
