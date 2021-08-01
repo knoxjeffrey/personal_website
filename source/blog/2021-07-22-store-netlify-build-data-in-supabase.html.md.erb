@@ -62,3 +62,17 @@ export async function handler(event, _context) {
 Everything I need is in the `payload` object automatically sent by Netlify event and the only additional thing I'm adding is a function to provide more detail to the context of the deploy. By default, Netlify will have contexts of `production` and `deploy-preview` but I'd like to also identify which deploys are created from Netlify CMS which I use for my blog posts so those are easy to pull out in my data visualisation when I get to that stage. Those branch names will always begin with `cms/` so the `buildContext` can easily perform this for me. I also need to change the key `id` to be `deploy_id` otherwise that would clash with the default `id` field in the Supabase DB table I will create to store the build data.
 
 If I now push this code to my PR, all being well my Background Function should automatically be triggered and I can check this in the Netlify UI. From within the screen with all of the deploy data such as logs, etc, there is a link to the `Deployed Functions` near the top. If you click on that you can see all of your functions on that deploy and then click the `deploy-succeeded-background` one. All being well, you should see the console logged info from the function code above. Excellent, we're ready to send that to Supabase now!
+
+## Supabase
+
+You are going to need an account setup on [Supabase](https://supabase.io/) at this point. You can also follow along with this [Netlify blog post](https://www.netlify.com/blog/2021/06/28/saving-data-to-supabase-and-getting-it-back-again/) in the \`Creating a database and your first table\` section. The production setup has a nice UI for creating the database and table whereas this isn't yet available in local development yet. Therefore what I plan on doing is creating the schema in production and then dump it to my local dev environment to experiment with posting data to the DB rather then having to send the data to production for testing purposes. This is something that is worth getting setup now because we don't want to be posting test data to production further down the line and messing with data integrity.
+
+### DB fields 
+
+Click the button to create a new table and I'm calling it \`netlify_deploy_data\` and it will include a primary key called \`id\` and type \`int8\`. Then add the following fields:
+
+1. deploy_id - *varchar*
+2. branch *\- varchar*
+3. context *\- varchar*
+4. deploy_time *\- int2*
+5. created_at *\- timestampz - default NULL - do not allow nullable*
