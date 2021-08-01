@@ -7,7 +7,7 @@ tags:
   - Ruby
   - JavaScript
 ---
-I've found it useful in the past to keep a close eye on build times because it can be easy to introduce code over time that drives the build time up. By the time you notice that this is becoming a pain point, it's very difficult to track down the offending pieces of code to resolve the issue.
+1. I've found it useful in the past to keep a close eye on build times because it can be easy to introduce code over time that drives the build time up. By the time you notice that this is becoming a pain point, it's very difficult to track down the offending pieces of code to resolve the issue.
 
 <!--more-->
 
@@ -105,3 +105,133 @@ At this point we can't do much more until the database is setup locally.
 ## Jake.js tasks
 
 Coming from a Ruby background, I'm familiar with Rake tasks for automating workflows and I was looking for something similar for JavaScript and that's when I came across [Jake.js](https://jakejs.com/) which seemed to fit the bill nicely.
+
+First up, install it as a CLI tool with `npm install -g jake`. Then create a new folder at the root of your project called `jakelib`. Jake will automatically look for files with a .js extension in this folder which allows you to break your tasks up over multiple files and I am setting things up with one namespace per file.
+
+Next up, run `yarn add dotenv --dev` which will be needed to load in environment variables from a `.env` file. Speaking of which, create that `.env` and add the following:
+
+<% highlight code: "bash" do %>
+SUPABASE_PROD_DB_PASSWORD="xxxxxxxxxx"
+SUPABASE_PROD_HOST="xxxxxxxxxxxxxxxxxxxx"
+<% end %>
+
+The password will be the one you created in Supabase earlier and the host will be the string at the end of the URL when you are in your project in Supabase, ie `https://app.supabase.io/project/<this string>`.
+
+Now create a new file at `jakelib/db.js`. There is going to be quite a bit of code below but essentially it is 4 tasks that will
+
+1. Dump the Supabase production schema and data to development
+2. Dump the Supabase production schema to development
+3. Dump the Supabase development schema and data to production
+4. Dump the Supabase development schema to production
+
+and I will go into more detail after showing the code
+
+<% highlight code: "javascript" do %>
+require("dotenv").config()
+
+const docker_exec = "docker exec -i supabase-db bash -c"
+const {
+  SUPABASE_PROD_DB_PASSWORD,
+  SUPABASE_PROD_HOST
+} = process.env
+
+namespace("db", () => {
+  // jake db:dump_production_data
+  desc("Dump supabase production db to development")
+  task("dump_production_data", async () => {
+    console.log("PG_DUMP supabase production db...")
+    await new Promise((resolve, _reject) => {
+      jake.exec(
+        `${docker_exec} "PGPASSWORD='${SUPABASE_PROD_DB_PASSWORD}' pg_dump -n public -h db.${SUPABASE_PROD_HOST}.supabase.co -U postgres -Fc > supabase.dump"`,
+        { breakOnError: false },
+        () => resolve()
+      )
+    })
+    console.log("PG_DUMP complete")
+
+    console.log("Replicating production data in development...")
+    await new Promise((resolve, _reject) => {
+      jake.exec(
+        `${docker_exec} 'pg_restore --verbose --clean -h localhost -U postgres -d postgres < supabase.dump'`,
+        { breakOnError: false },
+        () => resolve()
+      )
+    })
+    console.log("Done!")
+  })
+
+  // jake db:dump_production_schema
+  desc("Dump supabase production db schema to development")
+  task("dump_production_schema", async () => {
+    console.log("PG_DUMP supabase production db schema...")
+    await new Promise((resolve, _reject) => {
+      jake.exec(
+        `${docker_exec} "PGPASSWORD='${SUPABASE_PROD_DB_PASSWORD}' pg_dump -h db.${SUPABASE_PROD_HOST}.supabase.co -U postgres --clean --schema-only > supabase_schema.sql"`,
+        { breakOnError: false },
+        () => resolve()
+      )
+    })
+    console.log("PG_DUMP complete")
+
+    console.log("Replicating production schema in development...")
+    await new Promise((resolve, _reject) => {
+      jake.exec(
+        `${docker_exec} "psql -h localhost -U postgres < supabase_schema.sql"`,
+        { breakOnError: false },
+        () => resolve()
+      )
+    })
+    console.log("Done!")
+  })
+
+  namespace("warning", () => {
+    // jake db:warning:dump_development_data_to_production
+    desc("Dump supabase development db to production")
+    task("dump_development_data_to_production", async () => {
+      console.log("PG_DUMP supabase development db...")
+      await new Promise((resolve, _reject) => {
+        jake.exec(
+          `${docker_exec} "pg_dump -n public -h localhost -U postgres -Fc > supabase_dev.dump"`,
+          { breakOnError: false },
+          () => resolve()
+        )
+      })
+      console.log("PG_DUMP complete")
+
+      console.log("Replicating development data in production...")
+      await new Promise((resolve, _reject) => {
+        jake.exec(
+          `${docker_exec} "PGPASSWORD='${SUPABASE_PROD_DB_PASSWORD}' pg_restore --verbose --clean -h db.${SUPABASE_PROD_HOST}.supabase.co -U postgres -d postgres < supabase_dev.dump"`,
+          { breakOnError: false },
+          () => resolve()
+        )
+      })
+      console.log("Done!")
+    })
+
+    // jake db:warning:dump_development_schema_to_production
+    desc("Dump supabase development db schema to production")
+    task("dump_development_schema_to_production", async () => {
+      console.log("PG_DUMP supabase development db schema...")
+      await new Promise((resolve, _reject) => {
+        jake.exec(
+          `${docker_exec} "pg_dump -h localhost -U postgres --clean --schema-only > supabase_dev_schema.sql"`,
+          { breakOnError: false },
+          () => resolve()
+        )
+      })
+      console.log("PG_DUMP complete")
+
+      console.log("Replicating development schema in production...")
+      await new Promise((resolve, _reject) => {
+        jake.exec(
+          `${docker_exec} "PGPASSWORD='${SUPABASE_PROD_DB_PASSWORD}' psql -h db.${SUPABASE_PROD_HOST}.supabase.co -U postgres < supabase_dev_schema.sql"`,
+          { breakOnError: false },
+          () => resolve()
+        )
+      })
+      console.log("Done!")
+    })
+  })
+})
+<% end %>
