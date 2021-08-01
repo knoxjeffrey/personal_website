@@ -256,3 +256,64 @@ Then there is is the shell command itself. First I run the docker exec command `
 The Supabase production password is passed to the `pg_dump` command which is a command that enables me to extract a PostgreSQL database into a script file or other archive file. You can read more in the docs [here](https://www.postgresql.org/docs/12/app-pgdump.html). The most important part in the command is `-Fc` which you can see in the docs sets the file format as custom. This is the most flexible output format in that it allows manual selection and reordering of archived items during restore. This format is also compressed by default.
 
 The `supabase.dump` file is now sitting in the container and the task needs to restore this to my local database using the `pg_restore` command. You can find the docs for this [here](https://www.postgresql.org/docs/12/app-pgrestore.html). This is very similar in setup to the first part off the task so should be pretty clear and when the Promise resolves, the task will be finished.
+
+## pgAdmin
+
+Given that there is no data in the production DB, we can run the second command to just dump the schema. The Jake task can be run with the command `jake db:dump_production_schema` and your local DB should now be setup. Check it out by visiting `http://localhost:5050/` and you can view the table by navigating through the pgAdmin UI as follows: `Servers -> <Database name> -> Databases -> postgres -> Schemas -> public -> Tables -> netlify_deploy_data`. If you right click on `netlify_deploy_data` you can click `View/Edit Data -> All Rows` and you should see your empty table with all the column names.
+
+Congratulations, you're ready to get some data in there!
+
+## Database seed
+
+Coming form my Rails experience, I like the command `rails db:seed` which uses a `seed.rb` file to populate the development DB with data so I thought it might be nice to do something similar here to seed the local DB by using a Jake task to send data to my Background Function with `netlify dev` running.
+
+Create a new file at `jakelib/seed.js` which has the following code
+
+<% highlight code: "javascript" do %>
+require("dotenv").config()
+
+const fetch = require("node-fetch")
+const {
+  FUNCTION_LOCALHOST
+} = process.env
+
+const getDummyDeploy = () => {
+  return { 
+    id: Math.random().toString(36).substr(2, 10),
+    branch: sample(["main", "branch1", "branch2"]),
+    context: sample(["production", "deploy-preview", "cms"]),
+    deploy_time: randomIntFromInterval(25, 65),
+    created_at: new Date().toISOString()
+  }
+}
+const sample = arr => arr[Math.floor(Math.random() * arr.length)]
+const randomIntFromInterval = (min, max) => Math.floor(Math.random() * (max - min + 1) + min)
+
+namespace("seed", () => {
+  // jake seed:development
+  desc("Seed development")
+  task("development", ["db:dump_production_schema", "netlify_deploy_data"], () => {
+    console.log("Seed development datbase completed")
+  })
+
+   // jake seed:netlify_deploy_data
+  desc("Seed netlify_deploy_data")
+  task("netlify_deploy_data", async () => {
+    for (const _ of [...Array(10)]) {
+      const response = await fetch(`${FUNCTION_LOCALHOST}/.netlify/functions/deploy-succeeded-background`, { 
+        method: "POST",
+        body: JSON.stringify({ payload: getDummyDeploy() })
+      })
+      console.log(response.status)
+    }
+  })
+})
+<% end %>
+
+I have added `FUNCTION_LOCALHOST` to my `.env` file and in my case it has the value `http://localhost:8888`. You will also need to `yarn add node-fetch --dev` if you do not already have it.
+
+The `getDummyDeploy()` function creates some random data to be passed to the function. The `sample()` function simply picks a random value from the given array and `randomIntFromInterval()` is generating an interval from 25 to 65 and picking a random value from that.
+
+The task I will run is `jake seed:development` which first of all runs the `db:dump_production_schema` to clean out and setup the DB for me and is defined in the `jakelib/db.js` file. It then runs `netlify_deploy_data` which is defined at the end of the `jakelib/seed.js` file. This task is simply a fetch POST request which sends the dummy data to my local function. 
+
+Then, making sure you have `netlify dev` running, you can run the `jake seed:development` command and your function should console log out the data in the terminal.
