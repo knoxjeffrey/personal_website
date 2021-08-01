@@ -235,3 +235,11 @@ namespace("db", () => {
   })
 })
 <% end %>
+
+So, what the heck is going on here?! Let's walk through the first task `dump_production_data` to explain things.
+
+I've set the task as async because I'm going to have an external connection and perform time consuming instructions on the DB. I then wrap the first part of the task in a Promise which is going to connect to my production Supabase DB. The result of this will need to complete first before going onto the next part of the task which connects to the local DB.
+
+Next, I use `jake.exec` which allows me to run shell-commands. As the second argument I pass `{ breakOnError: false }` which prevents the task exiting early because of some inconsequential errors you will get with the `pg_dump` command. The third argument is a callback function which is executed when the `jake.exec` shell-command completes.
+
+Then there is is the shell command itself.  
