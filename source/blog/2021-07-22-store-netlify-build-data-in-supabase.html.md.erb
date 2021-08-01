@@ -67,7 +67,7 @@ If I now push this code to my PR, all being well my Background Function should a
 
 You are going to need an account setup on [Supabase](https://supabase.io/) at this point. You can also follow along with this [Netlify blog post](https://www.netlify.com/blog/2021/06/28/saving-data-to-supabase-and-getting-it-back-again/) in the \`Creating a database and your first table\` section. The production setup has a nice UI for creating the database and table whereas this isn't yet available in local development yet. Therefore what I plan on doing is creating the schema in production and then dump it to my local dev environment to experiment with posting data to the DB rather then having to send the data to production for testing purposes. This is something that is worth getting setup now because we don't want to be posting test data to production further down the line and messing with data integrity.
 
-### DB fields 
+### DB fields
 
 Click the button to create a new table and I'm calling it \`netlify_deploy_data\` and it will include a primary key called \`id\` with type \`int8\`. Then add the following fields:
 
@@ -99,3 +99,9 @@ pgadmin:
 <% end %>
 
 If you have Supabase running, stop it with `supabase stop` and then run again with `supabase start`. If you now visit `http://localhost:5050/` then you should see the login screen for pgAdmin and you can authenticate with the credentials in the yml file above.
+
+At this point we can't do much more until the database is setup locally.
+
+## Jake.js tasks
+
+Coming from a Ruby background, I'm familiar with Rake tasks for automating workflows and I was looking for something similar for JavaScript and that's when I came across [Jake.js](https://jakejs.com/) which seemed to fit the bill nicely.
