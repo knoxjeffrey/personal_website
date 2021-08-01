@@ -17,73 +17,16 @@ What I would like to do is store the build data at the end of each build and the
 
 ## The tech stack
 
-This post is going to pull together multiple features of Netlify and [Supabase](https://supabase.io/) so there'll be plenty to get stuck into:
+This post is going to pull together several features of Netlify, [Supabase](https://supabase.io/) and [Jake.js](https://jakejs.com/docs-page.html#item-advanced-usage-programmatic-tasks) so there'll be plenty to get stuck into:
 
-* A Netlify [Build Plugin](https://www.netlify.com/products/build/plugins/) to pull the build identifier
-* A Netlify [Background Function](https://docs.netlify.com/functions/background-functions/) for the Build Plugin to send the data to
-* The Netlify [API](https://docs.netlify.com/api/get-started/) called within the Background Function to fetch the data  associated with the build identifier
-* The Supabase [API](https://supabase.io/docs/guides/api) called within the Background Function to push the build data to Supabase
-* More info about working with Supabase in local development including adding [pgAdmin](https://www.pgadmin.org/) to the [Docker](https://www.docker.com/) container as well as pulling the schema and data down from Supabase production to local and vice-versa.
+* Netlify [](https://www.netlify.com/products/build/plugins/)[event triggered](https://docs.netlify.com/functions/trigger-on-events) [Background Functions](https://docs.netlify.com/functions/background-functions/)
+* The Supabase [API](https://supabase.io/docs/guides/api) called within the Background Function to push the build data to the Supabase database
+* More info about working with Supabase in local development including adding [pgAdmin](https://www.pgadmin.org/) to the [Docker](https://www.docker.com/) container as well as pulling the schema and data down from Supabase production to local and vice-versa using Jake.js tasks.
+* Task to seed the database
 
 Time to get started!
 
-## Netlify Build Plugin
-
-I only want to log the build details if the build is successful which can be done using the `onSuccess` event handler for Build Plugins. When this event fires I will get the deploy id and POST the id to a Netlify Background Function.
-
-This is my first Netlify Buuild plugin so I need to create a new `plugins` directory and a nested `successful-deploy-logger` folder with a `index.js` file and `manifest.yml` file.
-
-The `manifest.yml` file is simple and only contains the line `name: successful-deploy-logger`.
-
-I also need to make Netlify aware of the plugin and add it to my `netlify.toml` file
-
-<% highlight code: "json" do %>
-[[plugins]]
-  package = "/plugins/successful-deploy-logger"
-<% end %>
-
-Finally, there is the plugin itself in the `index.js` file that will run on a successful build
-
-<% highlight code: "javascript" do %>
-const fetch = require("node-fetch");
-
-const {
-  DEPLOY_ID,
-  DEPLOY_PRIME_URL,
-  FUNCTION_SECRET
-} = process.env
-
-const callNetlifyDeloyLogger = async () => {
-  const response = await fetch(`${DEPLOY_PRIME_URL}/.netlify/functions/netlify_deploy_logger-background`, { 
-    method: "POST",
-    body: JSON.stringify({ deploy_id: DEPLOY_ID, secret: FUNCTION_SECRET })
-  })
-  if (response.ok) return console.log("Success")
-  console.log(response.status)
-}
-
-module.exports = {
-  onSuccess: async () => {
-    console.log("Calling Netlify deploy logger background function")
-    await callNetlifyDeloyLogger();
-  }
-}
-<% end %>
-
-You can find more information on Netlify build environment variables [here](https://docs.netlify.com/configure-builds/environment-variables/)
-but I fetch the `DEPLOY_PRIME_URL` to ensure I'm POSTing to the function that is specific to my
-Deploy Preview or Production build.
-
-Another thing you might notice is that I include a `FUNCTION_SECRET` in my POST. The function is going
-to be inserting data into my production Supabase database and the Netlify Function endpoint is public
-so really now anyone could be hitting it and POSTing goodness knows what to my database.
-
-By including a secret environment variable in the Netlify UI I can fetch it in this Build Plugin, send
-it in the POST to the function and the function will also be set up to pull the `FUNCTION_SECRET`
-from Netlify. Therefore, I will be able to check the `secret` in the request to see if it matches the one
-from the Netlify UI. If not then the function will exit before trying any database operation.
-
-## Netlify Background Function
+## Netlify Event Driven Background Function
 
 A question you may be asking is, why a background function and not a normal function? A large benefit
 for my use case is that a Background Function will return an immediate 202 client response on successful
