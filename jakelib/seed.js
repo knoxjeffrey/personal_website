@@ -21,9 +21,10 @@ namespace("seed", () => {
   // jake seed:development
   desc("Seed development")
   task("development", ["db:dump_production_schema", "netlify_deploy_data"], () => {
-    console.log("Seed development completed")
+    console.log("Seed development datbase completed")
   })
 
+   // jake seed:netlify_deploy_data
   desc("Seed netlify_deploy_data")
   task("netlify_deploy_data", async () => {
     for (const _ of [...Array(10)]) {
