@@ -149,18 +149,15 @@ namespace("db", () => {
     })
     console.log("PG_DUMP complete")
 
-```
-console.log("Replicating production data in development...")
-await new Promise((resolve, _reject) => {
-  jake.exec(
-    `${docker_exec} 'pg_restore --verbose --clean -h localhost -U postgres -d postgres < supabase.dump'`,
-    { breakOnError: false },
-    () => resolve()
-  )
-})
-console.log("Done!")
-```
-
+    console.log("Replicating production data in development...")
+    await new Promise((resolve, _reject) => {
+      jake.exec(
+        `${docker_exec} 'pg_restore --verbose --clean -h localhost -U postgres -d postgres < supabase.dump'`,
+        { breakOnError: false },
+        () => resolve()
+      )
+    })
+    console.log("Done!")
   })
 
   // jake db:dump_production_schema
@@ -176,18 +173,15 @@ console.log("Done!")
     })
     console.log("PG_DUMP complete")
 
-```
-console.log("Replicating production schema in development...")
-await new Promise((resolve, _reject) => {
-  jake.exec(
-    `${docker_exec} "psql -h localhost -U postgres < supabase_schema.sql"`,
-    { breakOnError: false },
-    () => resolve()
-  )
-})
-console.log("Done!")
-```
-
+    console.log("Replicating production schema in development...")
+    await new Promise((resolve, _reject) => {
+      jake.exec(
+        `${docker_exec} "psql -h localhost -U postgres < supabase_schema.sql"`,
+        { breakOnError: false },
+        () => resolve()
+      )
+    })
+    console.log("Done!")
   })
 
   namespace("warning", () => {
@@ -204,45 +198,43 @@ console.log("Done!")
       })
       console.log("PG_DUMP complete")
 
-```
-  console.log("Replicating development data in production...")
-  await new Promise((resolve, _reject) => {
-    jake.exec(
-      `${docker_exec} "PGPASSWORD='${SUPABASE_PROD_DB_PASSWORD}' pg_restore --verbose --clean -h db.${SUPABASE_PROD_HOST}.supabase.co -U postgres -d postgres < supabase_dev.dump"`,
-      { breakOnError: false },
-      () => resolve()
-    )
+      console.log("Replicating development data in production...")
+      await new Promise((resolve, _reject) => {
+        jake.exec(
+          `${docker_exec} "PGPASSWORD='${SUPABASE_PROD_DB_PASSWORD}' pg_restore --verbose --clean -h db.${SUPABASE_PROD_HOST}.supabase.co -U postgres -d postgres < supabase_dev.dump"`,
+          { breakOnError: false },
+          () => resolve()
+        )
+      })
+      console.log("Done!")
+    })
+
+    // jake db:warning:dump_development_schema_to_production
+    desc("Dump supabase development db schema to production")
+    task("dump_development_schema_to_production", async () => {
+      console.log("PG_DUMP supabase development db schema...")
+      await new Promise((resolve, _reject) => {
+        jake.exec(
+          `${docker_exec} "pg_dump -h localhost -U postgres --clean --schema-only > supabase_dev_schema.sql"`,
+          { breakOnError: false },
+          () => resolve()
+        )
+      })
+      console.log("PG_DUMP complete")
+
+      console.log("Replicating development schema in production...")
+      await new Promise((resolve, _reject) => {
+        jake.exec(
+          `${docker_exec} "PGPASSWORD='${SUPABASE_PROD_DB_PASSWORD}' psql -h db.${SUPABASE_PROD_HOST}.supabase.co -U postgres < supabase_dev_schema.sql"`,
+          { breakOnError: false },
+          () => resolve()
+        )
+      })
+      console.log("Done!")
+    })
   })
-  console.log("Done!")
 })
 
-// jake db:warning:dump_development_schema_to_production
-desc("Dump supabase development db schema to production")
-task("dump_development_schema_to_production", async () => {
-  console.log("PG_DUMP supabase development db schema...")
-  await new Promise((resolve, _reject) => {
-    jake.exec(
-      `${docker_exec} "pg_dump -h localhost -U postgres --clean --schema-only > supabase_dev_schema.sql"`,
-      { breakOnError: false },
-      () => resolve()
-    )
-  })
-  console.log("PG_DUMP complete")
-
-  console.log("Replicating development schema in production...")
-  await new Promise((resolve, _reject) => {
-    jake.exec(
-      `${docker_exec} "PGPASSWORD='${SUPABASE_PROD_DB_PASSWORD}' psql -h db.${SUPABASE_PROD_HOST}.supabase.co -U postgres < supabase_dev_schema.sql"`,
-      { breakOnError: false },
-      () => resolve()
-    )
-  })
-  console.log("Done!")
-})
-```
-
-  })
-})
 <% end %>
 
 So, what the heck is going on here?! Let's walk through the first task `dump_production_data` to explain things.
@@ -317,3 +309,6 @@ The `getDummyDeploy()` function creates some random data to be passed to the fun
 The task I will run is `jake seed:development` which first of all runs the `db:dump_production_schema` to clean out and setup the DB for me and is defined in the `jakelib/db.js` file. It then runs `netlify_deploy_data` which is defined at the end of the `jakelib/seed.js` file. This task is simply a fetch POST request which sends the dummy data to my local function. 
 
 Then, making sure you have `netlify dev` running, you can run the `jake seed:development` command and your function should console log out the data in the terminal.
+
+## Send data to SupaBase
+
