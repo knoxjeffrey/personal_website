@@ -69,10 +69,33 @@ You are going to need an account setup on [Supabase](https://supabase.io/) at th
 
 ### DB fields 
 
-Click the button to create a new table and I'm calling it \`netlify_deploy_data\` and it will include a primary key called \`id\` and type \`int8\`. Then add the following fields:
+Click the button to create a new table and I'm calling it \`netlify_deploy_data\` and it will include a primary key called \`id\` with type \`int8\`. Then add the following fields:
 
-1. deploy_id - *varchar*
-2. branch *\- varchar*
-3. context *\- varchar*
-4. deploy_time *\- int2*
+1. deploy_id - *varchar - do not allow nullable*
+2. branch *\- varchar - do not allow nullable*
+3. context *\- varchar - do not allow nullable*
+4. deploy_time *\- int2 - do not allow nullable*
 5. created_at *\- timestampz - default NULL - do not allow nullable*
+
+Now I have the table setup in production but I want to dump this into my local dev environment so I can test POSTing dummy deploy data.
+
+### Supabase local development
+
+To begin with, [follow these instructions](https://supabase.io/docs/guides/local-development) to install the Supabase CLI and start Supabase locally. Note that the CLI makes heavy use of [Docker Compose](https://docs.docker.com/compose/install) so ensure it is installed first. In my case I have [Docker Desktop for Mac](https://docs.docker.com/docker-for-mac/install/) installed which means I don't need Docker Compose installed separately. Seeing as I am using Docker Desktop for Mac, which is very popular, I am going to continue with the assumption that you are also using this for simplicity sake in this post.
+
+With this done you should have a `.supabase` folder and within that a `docker-compose.yml` file. To make it easier to work with the database locally it would be nice to have a UI to inspect the rows in the table and for this I am going to add [pgAdmin](https://www.pgadmin.org/) to the end of service in the `docker-compose.yml` file.
+
+<% highlight code: "yml" do %>
+...
+pgadmin:
+  container_name: pgadmin4_container
+  image: dpage/pgadmin4
+  restart: always
+  environment:
+    PGADMIN_DEFAULT_EMAIL: admin@admin.com
+    PGADMIN_DEFAULT_PASSWORD: password
+  ports:
+    - "5050:80"
+<% end %>
+
+If you have Supabase running, stop it with `supabase stop` and then run again with `supabase start`. If you now visit `http://localhost:5050/` then you should see the login screen for pgAdmin and you can authenticate with the credentials in the yml file above.
