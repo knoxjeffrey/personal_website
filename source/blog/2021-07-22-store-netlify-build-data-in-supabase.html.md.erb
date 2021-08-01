@@ -28,6 +28,10 @@ Time to get started!
 
 ## Netlify event triggered Background Function
 
+For my first attempt at getting the build data I created a build plugin that fetched the deploy id on a successful build, sent that to my Netlify Background Function, used the Netlify API to get the build data associated with that deploy id and then posted the data to Supabase. Then [this article about event triggered functions](https://www.netlify.com/blog/2021/07/21/how-to-use-event-triggered-netlify-functions/) popped up in my [Twitter](https://twitter.com/jeff_r_knox) feed and I could instantly see how it could simplify my code. I was able to drop the build plugin and the API connection and simply create a Netlify Background Function called `deploy-succeeded-background`.
+
+The naming is important to make this work. `deploy-succeeded` means the function will be triggered automatically when my deploy is successful. An added bonus of this is that external requests to event functions are blocked because Netlify generates a JSON web signature (JWS) for each event triggered by their platform, and verifies that the signature is correct before invoking the associated event function. This means that anyone trying to spam my function with duff data that could be POSTed to my database will be blocked without me having to do anything. Amazing!
+
 A question you may be asking is, why a background function and not a normal function? A large benefit
 for my use case is that a Background Function will return an immediate 202 client response on successful
 invocation and then continue running in the background until it completes. This keeps my builds super
