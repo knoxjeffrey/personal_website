@@ -1,0 +1,352 @@
+---
+title: Store Netlify build data with Supabase
+date: 2021-08-02 20:19
+tags:
+  - Software engineering
+  - Netlify
+  - Ruby
+  - JavaScript
+---
+I've found it useful in the past to keep a close eye on build times because it can be easy to introduce code over time that drives the build time up. By the time you notice that this is becoming a pain point, it's very difficult to track down the offending pieces of code to resolve the issue.
+
+<!--more-->
+
+[Netlify](https://www.netlify.com/) does keep a record of the builds in their UI but it's difficult and slow to manually click through and figure out any kind of pattern. There's also the [Netlify API](https://open-api.netlify.com/) which you could query directly to look at records over time but again this can be tricky because you can't drill down in the API queries to search by date, build time, etc.
+
+What I would like to do is store the build data at the end of each build and then I can create my own graphical interface to query and drill down into the data as I please. This post will focus on the first piece of the puzzle, storing the data but I plan on following up soon with another post using [d3.js](https://d3js.org/) to visualise the data.
+
+## The tech stack
+
+This post is going to pull together several features of Netlify, [Supabase](https://supabase.io/) and [Jake.js](https://jakejs.com/docs-page.html#item-advanced-usage-programmatic-tasks) so there'll be plenty to get stuck into:
+
+* Netlify [](https://www.netlify.com/products/build/plugins/)[event triggered](https://docs.netlify.com/functions/trigger-on-events) [Background Functions](https://docs.netlify.com/functions/background-functions/)
+* The Supabase [API](https://supabase.io/docs/guides/api) called within the Background Function to push the build data to the Supabase database
+* More info about working with Supabase in local development including adding [pgAdmin](https://www.pgadmin.org/) to the [Docker](https://www.docker.com/) container as well as pulling the schema and data down from Supabase production to local and vice-versa using Jake.js tasks.
+* Task to seed the database
+
+Time to get started!
+
+## Netlify event triggered Background Function
+
+For my first attempt at getting the build data, I created a Netlify Build Plugin that fetched the deploy id on a successful build, sent that to my Netlify Background Function, used the Netlify API to get the build data associated with that deploy id and then posted the data to Supabase. Then [this article about event triggered functions](https://www.netlify.com/blog/2021/07/21/how-to-use-event-triggered-netlify-functions/) popped up in my [Twitter](https://twitter.com/jeff_r_knox) feed and I could instantly see how it could simplify my code. I was able to drop the build plugin and the API connection and simply rename my Netlify Background Function to `deploy-succeeded-background.js`.
+
+The naming is important to make this work. `deploy-succeeded` means the function will be triggered automatically when my deploy is successful. An added bonus of this is that external requests to event functions are blocked because Netlify generates a JSON web signature (JWS) for each event triggered by their platform, and verifies that the signature is correct before invoking the associated event function. This means that anyone trying to spam my function with duff data that could be POSTed to my database will be automatically blocked without me having to do anything. Amazing!
+
+The `-background` added to the end of the Netlify Function automatically makes it a Background Function. A question you may be asking is, why a background function and not a normal function? The main reason is that retries are built into Background Functions meaning if the first attempt fails, the system retries on 2 more occasions which makes my logging more resilient. A final point is that this data is purely for my logging purposes and I'm in no hurry to get the info back to a user for example so I'm fine with the function sitting in a queue for a short while.
+
+For the longer term, one thing I would like to investigate further with Background Functions is how to identify that the function has failed on the 3rd and final attempt as I'd like at that point to be logging the fail information, reporting to Slack, etc for later diagnosis. Also, is it possible to manually override the default number of retries and if not is that something on the roadmap?
+
+Enough chat, lets see some code! Here's the function code needed to set everything up without the final part needed to connect to Supabase:
+
+<% highlight code: "javascript" do %>
+const buildContext = (branch, context) => {
+  if (context === "production") return context
+  return (branch.startsWith("cms/") ? "cms" : context)
+}
+
+export async function handler(event, _context) {
+  const payload = JSON.parse(event.body).payload
+  const { id, branch, context, deploy_time, created_at } = payload
+
+  const dataToInsert = {
+    deploy_id: id,
+    branch,
+    context: buildContext(branch, context),
+    deploy_time,
+    created_at
+  }
+  console.log(dataToInsert)
+}
+<% end %>
+
+Everything I need is in the `payload` object automatically sent by the Netlify event and the only additional thing I'm adding is a function to provide more detail to the context of the deploy. By default, Netlify will have contexts of `production` and `deploy-preview` but I'd like to also identify which deploys are created from Netlify CMS which I use for my blog posts so those are easy to pull out in my data visualisation when I get to that stage. Those branch names will always begin with `cms/` so the `buildContext` function can easily perform this for me. I also need to change the key `id` to be `deploy_id` otherwise that would clash with the default `id` field in the Supabase DB table I will create to store the build data.
+
+If I now push this code to my PR, all being well my Background Function should automatically be triggered and I can check this in the Netlify UI. From within the screen with all of the deploy data such as logs, etc, there is a link to the `Deployed Functions` near the top. If you click on that you can see all of your functions on that deploy and then click the `deploy-succeeded-background` one. All being well, you should see the console logged info from the function code above. Excellent, we're ready to send that to Supabase now!
+
+## Supabase
+
+You are going to need an account setup on [Supabase](https://supabase.io/) at this point. You can also follow along with this [Netlify blog post](https://www.netlify.com/blog/2021/06/28/saving-data-to-supabase-and-getting-it-back-again/) in the \`Creating a database and your first table\` section. The production setup has a nice UI for creating the database and table whereas this isn't yet available in local development yet. Therefore what I plan on doing is creating the schema in production and then dump it to my local development environment to experiment with posting data to the local DB rather then having to send the data to production for testing purposes. This is something that is worth getting setup now because we don't want to be posting test data to production further down the line and messing with data integrity.
+
+### DB fields
+
+Click the button to create a new table and I'm calling it \`netlify_deploy_data\` and it will include a primary key called \`id\` with type \`int8\`. Then add the following fields:
+
+1. deploy_id - *varchar - do not allow nullable*
+2. branch *\- varchar - do not allow nullable*
+3. context *\- varchar - do not allow nullable*
+4. deploy_time *\- int2 - do not allow nullable*
+5. created_at *\- timestampz - default NULL - do not allow nullable*
+
+Now I have the table setup in production but I want to dump this into my local dev environment so I can test POSTing dummy deploy data.
+
+### Supabase local development
+
+To begin with, [follow these instructions](https://supabase.io/docs/guides/local-development) to install the Supabase CLI and start Supabase locally. Note that the CLI makes heavy use of [Docker Compose](https://docs.docker.com/compose/install) so ensure it is installed first. In my case I have [Docker Desktop for Mac](https://docs.docker.com/docker-for-mac/install/) installed which means I don't need Docker Compose installed separately. Seeing as I am using Docker Desktop for Mac, which is very popular, I am going to continue with the assumption that you are also using this for simplicity sake in this post.
+
+With this done you should have a `.supabase` folder and within that a `docker-compose.yml` file. To make it easier to work with the database locally it would be nice to have a UI to inspect the rows in the table and for this I am going to add [pgAdmin](https://www.pgadmin.org/) to the end of service in the `docker-compose.yml` file.
+
+<% highlight code: "yml" do %>
+...
+pgadmin:
+  container_name: pgadmin4_container
+  image: dpage/pgadmin4
+  restart: always
+  environment:
+    PGADMIN_DEFAULT_EMAIL: admin@admin.com
+    PGADMIN_DEFAULT_PASSWORD: password
+  ports:
+    - "5050:80"
+<% end %>
+
+If you have Supabase running, stop it with `supabase stop` and then run again with `supabase start`. If you now visit `http://localhost:5050/` then you should see the login screen for pgAdmin and you can authenticate with the credentials in the yml file above.
+
+At this point we can't do much more until the database is setup locally.
+
+## Jake.js tasks
+
+Coming from a Ruby background, I'm familiar with Rake tasks for automating workflows and I was looking for something similar for JavaScript and that's when I came across [Jake.js](https://jakejs.com/) which seemed to fit the bill nicely.
+
+First up, install it as a CLI tool with `npm install -g jake`. Then create a new folder at the root of your project called `jakelib`. Jake will automatically look for files with a .js extension in this folder which allows you to break your tasks up over multiple files and I am setting things up with one namespace per file.
+
+Next up, run `yarn add dotenv --dev` which will be needed to load in environment variables from a `.env` file. Speaking of which, create that `.env` and add the following:
+
+<% highlight code: "bash" do %>
+SUPABASE_PROD_DB_PASSWORD="xxxxxxxxxx"
+SUPABASE_PROD_HOST="xxxxxxxxxxxxxxxxxxxx"
+<% end %>
+
+The password will be the one you created in Supabase earlier and the host will be the string at the end of the URL when you are in your project in Supabase, ie `https://app.supabase.io/project/<this string>`.
+
+Now create a new file at `jakelib/db.js`. There is going to be quite a bit of code below but essentially it is 4 tasks that will
+
+1. Dump the Supabase production schema and data to development
+2. Dump the Supabase production schema to development
+3. Dump the Supabase development schema and data to production
+4. Dump the Supabase development schema to production
+
+and I will go into more detail after showing the code
+
+<% highlight code: "javascript" do %>
+require("dotenv").config()
+
+const docker_exec = "docker exec -i supabase-db bash -c"
+const {
+  SUPABASE_PROD_DB_PASSWORD,
+  SUPABASE_PROD_HOST
+} = process.env
+
+namespace("db", () => {
+  // jake db:dump_production_data
+  desc("Dump supabase production db to development")
+  task("dump_production_data", async () => {
+    console.log("PG_DUMP supabase production db...")
+    await new Promise((resolve, _reject) => {
+      jake.exec(
+        `${docker_exec} "PGPASSWORD='${SUPABASE_PROD_DB_PASSWORD}' pg_dump -n public -h db.${SUPABASE_PROD_HOST}.supabase.co -U postgres -Fc > supabase.dump"`,
+        { breakOnError: false },
+        () => resolve()
+      )
+    })
+    console.log("PG_DUMP complete")
+
+    console.log("Replicating production data in development...")
+    await new Promise((resolve, _reject) => {
+      jake.exec(
+        `${docker_exec} 'pg_restore --verbose --clean -h localhost -U postgres -d postgres < supabase.dump'`,
+        { breakOnError: false },
+        () => resolve()
+      )
+    })
+    console.log("Done!")
+  })
+
+  // jake db:dump_production_schema
+  desc("Dump supabase production db schema to development")
+  task("dump_production_schema", async () => {
+    console.log("PG_DUMP supabase production db schema...")
+    await new Promise((resolve, _reject) => {
+      jake.exec(
+        `${docker_exec} "PGPASSWORD='${SUPABASE_PROD_DB_PASSWORD}' pg_dump -h db.${SUPABASE_PROD_HOST}.supabase.co -U postgres --clean --schema-only > supabase_schema.sql"`,
+        { breakOnError: false },
+        () => resolve()
+      )
+    })
+    console.log("PG_DUMP complete")
+
+    console.log("Replicating production schema in development...")
+    await new Promise((resolve, _reject) => {
+      jake.exec(
+        `${docker_exec} "psql -h localhost -U postgres < supabase_schema.sql"`,
+        { breakOnError: false },
+        () => resolve()
+      )
+    })
+    console.log("Done!")
+  })
+
+  namespace("warning", () => {
+    // jake db:warning:dump_development_data_to_production
+    desc("Dump supabase development db to production")
+    task("dump_development_data_to_production", async () => {
+      console.log("PG_DUMP supabase development db...")
+      await new Promise((resolve, _reject) => {
+        jake.exec(
+          `${docker_exec} "pg_dump -n public -h localhost -U postgres -Fc > supabase_dev.dump"`,
+          { breakOnError: false },
+          () => resolve()
+        )
+      })
+      console.log("PG_DUMP complete")
+
+      console.log("Replicating development data in production...")
+      await new Promise((resolve, _reject) => {
+        jake.exec(
+          `${docker_exec} "PGPASSWORD='${SUPABASE_PROD_DB_PASSWORD}' pg_restore --verbose --clean -h db.${SUPABASE_PROD_HOST}.supabase.co -U postgres -d postgres < supabase_dev.dump"`,
+          { breakOnError: false },
+          () => resolve()
+        )
+      })
+      console.log("Done!")
+    })
+
+    // jake db:warning:dump_development_schema_to_production
+    desc("Dump supabase development db schema to production")
+    task("dump_development_schema_to_production", async () => {
+      console.log("PG_DUMP supabase development db schema...")
+      await new Promise((resolve, _reject) => {
+        jake.exec(
+          `${docker_exec} "pg_dump -h localhost -U postgres --clean --schema-only > supabase_dev_schema.sql"`,
+          { breakOnError: false },
+          () => resolve()
+        )
+      })
+      console.log("PG_DUMP complete")
+
+      console.log("Replicating development schema in production...")
+      await new Promise((resolve, _reject) => {
+        jake.exec(
+          `${docker_exec} "PGPASSWORD='${SUPABASE_PROD_DB_PASSWORD}' psql -h db.${SUPABASE_PROD_HOST}.supabase.co -U postgres < supabase_dev_schema.sql"`,
+          { breakOnError: false },
+          () => resolve()
+        )
+      })
+      console.log("Done!")
+    })
+  })
+})
+<% end %>
+
+So, what the heck is going on here?! Let's walk through the first task `dump_production_data` to explain things.
+
+I've set the task as async because I'm going to have an external connection and perform time consuming instructions on the DB. I then wrap the first part of the task in a Promise which is going to connect to my production Supabase DB. The result of this will need to complete first before going onto the next part of the task which connects to the local DB and uses the file created by the first part.
+
+Next, I use `jake.exec` which allows me to run shell-commands. As the second argument I pass `{ breakOnError: false }` which prevents the task exiting early because of some inconsequential errors you will get with the `pg_dump` command. The third argument is a callback function which is executed when the `jake.exec` shell-command completes and I use this to resolve the Promise.
+
+Then there is is the shell command itself. First I run the docker exec command `docker exec -i supabase-db bash -c` which is a way to execute a command on the `supabase-db` container. You can see the name of the db container in the `docker-compose.yml` file.
+
+The Supabase production password is passed to the `pg_dump` command which is a command that enables me to extract a PostgreSQL database into a script file or other archive file. You can read more in the docs [here](https://www.postgresql.org/docs/12/app-pgdump.html). The most important part in the command is `-Fc` which you can see in the docs sets the file format as custom. This is the most flexible output format in that it allows manual selection and reordering of archived items during restore. This format is also compressed by default.
+
+The `supabase.dump` file is now sitting in the container and the task needs to restore this to my local database using the `pg_restore` command. You can find the docs for this [here](https://www.postgresql.org/docs/12/app-pgrestore.html). This is very similar in setup to the first part off the task so should be pretty clear and when the Promise resolves, the task will be finished.
+
+## pgAdmin
+
+Given that there is no data in the production DB, we can run the second Jake task to just dump the schema. The can be run with the command `jake db:dump_production_schema` and your local DB should now be setup. Check it out by visiting `http://localhost:5050/` and you can view the table by navigating through the pgAdmin UI as follows: `Servers -> <Database name> -> Databases -> postgres -> Schemas -> public -> Tables -> netlify_deploy_data`. If you right click on `netlify_deploy_data` you can click `View/Edit Data -> All Rows` and you should see your empty table with all the column names.
+
+Congratulations, you're ready to get some data in there!
+
+## Database seed
+
+Coming from my Rails experience, I like the command `rails db:seed` which uses a `seed.rb` file to populate the development DB with data so I thought it might be nice to do something similar here to seed the local DB by using a Jake task to send data to my Background Function with `netlify dev` running.
+
+Create a new file at `jakelib/seed.js` which has the following code
+
+<% highlight code: "javascript" do %>
+require("dotenv").config()
+
+const fetch = require("node-fetch")
+const {
+  FUNCTION_LOCALHOST
+} = process.env
+
+const getDummyDeploy = () => {
+  return { 
+    id: Math.random().toString(36).substr(2, 10),
+    branch: sample(\["main", "branch1", "branch2"]),
+    context: sample(\["production", "deploy-preview", "cms"]),
+    deploy_time: randomIntFromInterval(25, 65),
+    created_at: new Date().toISOString()
+  }
+}
+const sample = arr => arr\[Math.floor(Math.random() \* arr.length)]
+const randomIntFromInterval = (min, max) => Math.floor(Math.random() \* (max - min + 1) + min)
+
+namespace("seed", () => {
+  // jake seed:development
+  desc("Seed development")
+  task("development", \["db:dump_production_schema", "netlify_deploy_data"], () => {
+    console.log("Seed development datbase completed")
+  })
+
+   // jake seed:netlify_deploy_data
+  desc("Seed netlify_deploy_data")
+  task("netlify_deploy_data", async () => {
+    for (const _ of [...Array(10)]) {
+      const response = await fetch(`${FUNCTION_LOCALHOST}/.netlify/functions/deploy-succeeded-background`, { 
+        method: "POST",
+        body: JSON.stringify({ payload: getDummyDeploy() })
+      })
+      console.log(response.status)
+    }
+  })
+})
+<% end %>
+
+I have added `FUNCTION_LOCALHOST` to my `.env` file and in my case it has the value `http://localhost:8888`. You will also need to `yarn add node-fetch --dev` if you do not already have it.
+
+The `getDummyDeploy()` function creates some random data to be passed to the function. The `sample()` function simply picks a random value from the given array and `randomIntFromInterval()` is generating an interval from 25 to 65 and picking a random value from that.
+
+The task I will run is `jake seed:development` which first of all runs the `db:dump_production_schema` task to clean out and setup the DB for me and is defined in the `jakelib/db.js` file as shown earlier. It then runs `netlify_deploy_data` which is defined at the end of the `jakelib/seed.js` file. This task is simply a fetch POST request which sends the dummy data to my local function. Note also that I'm running the fetch 10 times just to build out some sample data which will be useful later when I go to visualise the data.
+
+Then, making sure you have `netlify dev` running, you can run the `jake seed:development` command and your function should console log out the data in the terminal. If you want to add more dummy data later, you can simply run the `jake seed:netlify_deploy_data` command a few times by itself.
+
+We're making great progress now and nearly there!
+
+## Send data to SupaBase
+
+For this final part I need to install the Javascript client for Supabase with the command `yarn add @supabase/supabase-js` which will make it easy to interact with the Supabase API. This API is auto generated directly from the Database schema using [PostgREST](https://postgrest.org/en/stable/) which I think is another amazing feature of using Supabase as it saves any manual CRUD programming, especially for my simple use cases.
+
+Going back to the `deploy-succeeded-background.js` function, insert the following at the top of the file
+
+<% highlight code: "javascript" do %>
+import { createClient } from "@supabase/supabase-js"
+
+const {
+  SUPABASE_ANON_KEY,
+  SUPABASE_URL
+} = process.env
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+<% end %>
+
+You need to add the `SUPABASE_ANON_KEY` and `SUPABASE_URL` to both your `.env` file for the local Supabase settings (received after running `supabase init`) and to your Netlify environment variables in the UI for the production Supabase settings.
+
+When running `netlify dev` it will use the environment variables from the `.env` file rather than the Netlify ones which is what we need for local development.
+
+Next, remove the line `console.log(dataToInsert)` and replace it with
+
+<% highlight code: "javascript" do %>
+const { data, error } = await supabase
+  .from("netlify_deploy_data")
+  .insert([dataToInsert])
+
+if (error) return console.log("error", error)
+return { statusCode: 200 }
+<% end %>
+
+The `statusCode` isn't strictly necessary with a background function because there shouldn't be anything waiting for a result as it is run in the background. However, in `netlify dev` it runs as a normal function so having the 200 response code is useful when seeding the DB for example.
+
+Now if you run the command `jake seed:development` to seed the DB you should see the data in pgAdmin. Note that you may need to refresh the browser for this to work.
+
+If you now push this code to your PR, the Netlify Background Function will be triggered automatically on a successful build and if you visit your Supabase UI and refresh the table you should see the real data populating the DB.
+
+Congratulations for getting to the end! This has been a long post and although it's not all strictly necessary I hope the Jake tasks will prove to be very useful for others using Supabase. With this hard work done for the tasks you should be able to reuse the code in other projects. I'm really impressed with Supabase and am keen to try out more of the functionality to see how far it can be pushed. Normally when using PostgreSQL, I'd end up setting up a new Rails project and writing models and controllers to interact with the API and database but this simplifies things, is a big time saver and has a lot of potential.
