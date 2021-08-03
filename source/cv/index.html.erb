@@ -41,8 +41,15 @@ title: Jeff Knox CV
 <% timeline do %>
   <%= alert text: "Apr 2021 - Present", type: :primary, html: { class: "margin-bottom--s" } %>
   <% card title: "Senior Software Engineer for FreeAgent" do %>
-    Part of a small group of engineers setting up a new Front End Architecture team at FreeAgent. More
-    news to follow soon!
+    Part of a small group of engineers setting up a new Front End Architecture team at FreeAgent. Our
+    initial responsibility is to document the existing legacy JavaScript throughout the application
+    and gradually port everything to a single, modern build pipeline. We favour progressively enhancing
+    the UI with JavaScript where needed and <%= link_to "ViewComponent", "https://viewcomponent.org/" %>
+    and <%= link_to "Stimulus", "https://stimulus.hotwired.dev/" %> are integral to our Architecture
+    strategy moving forward. Our long term aim is to implement systems that improve the lives of the
+    engineering teams working on the FreeAgent front-end, making adding and maintaining features a breeze.
+    These responsibilities will range from enabling teams to easily maintain npm package versions, keeping
+    the build pipeline fast, ease of using reusable code patterns and much, much more. 
   <% end %>
 
   <%= alert text: "Apr 2019 - Mar 2021", type: :primary, html: { class: "margin-bottom--s" } %>
@@ -137,22 +144,22 @@ title: Jeff Knox CV
 <% end %>
 
 <hr />
-<h2>Languages Summary</h2>
+<h2>Skills Summary</h2>
 
 <p>Ruby/Ruby on Rails</p>
 <%= progress_arrow filled: 95 %>
 <br />
 
-<p>HTML</p>
-<%= progress_arrow filled: 90 %>
-<br />
-
 <p>CSS</p>
-<%= progress_arrow filled: 80 %>
+<%= progress_arrow filled: 75 %>
 <br />
 
 <p>JavaScript</p>
-<%= progress_arrow filled: 75 %>
+<%= progress_arrow filled: 80 %>
+<br />
+
+<p>Netlify</p>
+<%= progress_arrow filled: 90 %>
 <br />
 
 <hr />
