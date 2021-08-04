@@ -1,4 +1,5 @@
 import { Controller } from "stimulus"
+import { subscription } from "@/javascripts/store/mixins/subscription"
 
 /**
  * @class CommentsController
@@ -13,6 +14,11 @@ export default class extends Controller {
    * @static
    */
   static targets = [ "load", "commento" ]
+
+  connect() {
+    subscription(this)
+    this.subscribe()
+  }
 
   /** 
    * Triggered by a click event.
@@ -29,5 +35,14 @@ export default class extends Controller {
     this.loadTarget.style.display = "none"
     this.commentoTarget.classList.add("margin-top--xxl")
     window.commento.main()
+    this.editStore("commentController", "Comments loaded")
+  }
+
+  storeUpdated(store) {
+    console.log(store.commentController)
+  }
+
+  disconnect() {
+    this.unsubscribe()
   }
 }
