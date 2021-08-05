@@ -5,7 +5,7 @@ export default class extends Controller {
   connect() {
     subscription(this)
     this.subscribe()
-    this.yearsAndMonths()
+    if (!this.store().yearsAndMonths) this.yearsAndMonths()
   }
 
   yearsAndMonths() {
