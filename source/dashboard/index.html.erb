@@ -1,0 +1,40 @@
+---
+title: Netlify Build Data
+---
+
+<% content_for :page_head_js do %>
+  <%= vite_javascript_tag "dashboard", "data-turbo-track": "reload", defer: true %>
+<% end %>
+
+<h1>Netlify build data</h1>
+<hr/>
+
+<section data-controller="years">
+</section>
+
+<section data-controller="months">
+</section>
+
+<section data-controller="successful-builds">
+  <header>
+    <h2>Successful builds</h2>
+  </header>
+  <div class="flex-column">
+    <%= alert text: "Production ... loading", type: :primary, html: { class: "margin-bottom--s" } %>
+    <%= alert text: "Depoly preview ... loading", type: :primary, html: { class: "margin-bottom--s" } %>
+    <%= alert text: "CMS ... loading", type: :primary, html: { class: "margin-bottom--s" } %>
+  </div>
+</section>
+
+<hr/>
+
+<section data-controller="mean-build-times">
+  <header>
+    <h2>Mean build time (s)</h2>
+  </header>
+  <div class="flex-column">
+    <%= alert text: "Production ... loading", type: :default, html: { class: "margin-bottom--s" } %>
+    <%= alert text: "Deploy preview ... loading", type: :default, html: { class: "margin-bottom--s" } %>
+    <%= alert text: "CMS ... loading", type: :default, html: { class: "margin-bottom--s" } %>
+  </div>
+</section>
