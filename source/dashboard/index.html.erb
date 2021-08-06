@@ -2,10 +2,6 @@
 title: Netlify Build Data
 ---
 
-<% content_for :page_head_js do %>
-  <%= vite_javascript_tag "dashboard", "data-turbo-track": "reload", defer: true %>
-<% end %>
-
 <h1>Netlify build data</h1>
 <hr/>
 
@@ -38,3 +34,5 @@ title: Netlify Build Data
     <%= alert text: "CMS ... loading", type: :default, html: { class: "margin-bottom--s" } %>
   </div>
 </section>
+
+<%= vite_javascript_tag "dashboard", "data-turbo-track": "reload", defer: true %>
