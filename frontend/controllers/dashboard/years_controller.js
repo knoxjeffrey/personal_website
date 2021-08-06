@@ -2,10 +2,30 @@ import { Controller } from "stimulus"
 import { subscription } from "~/javascripts/store/mixins/subscription"
 
 export default class extends Controller {
+  static targets = [ "buttonGroup", "button" ]
+  static values = { status: String }
+
   connect() {
     subscription(this)
     this.subscribe()
     if (!this.store().yearsAndMonths) this.yearsAndMonths()
+  }
+
+  statusValueChanged() {
+    if (this.statusValue === "loaded") {
+      let fragment = document.createDocumentFragment()
+      this.store().years.forEach(year => {
+        const buttonClone = this.buttonTarget.cloneNode(false)
+        const button = fragment.appendChild(buttonClone)
+        button.innerHTML = year
+      });
+      this.buttonTarget.remove()
+      this.buttonGroupTarget.appendChild(fragment)
+    }
+  }
+
+  disconnect() {
+    this.unsubscribe()
   }
 
   yearsAndMonths() {
@@ -27,10 +47,13 @@ export default class extends Controller {
   }
 
   storeUpdated(store) {
-    console.log(store.yearsAndMonths)
-  }
+    if (!this.store().years) {
+      this.editStore("years", store.yearsAndMonths.map(data => data.year))
+      this.editStore("yearSelected", store.years.slice(-1))
+      this.editStore("months", store.yearsAndMonths.slice(-1).map(data => data.month_numbers).flat())
+      this.editStore("monthSelected", store.months.slice(-1))
 
-  disconnect() {
-    this.unsubscribe()
+      this.statusValue = "loaded"
+    }
   }
 }
