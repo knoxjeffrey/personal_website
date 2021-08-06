@@ -3,14 +3,17 @@ module Components
     class LoadingComponent < Middleman::Extension
       helpers do
         def loading(opts={})
-          tag(:span, class: "terminal-loading#{loading_additional_classes(opts)}")
+          tag(:span, build_loading_html(opts))
         end
 
         private
 
-        def loading_additional_classes(opts)
-          contained = opts[:contained] ? " terminal-loading--contained" : ""
-          opts[:class] ? " #{opts[:class]}#{contained}" : "#{contained}"
+        def build_loading_html(opts)
+          klass = opts[:contained] ? "terminal-loading terminal-loading--contained" : "terminal-loading"
+          klass = opts.dig(:html, :class) ? "#{klass} #{opts[:html][:class]}" : "#{klass}"
+          opts[:html] ||= {}
+          opts[:html][:class] = klass
+          opts[:html]
         end
       end
     end

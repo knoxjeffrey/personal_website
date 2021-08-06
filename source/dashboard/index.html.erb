@@ -7,13 +7,13 @@ title: Netlify Build Data
 
 <section class="margin-bottom--m" data-controller="years">
   <% button_group do %>
-    <%= button text: "#{loading contained: true, class: 'invert'}", type: :default %>
+    <%= button text: "#{loading contained: true, html: { class: 'invert'} }", type: :default %>
   <% end %>
 </section>
 
 <section data-controller="months">
   <% button_group do %>
-    <%= button text: "#{loading contained: true, class: 'invert'}", type: :default %>
+    <%= button text: "#{loading contained: true, html: { class: 'invert'} }", type: :default %>
   <% end %>
 </section>
 
@@ -24,9 +24,9 @@ title: Netlify Build Data
     <h2>Successful builds</h2>
   </header>
   <div class="flex-column">
-    <%= alert text: "Production #{loading class: 'primary'}", type: :primary, html: { class: "margin-bottom--s" } %>
-    <%= alert text: "Depoly preview #{loading class: 'primary'}", type: :primary, html: { class: "margin-bottom--s" } %>
-    <%= alert text: "CMS #{loading class: 'primary'}", type: :primary, html: { class: "margin-bottom--s" } %>
+    <%= alert text: "Production #{loading html: { class: 'primary'} }", type: :primary, html: { class: "margin-bottom--s" } %>
+    <%= alert text: "Depoly preview #{loading html: { class: 'primary'} }", type: :primary, html: { class: "margin-bottom--s" } %>
+    <%= alert text: "CMS #{loading html: { class: 'primary'} }", type: :primary, html: { class: "margin-bottom--s" } %>
   </div>
 </section>
 
