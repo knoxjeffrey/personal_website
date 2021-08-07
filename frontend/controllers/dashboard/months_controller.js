@@ -26,7 +26,7 @@ export default class extends Controller {
         button.innerHTML = monthMapper[monthNumber]
       });
 
-      this.buttonTarget.remove()
+      this.buttonTargets.forEach(buttonTarget => buttonTarget.remove())
       this.buttonGroupTarget.appendChild(fragment)
     }
   }
