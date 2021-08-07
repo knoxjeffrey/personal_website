@@ -16,7 +16,7 @@ title: Netlify Build Data
 <section data-controller="months" data-months-year-selected-value="">
   <% button_group do %>
     <div data-months-target="buttonGroup">
-      <%= button text: "#{loading contained: true}", type: :default, html: { class: "invert", "data-months-target": "button" } %>
+      <%= button text: "#{loading contained: true}", type: :default, html: { class: "invert", "data-months-target": "button", "data-action": "click->months#monthClicked" } %>
     </div>
   <% end %>
 </section>

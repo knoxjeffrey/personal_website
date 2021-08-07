@@ -28,7 +28,19 @@ export default class extends Controller {
 
       this.buttonTargets.forEach(buttonTarget => buttonTarget.remove())
       this.buttonGroupTarget.appendChild(fragment)
+      this.buttonTargets.forEach(buttonTarget => buttonTarget.classList.remove("selected"))
+      this.buttonTargets[this.buttonTargets.length - 1].classList.add("selected")
     }
+  }
+  
+  monthClicked(event) {
+    this.editStore(
+      "monthSelected",
+      parseInt(Object.keys(monthMapper).find(key => monthMapper[key] === event.target.innerHTML))
+    )
+
+    this.buttonTargets.forEach(buttonTarget => buttonTarget.classList.remove("selected"))
+    event.target.classList.add("selected")
   }
 
   storeUpdated(store) {

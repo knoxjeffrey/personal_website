@@ -32,7 +32,8 @@
 }
 
 .btn.btn-ghost:focus,
-.btn.btn-ghost:hover {
+.btn.btn-ghost:hover,
+.btn.btn-ghost.selected {
   border-color: var(--tertiary-color);
   color: var(--tertiary-color);
   z-index: 2;
@@ -55,13 +56,15 @@
 }
 
 .btn-default:hover,
-.btn-default:focus:not(.btn-ghost) {
+.btn-default:focus:not(.btn-ghost),
+.btn-default.selected {
   background-color: var(--secondary-color);
   color: var(--invert-font-color);
 }
 
 .btn-default.btn-ghost:focus,
-.btn-default.btn-ghost:hover {
+.btn-default.btn-ghost:hover
+.btn-default.btn-ghost.selected {
   border-color: var(--secondary-color);
   color: var(--secondary-color);
   z-index: 2;
@@ -74,7 +77,8 @@
 }
 
 .btn-error:hover,
-.btn-error:focus:not(.btn-ghost) {
+.btn-error:focus:not(.btn-ghost)
+.btn-error.selected {
   background-color: var(--error-dark-color);
   border-color: var(--error-dark-color);
 }
@@ -85,7 +89,8 @@
 }
 
 .btn-error.btn-ghost:focus,
-.btn-error.btn-ghost:hover {
+.btn-error.btn-ghost:hover,
+.btn-error.btn-ghost.selected {
   border-color: var(--error-dark-color);
   color: var(--error-dark-color);
   z-index: 2;
@@ -98,7 +103,8 @@
 }
 
 .btn-primary:hover,
-.btn-primary:focus:not(.btn-ghost) {
+.btn-primary:focus:not(.btn-ghost),
+.btn-primary.selected {
   background-color: var(--primary-dark-color);
   border-color: var(--primary-dark-color);
 }
@@ -109,7 +115,8 @@
 }
 
 .btn-primary.btn-ghost:focus,
-.btn-primary.btn-ghost:hover {
+.btn-primary.btn-ghost:hover,
+.btn-primary.btn-ghost.selected {
   border-color: var(--primary-dark-color);
   color: var(--primary-dark-color);
   z-index: 2;

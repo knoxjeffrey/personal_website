@@ -21,6 +21,7 @@ export default class extends Controller {
       });
       this.buttonTarget.remove()
       this.buttonGroupTarget.appendChild(fragment)
+      this.buttonTargets[this.buttonTargets.length - 1].classList.add("selected")
     }
   }
 
@@ -28,6 +29,10 @@ export default class extends Controller {
     this.editStore("yearSelected", parseInt(event.target.innerHTML))
     const yearAndMonths = this.store().yearsAndMonths.find(data => data.year === this.store().yearSelected)
     this.editStore("months", yearAndMonths.month_numbers)
+    this.editStore("monthSelected", this.store().months[this.store().months.length - 1])
+
+    this.buttonTargets.forEach(buttonTarget => buttonTarget.classList.remove("selected"))
+    event.target.classList.add("selected")
   }
 
   disconnect() {
