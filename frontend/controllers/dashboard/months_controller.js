@@ -41,14 +41,11 @@ export default class extends Controller {
 
     this.buttonTargets.forEach(buttonTarget => buttonTarget.classList.remove("selected"))
     event.target.classList.add("selected")
-
-    this.fetchNetlifyBuildData()
   }
 
   fetchNetlifyBuildData() {
     const year = this.store().yearSelected
     const month =this.store().monthSelected
-    let netlifyBuildDataToUpdate = this.store().netlifyBuildData
 
     const data = this.store().netlifyBuildData[`${year}${month}`]
     if (data) {
@@ -63,22 +60,20 @@ export default class extends Controller {
         })
         .then(res => res.json())
         .then(buildData => {
+          let netlifyBuildDataToUpdate = this.store().netlifyBuildData
           netlifyBuildDataToUpdate[`${year}${month}`] = buildData
           this.editStore("netlifyBuildData", netlifyBuildDataToUpdate)
+          this.editStore("selectedNetlifyBuildData", this.store().netlifyBuildData[`${year}${month}`])
         })
         .catch(error => {
           console.warn(error)
-          netlifyBuildDataToUpdate[`${year}${month}`] = undefined
-          this.editStore("netlifyBuildData", netlifyBuildDataToUpdate)
         });
     }
   }
 
   storeUpdated(store, prop) {
     this.yearSelectedValue = store.yearSelected
-    if (prop === "monthSelected" || prop === "netlifyBuildData" && store.monthSelected) {
-      this.fetchNetlifyBuildData()
-    }
+    if (prop === "monthSelected") this.fetchNetlifyBuildData()
   }
 
   disconnect() {
