@@ -5,6 +5,10 @@ title: Netlify Build Data
 <h1>Netlify build data</h1>
 <hr/>
 
+<% content_for :page_head_meta do %>
+  <meta name="turbo-cache-control" content="no-cache">
+<% end %>
+
 <section class="margin-bottom--m" data-controller="years" data-years-status-value="loading">
   <% button_group do %>
     <div data-years-target="buttonGroup">

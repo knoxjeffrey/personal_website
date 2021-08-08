@@ -8,6 +8,14 @@ export default class extends Controller {
   connect() {
     subscription(this)
     this.subscribe()
+
+    this.reconnect()
+  }
+
+  reconnect() {
+    if (this.store().selectedNetlifyBuildData) {
+      this.storeUpdated(this.store(), "selectedNetlifyBuildData")
+    }
   }
 
   updateSuccessfulBuildsValue(target, text, context) {
