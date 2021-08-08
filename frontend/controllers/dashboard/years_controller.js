@@ -8,7 +8,16 @@ export default class extends Controller {
   connect() {
     subscription(this)
     this.subscribe()
+    if (!this.store().netlifyBuildData) this.editStore("netlifyBuildData", {})
     if (!this.store().yearsAndMonths) this.yearsAndMonths()
+    
+    this.reconnect()
+  }
+
+  reconnect() {
+    if (this.store().selectedNetlifyBuildData) {
+      this.storeUpdated(this.store(), "yearsAndMonths")
+    }
   }
 
   statusValueChanged() {
@@ -37,10 +46,6 @@ export default class extends Controller {
     event.target.classList.add("selected")
   }
 
-  disconnect() {
-    this.unsubscribe()
-  }
-
   yearsAndMonths() {
     fetch("/.netlify/functions/supabase-get-functions", { 
       headers: { "Function-Name": "netlify_deploy_data_years_and_months" }
@@ -61,7 +66,6 @@ export default class extends Controller {
 
   storeUpdated(store, prop) {
     if (prop === "yearsAndMonths") {
-      this.editStore("netlifyBuildData", {})
       this.editStore("years", store.yearsAndMonths.map(data => data.year))
       this.editStore("yearSelected", store.years[store.years.length - 1])
       this.editStore("months", store.yearsAndMonths.slice(-1).map(data => data.month_numbers).flat())
@@ -69,5 +73,10 @@ export default class extends Controller {
 
       this.statusValue = "loaded"
     }
+  }
+
+  disconnect() {
+    this.statusValue = "loading"
+    this.unsubscribe()
   }
 }

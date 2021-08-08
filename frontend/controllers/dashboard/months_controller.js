@@ -13,6 +13,14 @@ export default class extends Controller {
   connect() {
     subscription(this)
     this.subscribe()
+
+    this.reconnect()
+  }
+
+  reconnect() {
+    if (this.store().selectedNetlifyBuildData) {
+      this.storeUpdated(this.store(), "monthSelected")
+    }
   }
 
   yearSelectedValueChanged() {
@@ -82,6 +90,7 @@ export default class extends Controller {
   }
 
   disconnect() {
+    this.yearSelectedValue = ""
     this.unsubscribe()
   }
 }

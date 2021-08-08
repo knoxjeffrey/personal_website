@@ -97,7 +97,7 @@ nav ul > li::after {
 
   .terminal-menu li {
     margin: 0;
-    margin-right: 2em;
+    margin-right: 1.25em;
   }
 
   .terminal-menu li:last-child {
