@@ -17,15 +17,10 @@ export async function handler(event, _context) {
     let { year, month } = event.queryStringParameters
     year = parseInt(year)
     month = parseInt(month)
-    let ltYear, ltMonth
 
-    if (month === "12" ) {
-      ltYear = year + 1
-      ltMonth = 1
-    } else {
-      ltYear = year
-      ltMonth = month + 1
-    }
+    const ltYear = month === "12" ? year + 1 : year
+    const ltMonth = month === "12" ? 1 : month + 1
+
     const gte = `${year}-0${month}-01T00:00:00+00:00`
     const lt = `${ltYear}-0${ltMonth}-01T00:00:00+00:00`
 
