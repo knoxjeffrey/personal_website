@@ -41,10 +41,44 @@ export default class extends Controller {
 
     this.buttonTargets.forEach(buttonTarget => buttonTarget.classList.remove("selected"))
     event.target.classList.add("selected")
+
+    this.fetchNetlifyBuildData()
   }
 
-  storeUpdated(store) {
+  fetchNetlifyBuildData() {
+    const year = this.store().yearSelected
+    const month =this.store().monthSelected
+    let netlifyBuildDataToUpdate = this.store().netlifyBuildData
+
+    const data = this.store().netlifyBuildData[`${year}${month}`]
+    if (data) {
+      this.editStore("selectedNetlifyBuildData", data)
+    } else {
+      fetch(`/.netlify/functions/supabase-get-api?year=${year}&month=${month}`, { 
+        headers: { "Function-Name": "netlify_build_data_for_year_and_month" }
+      })
+        .then(responseCheck => {
+          if (!responseCheck.ok) { throw Error(responseCheck.status); }
+          return responseCheck;
+        })
+        .then(res => res.json())
+        .then(buildData => {
+          netlifyBuildDataToUpdate[`${year}${month}`] = buildData
+          this.editStore("netlifyBuildData", netlifyBuildDataToUpdate)
+        })
+        .catch(error => {
+          console.warn(error)
+          netlifyBuildDataToUpdate[`${year}${month}`] = undefined
+          this.editStore("netlifyBuildData", netlifyBuildDataToUpdate)
+        });
+    }
+  }
+
+  storeUpdated(store, prop) {
     this.yearSelectedValue = store.yearSelected
+    if (prop === "monthSelected" || prop === "netlifyBuildData" && store.monthSelected) {
+      this.fetchNetlifyBuildData()
+    }
   }
 
   disconnect() {

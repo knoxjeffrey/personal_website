@@ -57,10 +57,11 @@ export default class extends Controller {
       });
   }
 
-  storeUpdated(store) {
+  storeUpdated(store, prop) {
     if (!this.store().years) {
       this.editStore("years", store.yearsAndMonths.map(data => data.year))
       this.editStore("yearSelected", store.years[store.years.length - 1])
+      this.editStore("netlifyBuildData", {})
       this.editStore("months", store.yearsAndMonths.slice(-1).map(data => data.month_numbers).flat())
       this.editStore("monthSelected", store.months[store.months.length - 1])
 
