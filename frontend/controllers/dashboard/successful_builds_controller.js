@@ -3,22 +3,19 @@ import { subscription } from "~/javascripts/store/mixins/subscription"
 
 export default class extends Controller {
   static targets = [ "production", "deployPreview", "cms" ]
+  static values = { loading: String }
 
   connect() {
     subscription(this)
     this.subscribe()
   }
 
-  updateProductionValue() {
-    this.productionTarget.innerHTML = `Production ... ${this.calculateNumberOfBuilds("production")}`
+  updateSuccessfulBuildsValue(target, text, context) {
+    target.innerHTML = `${text} ${this.calculateNumberOfBuilds(context)}`
   }
 
-  updateDeployPreviewValue() {
-    this.deployPreviewTarget.innerHTML = `Depoly preview ... ${this.calculateNumberOfBuilds("deploy-preview")}`
-  }
-
-  updateCmsValue() {
-    this.cmsTarget.innerHTML = `CMS ... ${this.calculateNumberOfBuilds("cms")}`
+  loadingSuccessfulBuildsValue(target, text) {
+    target.innerHTML = `${text} ${this.loadingValue}`
   }
 
   calculateNumberOfBuilds(context) {
@@ -28,10 +25,15 @@ export default class extends Controller {
   }
 
   storeUpdated(store, prop) {
+    if (store.fetchingNetlifyBuildData) {
+      this.loadingSuccessfulBuildsValue(this.productionTarget, "Production")
+      this.loadingSuccessfulBuildsValue(this.deployPreviewTarget, "Deploy preview")
+      this.loadingSuccessfulBuildsValue(this.cmsTarget, "CMS")
+    }
     if (prop === "selectedNetlifyBuildData") {
-      this.updateProductionValue()
-      this.updateDeployPreviewValue()
-      this.updateCmsValue()
+      this.updateSuccessfulBuildsValue(this.productionTarget, "Production ...", "production")
+      this.updateSuccessfulBuildsValue(this.deployPreviewTarget, "Deploy preview ...", "deploy-preview")
+      this.updateSuccessfulBuildsValue(this.cmsTarget, "CMS ...", "cms")
     }
   }
 

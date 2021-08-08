@@ -51,6 +51,7 @@ export default class extends Controller {
     if (data) {
       this.editStore("selectedNetlifyBuildData", data)
     } else {
+      this.editStore("fetchingNetlifyBuildData", true)
       fetch(`/.netlify/functions/supabase-get-api?year=${year}&month=${month}`, { 
         headers: { "Function-Name": "netlify_build_data_for_year_and_month" }
       })
@@ -64,9 +65,11 @@ export default class extends Controller {
           netlifyBuildDataToUpdate[`${year}${month}`] = buildData
           this.editStore("netlifyBuildData", netlifyBuildDataToUpdate)
           this.editStore("selectedNetlifyBuildData", this.store().netlifyBuildData[`${year}${month}`])
+          this.editStore("fetchingNetlifyBuildData", false)
         })
         .catch(error => {
           console.warn(error)
+          this.editStore("fetchingNetlifyBuildData", false)
         });
     }
   }
