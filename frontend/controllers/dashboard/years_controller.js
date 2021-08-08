@@ -26,6 +26,8 @@ export default class extends Controller {
   }
 
   yearClicked(event) {
+    if (this.store().yearSelected === parseInt(event.target.innerHTML)) return
+    
     this.editStore("yearSelected", parseInt(event.target.innerHTML))
     const yearAndMonths = this.store().yearsAndMonths.find(data => data.year === this.store().yearSelected)
     this.editStore("months", yearAndMonths.month_numbers)

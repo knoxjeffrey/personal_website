@@ -34,6 +34,8 @@ export default class extends Controller {
   }
   
   monthClicked(event) {
+    if (this.store().monthSelected === parseInt(event.target.innerHTML)) return
+
     this.editStore(
       "monthSelected",
       parseInt(Object.keys(monthMapper).find(key => monthMapper[key] === event.target.innerHTML))
