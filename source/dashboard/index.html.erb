@@ -23,7 +23,7 @@ title: Netlify Build Data
 
 <hr/>
 
-<section data-controller="successful-builds" data-successful-builds-loading-value='<%= (loading html: { class: "primary"}) %>'>
+<section data-controller="successful-builds" data-successful-builds-loading-value='<%= loading html: { class: "primary"} %>'>
   <header>
     <h2>Successful builds</h2>
   </header>
@@ -36,14 +36,14 @@ title: Netlify Build Data
 
 <hr/>
 
-<section data-controller="mean-build-times">
+<section data-controller="mean-build-times" data-mean-build-times-loading-value='<%= loading %>' data-mean-build-times-success-class="terminal-alert-success" data-mean-build-times-warning-class="terminal-alert-warning" data-mean-build-times-error-class="terminal-alert-error", data-mean-build-times-unavailable-class="terminal-alert-primary">
   <header>
     <h2>Mean build time (s)</h2>
   </header>
   <div class="flex-column">
-    <%= alert text: "Production #{loading}", type: :default, html: { class: "margin-bottom--s" } %>
-    <%= alert text: "Deploy preview #{loading}", type: :default, html: { class: "margin-bottom--s" } %>
-    <%= alert text: "CMS #{loading}", type: :default, html: { class: "margin-bottom--s" } %>
+    <%= alert text: "Production #{loading}", type: :default, html: { class: "margin-bottom--s", "data-mean-build-times-target": "production" } %>
+    <%= alert text: "Deploy preview #{loading}", type: :default, html: { class: "margin-bottom--s", "data-mean-build-times-target": "deployPreview" } %>
+    <%= alert text: "CMS #{loading}", type: :default, html: { class: "margin-bottom--s", "data-mean-build-times-target": "cms" } %>
   </div>
 </section>
 
