@@ -21,13 +21,13 @@ export default class StimulusStore {
 
   editStore(prop, value) {
     this._store[prop] = value
-    this._store.subscribers && this.emit()
+    this._store.subscribers && this.emit(prop)
   }
 
-  emit() {
+  emit(prop) {
     this._store.subscribers.forEach(controller => {
       typeof controller.storeUpdated === "function" && 
-      controller.storeUpdated(this._store);
+      controller.storeUpdated(this._store, prop);
     });
   }
   

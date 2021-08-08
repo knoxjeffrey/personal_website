@@ -1,0 +1,68 @@
+.terminal-loading {
+  --invert-loading-color: var(--invert-font-color);
+}
+
+.terminal-loading--contained {
+  display: flex;
+  justify-content: center;
+}
+
+.terminal-loading:after {
+  animation: dots 1s steps(5, end) infinite;
+  content: ".";
+  transform: translateX(-50%);
+}
+
+.terminal-loading.invert {
+  --loading-color: var(--invert-font-color);
+  --invert-loading-color: var(--font-color);
+  color: var(--invert-font-color);
+}
+
+.terminal-loading.primary {
+  --loading-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.terminal-loading.error {
+  --loading-color: var(--error-color);
+  color: var(--error-color);
+}
+
+.terminal-loading.highlight {
+  --loading-color: var(--highlight-color);
+  color: var(--highlight-color);
+}
+
+.terminal-loading.success {
+  --loading-color: var(--success-color);
+  color: var(--success-color);
+}
+
+@keyframes dots {
+  0%, 20% {
+    color: var(--invert-loading-color);
+    text-shadow:
+      .5em 0 0 var(--invert-loading-color),
+      1em 0 0 var(--invert-loading-color);
+  }
+  
+  40% {
+    color: var(--loading-color, var(--font-color));
+    text-shadow:
+      .5em 0 0 var(--invert-loading-color),
+      1em 0 0 var(--invert-loading-color);
+  }
+
+  60% {
+    text-shadow:
+      .5em 0 0 var(--loading-color, var(--font-color)),
+      1em 0 0 var(--invert-loading-color);
+  }
+
+  80%, 100% {
+    text-shadow:
+      .5em 0 0 var(--loading-color, var(--font-color)),
+      1em 0 0 var(--loading-color, var(--font-color));
+  }
+}

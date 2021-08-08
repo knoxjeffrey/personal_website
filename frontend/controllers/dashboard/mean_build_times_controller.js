@@ -7,7 +7,7 @@ export default class extends Controller {
     this.subscribe()
   }
 
-  storeUpdated(store) {
+  storeUpdated(store, prop) {
   }
 
   disconnect() {
