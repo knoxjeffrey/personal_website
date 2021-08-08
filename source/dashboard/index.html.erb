@@ -23,14 +23,14 @@ title: Netlify Build Data
 
 <hr/>
 
-<section data-controller="successful-builds">
+<section data-controller="successful-builds" data-successful-builds-loading-value='<%= (loading html: { class: "primary"}) %>'>
   <header>
     <h2>Successful builds</h2>
   </header>
   <div class="flex-column">
-    <%= alert text: "Production #{loading html: { class: 'primary'} }", type: :primary, html: { class: "margin-bottom--s" } %>
-    <%= alert text: "Depoly preview #{loading html: { class: 'primary'} }", type: :primary, html: { class: "margin-bottom--s" } %>
-    <%= alert text: "CMS #{loading html: { class: 'primary'} }", type: :primary, html: { class: "margin-bottom--s" } %>
+    <%= alert text: "Production #{loading html: { class: 'primary'} }", type: :primary, html: { class: "margin-bottom--s", "data-successful-builds-target": "production" } %>
+    <%= alert text: "Depoly preview #{loading html: { class: 'primary'} }", type: :primary, html: { class: "margin-bottom--s", "data-successful-builds-target": "deployPreview" } %>
+    <%= alert text: "CMS #{loading html: { class: 'primary'} }", type: :primary, html: { class: "margin-bottom--s", "data-successful-builds-target": "cms" } %>
   </div>
 </section>
 
