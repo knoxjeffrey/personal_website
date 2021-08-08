@@ -30,7 +30,7 @@ export default class extends Controller {
     const totals = this.store().selectedNetlifyBuildData.reduce((acc , data) => {
       return data.context === context ? { count: acc.count + 1, time: acc.time + data.deploy_time } : acc
     }, { count: 0, time: 0 })
-    return totals.time / totals.count || "N/A"
+    return Math.round((totals.time / totals.count) * 100) / 100 || "N/A"
   }
 
   removeAlertColors(target) {
