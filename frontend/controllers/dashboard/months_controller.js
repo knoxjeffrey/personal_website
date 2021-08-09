@@ -71,11 +71,11 @@ export default class extends Controller {
         })
         .then(res => res.json())
         .then(buildData => {
+          this.editStore("fetchingNetlifyBuildData", false)
           let netlifyBuildDataToUpdate = this.store().netlifyBuildData
           netlifyBuildDataToUpdate[`${year}${month}`] = buildData
           this.editStore("netlifyBuildData", netlifyBuildDataToUpdate)
           this.editStore("selectedNetlifyBuildData", this.store().netlifyBuildData[`${year}${month}`])
-          this.editStore("fetchingNetlifyBuildData", false)
         })
         .catch(error => {
           console.warn(error)
