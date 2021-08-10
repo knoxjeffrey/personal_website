@@ -1,6 +1,6 @@
 import { Controller } from "stimulus"
 import { subscription } from "~/javascripts/store/mixins/subscription"
-import * as d3 from "d3"
+import d3 from "~/javascripts/dashboard/d3_modules"
 
 const wrapper = d3.select("[data-viz='wrapper']")
 const tooltip = d3.select("[data-viz='tooltip']")
