@@ -64,4 +64,19 @@ title: Netlify Build Data
   <% end %>
 </section>
 
+<section data-controller="data-visualisation">
+  <div data-viz="wrapper" class="line-chart">
+    <div class="line-chart">
+      <div data-viz="tooltip" class="line-chart__tooltip">
+        <div class="line-chart__tooltip-date">
+          <span data-viz="date"></span>
+        </div>
+        <div class="line-chart__tooltip-duration">
+          Duration: <span data-viz="duration"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <%= vite_javascript_tag "dashboard", "data-turbo-track": "reload", defer: true %>

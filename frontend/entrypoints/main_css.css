@@ -4,3 +4,102 @@
 @import "~/stylesheets/contact";
 @import "~/stylesheets/utilities";
 
+.line-chart {
+  position: relative;
+}
+
+.line-chart__path {
+  fill: none;
+  stroke: #3b93c8;
+  stroke-width: 3;
+}
+
+.line-chart__y-axis path,
+.line-chart__x-axis path {
+  stroke: #7b8a93;
+}
+
+.line-chart .tick line {
+  stroke: #7b8a93;
+}
+.line-chart .tick text {
+  fill: #7b8a93;
+}
+
+.line-chart__x-axis-label {
+  fill: #414141;
+  font-size: 1.2em;
+}
+
+.line-chart__listening-rect {
+  cursor: pointer;
+  fill: transparent;
+}
+
+.line-chart__tooltip {
+  opacity: 0;
+  position: absolute;
+  top: -14px;
+  left: 0;
+  padding: 0.6em 1em;
+  background: #7b8a93;
+  text-align: center;
+  line-height: 1.4em;
+  font-size: 0.9em;
+  border-radius: 3px;
+  z-index: 10;
+  transition: all 0.1s ease-out;
+  pointer-events: none;
+}
+
+.line-chart__tooltip:before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  background: #7b8a93;
+  border: none;
+  border-top-color: transparent;
+  border-left-color: transparent;
+  transform: translate(-50%, 50%) rotate(45deg);
+  transform-origin: center center;
+  z-index: 10;
+}
+
+.line-chart__tooltip-circle {
+  stroke: #78c267;
+  fill: white;
+  stroke-width: 3;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.line-chart__tooltip-date {
+  font-size: 1.1em;
+  font-weight: 600;
+  line-height: 1.4em;
+  margin-bottom: 0.2em;
+}
+
+.line-chart__tooltip-duration {
+  color: #fff;
+}
+
+.line-chart__tooltip-date span,
+.line-chart__tooltip-duration span {
+  color: #fff;
+}
+
+.line-chart__lower-bound-kpi-line, .line-chart__target-kpi-line {
+  stroke-dasharray: 2px 4px;
+}
+
+.line-chart__lower-bound-kpi-line {
+  stroke: #d54f5a;
+}
+
+.line-chart__target-kpi-line {
+  stroke: #78c267;
+}
