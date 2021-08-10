@@ -66,14 +66,14 @@ function kpiLineValues(context) {
 function kpiLineTransition(bounds, data, context) {
   const lineValues = kpiLineValues(context)
 
-  bounds.select(".line-chart__target-kpi-line")
+  bounds.select(".line-chart--target-kpi-line")
       .transition().duration(250)
       .attr("x1", dv.xScale(dv.xAccessor(data)))
       .attr("x2", dimensions.boundedWidth)
       .attr("y1", dv.yScale(lineValues.targetKpiLineValue))
       .attr("y2", dv.yScale(lineValues.targetKpiLineValue))
 
-  bounds.select(".line-chart__lower-bound-kpi-line")
+  bounds.select(".line-chart--lower-bound-kpi-line")
       .transition().duration(250)
       .attr("x1", dv.xScale(dv.xAccessor(data)))
       .attr("x2", dimensions.boundedWidth)
@@ -215,7 +215,7 @@ export default class extends Controller {
 
     // Setup listener rect for mouse overs
     const listeningRect = bounds.append("rect")
-        .attr("class", "line-chart__listening-rect")
+        .attr("class", "line-chart--listening-rect")
         .attr("width", dimensions.boundedWidth)
         .attr("height", dimensions.boundedHeight)
         .on("mousemove", onMouseMove)
@@ -224,42 +224,42 @@ export default class extends Controller {
 
     // Setup tooltip when mousing over the listener rect
     tooltipCircle = bounds.append("circle")
-        .attr("class", "line-chart__tooltip-circle")
+        .attr("class", "line-chart--tooltip-circle")
         .attr("r", 4)
 
     // Setup build duration line
     const line = bounds.append("path")
-        .attr("class", "line-chart__path")
+        .attr("class", "line-chart--path")
         .attr("d", dv.lineGenerator(dv.store.selectedContextData))
         .call(lineTransitionIn)
 
     // Setup axis
     const yAxis = bounds.append("g")
-        .attr("class", "line-chart__y-axis")
+        .attr("class", "line-chart--y-axis")
         .call(dv.yAxisGenerator)
 
     const xAxis = bounds.append("g")
-        .attr("class", "line-chart__x-axis")
+        .attr("class", "line-chart--x-axis")
         .call(dv.xAxisGenerator)
           .style("transform", `translateY(${
             dimensions.boundedHeight
           }px)`)
       .append("text")
-        .attr("class", "line-chart__x-axis-label")
+        .attr("class", "line-chart--x-axis-label")
         .attr("x", dimensions.boundedWidth / 2)
         .attr("y", dimensions.margin.bottom - 5)
         .text("Build number")
 
     // Setup KPI lines to start from zero on y axis. These will animate into position with kpiLineTransition
     const targetKpiLine = bounds.append("line")
-        .attr("class", "line-chart__target-kpi-line")
+        .attr("class", "line-chart--target-kpi-line")
         .attr("x1", dv.xScale(dv.xAccessor(dv.store.selectedContextData)))
         .attr("x2", dimensions.boundedWidth)
         .attr("y1", dv.yScale(0))
         .attr("y2", dv.yScale(0))
 
     const lowerBoundtKpiLine = bounds.append("line")
-        .attr("class", "line-chart__lower-bound-kpi-line")
+        .attr("class", "line-chart--lower-bound-kpi-line")
         .attr("x1", dv.xScale(dv.xAccessor(dv.store.selectedContextData)))
         .attr("x2", dimensions.boundedWidth)
         .attr("y1", dv.yScale(0))

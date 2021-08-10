@@ -8,41 +8,41 @@
   position: relative;
 }
 
-.line-chart__path {
+.line-chart--path {
   fill: none;
-  stroke: #3b93c8;
-  stroke-width: 3;
+  stroke: var(--primary-color);
+  stroke-width: 2;
 }
 
-.line-chart__y-axis path,
-.line-chart__x-axis path {
-  stroke: #7b8a93;
+.line-chart--y-axis path,
+.line-chart--x-axis path {
+  stroke: var(--secondary-color);
 }
 
 .line-chart .tick line {
-  stroke: #7b8a93;
+  stroke: var(--secondary-color);
 }
 .line-chart .tick text {
-  fill: #7b8a93;
+  fill: var(--secondary-color);
 }
 
-.line-chart__x-axis-label {
-  fill: #414141;
+.line-chart--x-axis-label {
+  fill: var(--progress-bar-background);
   font-size: 1.2em;
 }
 
-.line-chart__listening-rect {
+.line-chart--listening-rect {
   cursor: pointer;
   fill: transparent;
 }
 
-.line-chart__tooltip {
+.line-chart--tooltip {
   opacity: 0;
   position: absolute;
   top: -14px;
   left: 0;
   padding: 0.6em 1em;
-  background: #7b8a93;
+  background: var(--secondary-color);
   text-align: center;
   line-height: 1.4em;
   font-size: 0.9em;
@@ -52,14 +52,14 @@
   pointer-events: none;
 }
 
-.line-chart__tooltip:before {
-  content: '';
+.line-chart--tooltip:before {
+  content: "";
   position: absolute;
   bottom: 0;
   left: 50%;
   width: 12px;
   height: 12px;
-  background: #7b8a93;
+  background: var(--secondary-color);
   border: none;
   border-top-color: transparent;
   border-left-color: transparent;
@@ -68,38 +68,31 @@
   z-index: 10;
 }
 
-.line-chart__tooltip-circle {
-  stroke: #78c267;
-  fill: white;
+.line-chart--tooltip-circle {
+  stroke: var(--success-color);
+  fill: var(--background-color);
   stroke-width: 3;
   opacity: 0;
   pointer-events: none;
 }
 
-.line-chart__tooltip-date {
-  font-size: 1.1em;
-  font-weight: 600;
-  line-height: 1.4em;
-  margin-bottom: 0.2em;
+.line-chart--tooltip-duration {
+  color: var(--invert-font-color);
 }
 
-.line-chart__tooltip-duration {
-  color: #fff;
+.line-chart--tooltip-date span,
+.line-chart--tooltip-duration span {
+  color: var(--invert-font-color);
 }
 
-.line-chart__tooltip-date span,
-.line-chart__tooltip-duration span {
-  color: #fff;
+.line-chart--lower-bound-kpi-line, .line-chart--target-kpi-line {
+  stroke-dasharray: 1px 1px;
 }
 
-.line-chart__lower-bound-kpi-line, .line-chart__target-kpi-line {
-  stroke-dasharray: 2px 4px;
+.line-chart--lower-bound-kpi-line {
+  stroke: var(--error-color);
 }
 
-.line-chart__lower-bound-kpi-line {
-  stroke: #d54f5a;
-}
-
-.line-chart__target-kpi-line {
-  stroke: #78c267;
+.line-chart--target-kpi-line {
+  stroke: var(--success-color);
 }
