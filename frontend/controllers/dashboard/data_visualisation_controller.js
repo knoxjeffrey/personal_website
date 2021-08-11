@@ -66,14 +66,14 @@ function kpiLineValues(context) {
 function kpiLineTransition(bounds, data, context) {
   const lineValues = kpiLineValues(context)
 
-  bounds.select(".line-chart--target-kpi-line")
+  bounds.select(".line-chart--success-line")
       .transition().duration(250)
       .attr("x1", dv.xScale(dv.xAccessor(data)))
       .attr("x2", dimensions.boundedWidth)
       .attr("y1", dv.yScale(lineValues.targetKpiLineValue))
       .attr("y2", dv.yScale(lineValues.targetKpiLineValue))
 
-  bounds.select(".line-chart--lower-bound-kpi-line")
+  bounds.select(".line-chart--fail-line")
       .transition().duration(250)
       .attr("x1", dv.xScale(dv.xAccessor(data)))
       .attr("x2", dimensions.boundedWidth)
@@ -90,7 +90,7 @@ function onMouseMove(event) {
   const closestXValue = dv.xAccessor(closestDataset)
   const closestYValue = dv.yAccessor(closestDataset)
 
-  const formatDate = d3.timeFormat("%A %-d %B, %H:%M")
+  const formatDate = d3.timeFormat("%a %-d %b, %H:%M")
   tooltip.select("[data-viz='date']")
       .text(formatDate(dv.dateAccessor(closestDataset)))
 
@@ -254,14 +254,14 @@ export default class extends Controller {
 
     // Setup KPI lines to start from zero on y axis. These will animate into position with kpiLineTransition
     const targetKpiLine = bounds.append("line")
-        .attr("class", "line-chart--target-kpi-line")
+        .attr("class", "line-chart--success-line")
         .attr("x1", dv.xScale(dv.xAccessor(dv.store.selectedContextData)))
         .attr("x2", dimensions.boundedWidth)
         .attr("y1", dv.yScale(0))
         .attr("y2", dv.yScale(0))
 
     const lowerBoundtKpiLine = bounds.append("line")
-        .attr("class", "line-chart--lower-bound-kpi-line")
+        .attr("class", "line-chart--fail-line")
         .attr("x1", dv.xScale(dv.xAccessor(dv.store.selectedContextData)))
         .attr("x2", dimensions.boundedWidth)
         .attr("y1", dv.yScale(0))

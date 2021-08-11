@@ -1,0 +1,59 @@
+.line-chart {
+  position: relative;
+}
+
+.line-chart--path {
+  fill: none;
+  stroke: var(--primary-color);
+  stroke-width: 2;
+}
+
+.line-chart--y-axis path,
+.line-chart--x-axis path {
+  stroke: var(--secondary-color);
+}
+
+.line-chart .tick line {
+  stroke: var(--secondary-color);
+}
+.line-chart .tick text {
+  fill: var(--secondary-color);
+}
+
+.line-chart--x-axis-label {
+  fill: var(--progress-bar-background);
+  font-size: 1.2em;
+}
+
+.line-chart--listening-rect {
+  cursor: pointer;
+  fill: transparent;
+}
+
+.line-chart--tooltip-circle {
+  stroke: var(--success-color);
+  fill: var(--background-color);
+  stroke-width: 3;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.line-chart--tooltip-text span {
+  color: var(--invert-font-color);
+}
+
+.line-chart--fail-line, .line-chart--success-line {
+  stroke-dasharray: 1px 1px;
+}
+
+.line-chart--fail-line {
+  stroke: var(--error-color);
+}
+
+.line-chart--success-line {
+  stroke: var(--success-color);
+}
+
+.terminal-tooltip {
+  opacity: 0;
+}

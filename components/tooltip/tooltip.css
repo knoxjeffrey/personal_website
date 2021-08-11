@@ -1,0 +1,31 @@
+.terminal-tooltip {
+  text-align: center;
+  padding: 0.65em 0.65em;
+  font-size: 1em;
+  font-family: inherit;
+  user-select: none;
+  position: absolute;
+  z-index: 10;
+  top: -14px;
+  background: var(--secondary-color);
+  transition: all 0.1s ease-out;
+  pointer-events: none;
+  color: var(--invert-font-color);
+}
+
+.terminal-tooltip:before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  background: var(--secondary-color);
+  border: none;
+  border-top-color: transparent;
+  border-left-color: transparent;
+  transform: translate(-50%, 50%) rotate(45deg);
+  transform-origin: center center;
+  z-index: 10;
+  pointer-events: none;
+}
