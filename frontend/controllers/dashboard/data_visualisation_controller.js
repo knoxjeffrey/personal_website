@@ -16,7 +16,8 @@ const dv = {
   xScale: null,
   yAxisGenerator: null,
   xAxisGenerator: null,
-  lineGenerator: null
+  lineGenerator: null,
+  bounds: null
 }
 
 const dimensions = {
@@ -54,31 +55,31 @@ function tweenDashIn() {
 // **************************
 // Update the KPI values for the target and lower bound
 // **************************
-function kpiLineValues(context) {
-  if (context === "production") return { targetKpiLineValue: 40, lowerBoundKpiLineValue: 51 }
-  if (context === "deploy-preview") return { targetKpiLineValue: 40, lowerBoundKpiLineValue: 51 }
-  if (context === "cms") return { targetKpiLineValue: 35, lowerBoundKpiLineValue: 46 }
+function targetLineValues(context) {
+  if (context === "production") return { successLineValue: 40, failLineValue: 50 }
+  if (context === "deploy-preview") return { successLineValue: 45, failLineValue: 55 }
+  if (context === "cms") return { successLineValue: 35, failLineValue: 45 }
 }
 
 // **************************
 // Animate KPI lines
 // **************************
 function kpiLineTransition(bounds, data, context) {
-  const lineValues = kpiLineValues(context)
+  const lineValues = targetLineValues(context)
 
-  bounds.select(".line-chart--success-line")
+  dv.bounds.select(".line-chart--success-line")
       .transition().duration(250)
       .attr("x1", dv.xScale(dv.xAccessor(data)))
       .attr("x2", dimensions.boundedWidth)
-      .attr("y1", dv.yScale(lineValues.targetKpiLineValue))
-      .attr("y2", dv.yScale(lineValues.targetKpiLineValue))
+      .attr("y1", dv.yScale(lineValues.successLineValue))
+      .attr("y2", dv.yScale(lineValues.successLineValue))
 
-  bounds.select(".line-chart--fail-line")
+  dv.bounds.select(".line-chart--fail-line")
       .transition().duration(250)
       .attr("x1", dv.xScale(dv.xAccessor(data)))
       .attr("x2", dimensions.boundedWidth)
-      .attr("y1", dv.yScale(lineValues.lowerBoundKpiLineValue))
-      .attr("y2", dv.yScale(lineValues.lowerBoundKpiLineValue))
+      .attr("y1", dv.yScale(lineValues.failLineValue))
+      .attr("y2", dv.yScale(lineValues.failLineValue))
 }
 
 // **************************
@@ -157,17 +158,41 @@ export default class extends Controller {
   }
 
   // reconnect() {
-  //   if (this.store().selectedNetlifyBuildData) {
-  //     this.storeUpdated(this.store(), "selectedNetlifyBuildData")
+  //   // if (this.store().selectedNetlifyBuildData) {
+  //   //   this.storeUpdated(this.store(), "selectedNetlifyBuildData")
+  //   // }
+  //   console.log('re')
+  //   if(dv.store.selectedContextData) {
+  //     if(document.querySelector("[data-viz='wrapper']").getElementsByTagName("svg").length === 0) {
+  //       console.log('yep')
+  //       return this.createDataVis()
+  //     }
   //   }
   // }
   
   createDataVis() {
     this.initialiseAccessors()
-    this.initialiseScales()
-    this.initialiseGenerators()
+    this.setScales()
+    this.setGenerators()
     this.initialiseDataVis()
-    // updateKpiLineValues("production")
+  }
+
+  updateDataVis() {
+    const data = dv.store.selectedContextData
+    const updatedLine = dv.bounds.select("path").data(data)
+
+    this.setScales()
+    this.setGenerators()
+
+    updatedLine.attr("d", dv.lineGenerator(data))
+        .call(lineTransitionIn)
+    dv.bounds.select(".line-chart--y-axis")
+        .transition().duration(250)
+        .call(dv.yAxisGenerator)
+    dv.bounds.select(".line-chart--x-axis")
+        .transition().duration(250)
+        .call(dv.xAxisGenerator)
+    kpiLineTransition(dv.bounds, data, dv.store.contextSelected)
   }
 
   initialiseAccessors() {
@@ -177,9 +202,9 @@ export default class extends Controller {
     dv.deployIdAccessor = d => d.deploy_id
   }
 
-  initialiseScales() {
+  setScales() {
     dv.yScale = d3.scaleLinear()
-      .domain([0, d3.max([55, d3.max(dv.store.selectedContextData.map(data => data.deploy_time))])])
+      .domain([0, d3.max([60, d3.max(dv.store.selectedContextData.map(data => data.deploy_time))])])
       .range([dimensions.boundedHeight, 0])
       .nice()
     dv.xScale = d3.scaleLinear()
@@ -187,7 +212,7 @@ export default class extends Controller {
       .range([0, dimensions.boundedWidth])
   }
 
-  initialiseGenerators() {
+  setGenerators() {
     dv.yAxisGenerator = d3.axisLeft()
       .scale(dv.yScale)
     dv.xAxisGenerator = d3.axisBottom()
@@ -208,7 +233,7 @@ export default class extends Controller {
       .attr("height", dimensions.height)
 
     // Draw the bounds
-    const bounds = wrapperSvg.append("g")
+    dv.bounds = wrapperSvg.append("g")
         .style("transform", `translate(${
           dimensions.margin.left
         }px, ${
@@ -216,7 +241,7 @@ export default class extends Controller {
         }px)`)
 
     // Setup listener rect for mouse overs
-    const listeningRect = bounds.append("rect")
+    const listeningRect = dv.bounds.append("rect")
         .attr("class", "line-chart--listening-rect")
         .attr("width", dimensions.boundedWidth)
         .attr("height", dimensions.boundedHeight)
@@ -225,22 +250,22 @@ export default class extends Controller {
         .on("click", onClick)
 
     // Setup tooltip when mousing over the listener rect
-    tooltipCircle = bounds.append("circle")
+    tooltipCircle = dv.bounds.append("circle")
         .attr("class", "line-chart--tooltip-circle")
         .attr("r", 4)
 
     // Setup build duration line
-    const line = bounds.append("path")
+    const line = dv.bounds.append("path")
         .attr("class", "line-chart--path")
         .attr("d", dv.lineGenerator(dv.store.selectedContextData))
         .call(lineTransitionIn)
 
     // Setup axis
-    const yAxis = bounds.append("g")
+    const yAxis = dv.bounds.append("g")
         .attr("class", "line-chart--y-axis")
         .call(dv.yAxisGenerator)
 
-    const xAxis = bounds.append("g")
+    const xAxis = dv.bounds.append("g")
         .attr("class", "line-chart--x-axis")
         .call(dv.xAxisGenerator)
           .style("transform", `translateY(${
@@ -253,14 +278,14 @@ export default class extends Controller {
         .text("Build number")
 
     // Setup KPI lines to start from zero on y axis. These will animate into position with kpiLineTransition
-    const targetKpiLine = bounds.append("line")
+    const targetKpiLine = dv.bounds.append("line")
         .attr("class", "line-chart--success-line")
         .attr("x1", dv.xScale(dv.xAccessor(dv.store.selectedContextData)))
         .attr("x2", dimensions.boundedWidth)
         .attr("y1", dv.yScale(0))
         .attr("y2", dv.yScale(0))
 
-    const lowerBoundtKpiLine = bounds.append("line")
+    const lowerBoundtKpiLine = dv.bounds.append("line")
         .attr("class", "line-chart--fail-line")
         .attr("x1", dv.xScale(dv.xAccessor(dv.store.selectedContextData)))
         .attr("x2", dimensions.boundedWidth)
@@ -268,13 +293,15 @@ export default class extends Controller {
         .attr("y2", dv.yScale(0))
 
     // Animate KPI lines to their position
-    kpiLineTransition(bounds, dv.store.selectedContextData, dv.store.contextSelected)
+    kpiLineTransition(dv.bounds, dv.store.selectedContextData, dv.store.contextSelected)
   }
 
   storeUpdated(store, prop) {
     if (prop === "selectedContextData") {
       if(document.querySelector("[data-viz='wrapper']").getElementsByTagName("svg").length === 0) {
-        return this.createDataVis()
+        this.createDataVis()
+      } else {
+        this.updateDataVis()
       }
     }
   }
