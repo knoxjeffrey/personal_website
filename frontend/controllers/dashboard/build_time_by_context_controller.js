@@ -25,7 +25,8 @@ export default class extends Controller {
   }
 
   selectContextData(context) {
-    return this.store().selectedNetlifyBuildData.filter(data => data.context === context)
+    const contextData =  this.store().selectedNetlifyBuildData.filter(data => data.context === context)
+    return contextData.map((data, index) => Object.assign(data, { build_number: index + 1 }))
   }
 
   contextSelected(buttonText) {

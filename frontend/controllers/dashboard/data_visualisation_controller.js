@@ -172,7 +172,7 @@ export default class extends Controller {
 
   initialiseAccessors() {
     dv.yAccessor = d => d.deploy_time
-    dv.xAccessor = d => d.id
+    dv.xAccessor = d => d.build_number
     dv.dateAccessor = d => new Date(d.created_at)
     dv.deployIdAccessor = d => d.deploy_id
   }
@@ -192,6 +192,8 @@ export default class extends Controller {
       .scale(dv.yScale)
     dv.xAxisGenerator = d3.axisBottom()
       .scale(dv.xScale)
+      .tickValues(dv.store.selectedContextData.map(data => data.build_number))
+      .tickFormat(d3.format(".0f"))
     // Duration line generator with animation
     dv.lineGenerator = d3.line()
       .x(d => dv.xScale(dv.xAccessor(d)))

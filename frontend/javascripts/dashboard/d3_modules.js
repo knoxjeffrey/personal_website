@@ -1,5 +1,6 @@
 import { extent, leastIndex, max } from "d3-array"
 import { axisBottom, axisLeft } from "d3-axis"
+import { format } from "d3-format"
 import { interpolateString } from "d3-interpolate"
 import { scaleLinear } from "d3-scale"
 import { pointer, select } from "d3-selection"
@@ -10,6 +11,7 @@ import { transition } from "d3-transition"
 export default {
   extent, leastIndex, max,
   axisBottom, axisLeft,
+  format,
   interpolateString,
   scaleLinear,
   pointer, select,
