@@ -154,21 +154,7 @@ export default class extends Controller {
     subscription(this)
     this.subscribe()
     dv.store = this.store()
-    // this.reconnect()
   }
-
-  // reconnect() {
-  //   // if (this.store().selectedNetlifyBuildData) {
-  //   //   this.storeUpdated(this.store(), "selectedNetlifyBuildData")
-  //   // }
-  //   console.log('re')
-  //   if(dv.store.selectedContextData) {
-  //     if(document.querySelector("[data-viz='wrapper']").getElementsByTagName("svg").length === 0) {
-  //       console.log('yep')
-  //       return this.createDataVis()
-  //     }
-  //   }
-  // }
   
   createDataVis() {
     this.initialiseAccessors()

@@ -9,6 +9,14 @@ title: Netlify Build Data
   <meta name="turbo-cache-control" content="no-cache">
 <% end %>
 
+<% content_for :page_head_css do %>
+  <%= vite_stylesheet_tag "data_viz_css", "data-turbo-track": "reload" %>
+<% end %>
+
+<% content_for :page_head_js do %>
+  <%= vite_javascript_tag "dashboard", "data-turbo-track": "reload", defer: true %>
+<% end %>
+
 <section class="margin-bottom--m" data-controller="years" data-years-status-value="loading">
   <% button_group do %>
     <div data-years-target="buttonGroup">
@@ -76,6 +84,3 @@ title: Netlify Build Data
     <% end %>
   </div>
 </section>
-
-<%= vite_stylesheet_tag "data_viz_css", "data-turbo-track": "reload" %>
-<%= vite_javascript_tag "dashboard", "data-turbo-track": "reload", defer: true %>
