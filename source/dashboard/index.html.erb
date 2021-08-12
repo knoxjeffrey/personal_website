@@ -9,6 +9,14 @@ title: Netlify Build Data
   <meta name="turbo-cache-control" content="no-cache">
 <% end %>
 
+<% content_for :page_head_css do %>
+  <%= vite_stylesheet_tag "data_viz_css", "data-turbo-track": "reload" %>
+<% end %>
+
+<% content_for :page_head_js do %>
+  <%= vite_javascript_tag "dashboard", "data-turbo-track": "reload", defer: true %>
+<% end %>
+
 <section class="margin-bottom--m" data-controller="years" data-years-status-value="loading">
   <% button_group do %>
     <div data-years-target="buttonGroup">
@@ -33,7 +41,7 @@ title: Netlify Build Data
   </header>
   <div class="flex-column">
     <%= alert text: "Production #{loading html: { class: 'primary'} }", type: :primary, html: { class: "margin-bottom--s", "data-successful-builds-target": "production" } %>
-    <%= alert text: "Depoly preview #{loading html: { class: 'primary'} }", type: :primary, html: { class: "margin-bottom--s", "data-successful-builds-target": "deployPreview" } %>
+    <%= alert text: "Deploy preview #{loading html: { class: 'primary'} }", type: :primary, html: { class: "margin-bottom--s", "data-successful-builds-target": "deployPreview" } %>
     <%= alert text: "CMS #{loading html: { class: 'primary'} }", type: :primary, html: { class: "margin-bottom--s", "data-successful-builds-target": "cms" } %>
   </div>
 </section>
@@ -51,4 +59,28 @@ title: Netlify Build Data
   </div>
 </section>
 
-<%= vite_javascript_tag "dashboard", "data-turbo-track": "reload", defer: true %>
+<hr/>
+
+<section class="margin-bottom--m" data-controller="build-time-by-context">
+  <header>
+    <h2>Build time by context (s)</h2>
+  </header>
+  <% button_group do %>
+   <%= button text: "Production", type: :default, html: { class: "invert selected", "data-build-time-by-context-target": "button", "data-action": "click->build-time-by-context#contextClicked" } %>
+   <%= button text: "Deploy preview", type: :default, html: { class: "invert", "data-build-time-by-context-target": "button", "data-action": "click->build-time-by-context#contextClicked" } %>
+   <%= button text: "CMS", type: :default, html: { class: "invert", "data-build-time-by-context-target": "button", "data-action": "click->build-time-by-context#contextClicked" } %>
+  <% end %>
+</section>
+
+<section data-controller="data-visualisation">
+  <div data-viz="wrapper" class="line-chart">
+    <% tooltip html: { "data-viz": "tooltip" } do %>
+      <div class="line-chart--tooltip-text">
+        <strong><small><span data-viz="date"></span></small></strong>
+      </div>
+      <div class="line-chart--tooltip-text">
+        <small>Duration: <span data-viz="duration"></span></small>
+      </div>
+    <% end %>
+  </div>
+</section>

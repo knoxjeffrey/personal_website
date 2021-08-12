@@ -1,8 +1,6 @@
 import { Controller } from "stimulus"
 import { subscription } from "~/javascripts/store/mixins/subscription"
-
-const greenTarget = 40
-const amberTarget = 50
+import { targetLineValues } from "~/javascripts/dashboard/utils"
 
 export default class extends Controller {
   static targets = [ "production", "deployPreview", "cms" ]
@@ -26,7 +24,7 @@ export default class extends Controller {
     const meanBuildTime = this.calculateMeanBuildTime(context)
     target.innerHTML = `${text} ${meanBuildTime}`
     this.removeAlertColors(target)
-    target.classList.add(this.alertColor(meanBuildTime))
+    target.classList.add(this.alertColor(meanBuildTime, context))
   }
 
   loadingMeanBuildTimesValue(target, text) {
@@ -45,10 +43,12 @@ export default class extends Controller {
     target.classList.remove(this.successClass, this.warningClass, this.errorClass, this.unavailableClass)
   }
 
-  alertColor(value) {
+  alertColor(value, context) {
+    const lineValues = targetLineValues(context)
+
     if (value == "N/A") return this.unavailableClass
-    if (value <= greenTarget) return this.successClass
-    if (value <= amberTarget) return this.warningClass
+    if (value <= lineValues.successLineValue) return this.successClass
+    if (value <= lineValues.failLineValue) return this.warningClass
     return this.errorClass
   }
 

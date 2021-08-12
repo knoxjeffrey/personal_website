@@ -14,11 +14,19 @@
     </footer>
   </blockquote>
 
-  <h3 id="LoadingElements">Loading Elements</h3>
+  <h3 id="LoadingElements">Loading Element</h3>
 
   <p><i>Loading</i><%= loading %></span></p>
+
+  <h3 id="TooltipElement">Tooltip</h3>
+
+  <div class="margin-top--xl margin-bottom--xl" style="position:relative;">
+    <% tooltip html: { "data-viz": "tooltip" } do %>
+      <div>Tooltip text</div>
+    <% end %>
+  </div>
   
-  <h3 id="Misc">Misc</h3>
+  <h3 id="Misc" style="margin-top:7em;">Misc</h3>
   
   <h5 class="terminal-prompt">Terminal Prompt</h5>
   <p>
