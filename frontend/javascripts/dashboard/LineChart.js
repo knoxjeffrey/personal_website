@@ -1,12 +1,18 @@
-import d3 from "~/javascripts/dashboard/d3_modules"
+import d3 from "~/javascripts/dashboard/LineChart_modules"
+import { targetLineValues } from "~/javascripts/dashboard/utils"
 
+/**
+ * @class javascripts.dashboard.LineChart
+ * @classdesc d3.js line chart for Netlify build times
+ */
 export default class LineChart {
-  constructor(store, wrapper, tooltip) {
+  constructor(store, minYValue, wrapper, tooltip) {
+    this.store = store
+    this.minYValue = minYValue
     this.wrapper = d3.select(wrapper)
     this.tooltip = d3.select(tooltip)
     this.tooltipCircle = null
     this.dv = {
-      store,
       yAccessor: null,
       xAccessor: null,
       dateAccessor: null,
@@ -36,15 +42,28 @@ export default class LineChart {
       - this.dimensions.margin.bottom
   }
 
+  /** 
+   * Called the first time the page is loaded to setup the visualisation
+   *
+   * @instance
+   * @memberof javascripts.dashboard.LineChart
+   **/
   createDataVis() {
     this.initialiseAccessors()
     this.setScales()
     this.setGenerators()
     this.initialiseDataVis()
+    this.kpiLineTransition()
   }
 
+  /** 
+   * When the data set is updated this will cause the visualisation to animate
+   *
+   * @instance
+   * @memberof javascripts.dashboard.LineChart
+   **/
   updateDataVis() {
-    const data = this.dv.store.selectedContextData
+    const data = this.store.selectedContextData
     const updatedLine = this.dv.bounds.select("path").data(data)
 
     this.setScales()
@@ -58,9 +77,15 @@ export default class LineChart {
     this.dv.bounds.select(".line-chart--x-axis")
         .transition().duration(250)
         .call(this.dv.xAxisGenerator)
-    this.kpiLineTransition(this.dv.bounds, data, this.dv.store.contextSelected)
+    this.kpiLineTransition()
   }
 
+  /** 
+   * Setup the accessors for the visualisation
+   *
+   * @instance
+   * @memberof javascripts.dashboard.LineChart
+   **/
   initialiseAccessors() {
     this.dv.yAccessor = d => d.deploy_time
     this.dv.xAccessor = d => d.build_number
@@ -68,22 +93,36 @@ export default class LineChart {
     this.dv.deployIdAccessor = d => d.deploy_id
   }
 
+  /** 
+   * Setup the scales for the visualisation which can be updated as the data set changes
+   *
+   * @instance
+   * @memberof javascripts.dashboard.LineChart
+   **/
   setScales() {
     this.dv.yScale = d3.scaleLinear()
-      .domain([0, d3.max([60, d3.max(this.dv.store.selectedContextData.map(data => data.deploy_time))])])
+      .domain([
+        0, d3.max([this.minYValue, d3.max(this.store.selectedContextData.map(data => data.deploy_time))])
+      ])
       .range([this.dimensions.boundedHeight, 0])
       .nice()
     this.dv.xScale = d3.scaleLinear()
-      .domain(d3.extent(this.dv.store.selectedContextData, this.dv.xAccessor))
+      .domain(d3.extent(this.store.selectedContextData, this.dv.xAccessor))
       .range([0, this.dimensions.boundedWidth])
   }
 
+  /** 
+   * Setup the generators for the visualisation which can be updated as the data set changes
+   *
+   * @instance
+   * @memberof javascripts.dashboard.LineChart
+   **/
   setGenerators() {
     this.dv.yAxisGenerator = d3.axisLeft()
       .scale(this.dv.yScale)
     this.dv.xAxisGenerator = d3.axisBottom()
       .scale(this.dv.xScale)
-      .tickValues(this.dv.store.selectedContextData.map(data => data.build_number))
+      .tickValues(this.store.selectedContextData.map(data => data.build_number))
       .tickFormat(d3.format(".0f"))
     // Duration line generator with animation
     this.dv.lineGenerator = d3.line()
@@ -92,6 +131,12 @@ export default class LineChart {
       .curve(d3.curveMonotoneX)
   }
 
+  /** 
+   * Setup the structure of the visualisation
+   *
+   * @instance
+   * @memberof javascripts.dashboard.LineChart
+   **/
   initialiseDataVis() {
     // Draw canvas
     const wrapperSvg = this.wrapper.append("svg")
@@ -123,7 +168,7 @@ export default class LineChart {
     // Setup build duration line
     const line = this.dv.bounds.append("path")
         .attr("class", "line-chart--path")
-        .attr("d", this.dv.lineGenerator(this.dv.store.selectedContextData))
+        .attr("d", this.dv.lineGenerator(this.store.selectedContextData))
         .call(this.lineTransitionIn)
 
     // Setup axis
@@ -146,58 +191,51 @@ export default class LineChart {
     // Setup KPI lines to start from zero on y axis. These will animate into position with kpiLineTransition
     const targetKpiLine = this.dv.bounds.append("line")
         .attr("class", "line-chart--success-line")
-        .attr("x1", this.dv.xScale(this.dv.xAccessor(this.dv.store.selectedContextData)))
+        .attr("x1", this.dv.xScale(this.dv.xAccessor(this.store.selectedContextData)))
         .attr("x2", this.dimensions.boundedWidth)
         .attr("y1", this.dv.yScale(0))
         .attr("y2", this.dv.yScale(0))
 
     const lowerBoundtKpiLine = this.dv.bounds.append("line")
         .attr("class", "line-chart--fail-line")
-        .attr("x1", this.dv.xScale(this.dv.xAccessor(this.dv.store.selectedContextData)))
+        .attr("x1", this.dv.xScale(this.dv.xAccessor(this.store.selectedContextData)))
         .attr("x2", this.dimensions.boundedWidth)
         .attr("y1", this.dv.yScale(0))
         .attr("y2", this.dv.yScale(0))
-
-    // Animate KPI lines to their position
-    this.kpiLineTransition(this.dv.bounds, this.dv.store.selectedContextData, this.dv.store.contextSelected)
   }
 
-
-  // ************************************************************************************
-  // ************************************************************************************
-  // ************************************************************************************
-  // ************************************************************************************
-  // ************************************************************************************
-
-
-  // **************************
-  // Animate new line drawing in
-  // **************************
+  /** 
+   * Animate new line drawing in
+   *
+   * @instance
+   * @memberof javascripts.dashboard.LineChart
+   **/
   lineTransitionIn = path => {
     path.transition().duration(500)
         .attrTween("stroke-dasharray", this.tweenDashIn)
   }
 
+  /** 
+   * Animate new line drawing in
+   *
+   * @instance
+   * @memberof javascripts.dashboard.LineChart
+   **/
   tweenDashIn() {
     const length = this.getTotalLength()
     const i = d3.interpolateString(`0, ${length}`, `${length}, ${length}`)
     return function (t) { return i(t) }
   }
 
-  // **************************
-  // Update the KPI values for the target and lower bound
-  // **************************
-  targetLineValues(context) {
-    if (context === "production") return { successLineValue: 40, failLineValue: 50 }
-    if (context === "deploy-preview") return { successLineValue: 45, failLineValue: 55 }
-    if (context === "cms") return { successLineValue: 35, failLineValue: 45 }
-  }
-
-  // **************************
-  // Animate KPI lines
-  // **************************
-  kpiLineTransition(bounds, data, context) {
-    const lineValues = this.targetLineValues(context)
+  /** 
+   * Animate KPI lines
+   *
+   * @instance
+   * @memberof javascripts.dashboard.LineChart
+   **/
+  kpiLineTransition() {
+    const data = this.store.selectedContextData
+    const lineValues = targetLineValues(this.store.contextSelected)
 
     this.dv.bounds.select(".line-chart--success-line")
         .transition().duration(250)
@@ -214,9 +252,12 @@ export default class LineChart {
         .attr("y2", this.dv.yScale(lineValues.failLineValue))
   }
 
-  // **************************
-  // Calculate which data point is selected on mouseover
-  // **************************
+  /** 
+   *  Calculate which data point is selected on mouseover
+   *
+   * @instance
+   * @memberof javascripts.dashboard.LineChart
+   **/
   onMouseMove = event => {
     const closestDataset = this.closestDataPoint(event)
 
@@ -247,9 +288,12 @@ export default class LineChart {
         .style("opacity", 1)
   }
 
-  // **************************
-  // Handle mouse leave
-  // **************************
+  /** 
+   *  Handle mouse leave
+   *
+   * @instance
+   * @memberof javascripts.dashboard.LineChart
+   **/
   onMouseLeave = () => {
     this.tooltip.transition().duration(25)
         .style("opacity", 0)
@@ -257,9 +301,12 @@ export default class LineChart {
         .style("opacity", 0)
   }
 
-  // **************************
-  // Open Netlify build logs for selected build
-  // **************************
+  /** 
+   *  Open Netlify build logs for selected build
+   *
+   * @instance
+   * @memberof javascripts.dashboard.LineChart
+   **/
   onClick = event => {
     const deployId = this.dv.deployIdAccessor(this.closestDataPoint(event))
     window.open(
@@ -267,17 +314,20 @@ export default class LineChart {
     );
   }
 
-  // **************************
-  // Get the closest data point based on mouse position in listening rect
-  // **************************
+  /** 
+   *  Get the closest data point based on mouse position in listening rect
+   *
+   * @instance
+   * @memberof javascripts.dashboard.LineChart
+   **/
   closestDataPoint(event) {
     const mousePosition = d3.pointer(event)
     const hoveredDate = this.dv.xScale.invert(mousePosition[0])
 
     const getDistanceFromHoveredDate = d => Math.abs(this.dv.xAccessor(d) - hoveredDate)
-    const closestIndex = d3.leastIndex(this.dv.store.selectedContextData, (a, b) => (
+    const closestIndex = d3.leastIndex(this.store.selectedContextData, (a, b) => (
       getDistanceFromHoveredDate(a) - getDistanceFromHoveredDate(b)
     ))
-    return this.dv.store.selectedContextData[closestIndex]
+    return this.store.selectedContextData[closestIndex]
   }
 }

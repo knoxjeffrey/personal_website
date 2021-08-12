@@ -1,11 +1,6 @@
 import { Controller } from "stimulus"
 import { subscription } from "~/javascripts/store/mixins/subscription"
-
-function targetLineValues(context) {
-  if (context === "production") return { successLineValue: 40, failLineValue: 50 }
-  if (context === "deploy-preview") return { successLineValue: 45, failLineValue: 55 }
-  if (context === "cms") return { successLineValue: 35, failLineValue: 45 }
-}
+import { targetLineValues } from "~/javascripts/dashboard/utils"
 
 export default class extends Controller {
   static targets = [ "production", "deployPreview", "cms" ]

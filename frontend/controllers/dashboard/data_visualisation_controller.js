@@ -14,7 +14,7 @@ export default class extends Controller {
 
   lineChart() {
     if (this._lineChart === undefined) {
-      this._lineChart = new LineChart(this.store(), "[data-viz='wrapper']", "[data-viz='tooltip']")
+      this._lineChart = new LineChart(this.store(), 60, "[data-viz='wrapper']", "[data-viz='tooltip']")
     }
     return this._lineChart
   }

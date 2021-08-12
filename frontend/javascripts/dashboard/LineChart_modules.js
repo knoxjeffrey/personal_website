@@ -1,3 +1,8 @@
+/**
+ * @namespace javascripts.dashboard.LineChart_modules
+ * @description Load in the require d3 modules for the visualisation
+ */
+
 import { extent, leastIndex, max } from "d3-array"
 import { axisBottom, axisLeft } from "d3-axis"
 import { format } from "d3-format"
