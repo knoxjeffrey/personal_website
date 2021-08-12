@@ -1,4 +1,5 @@
 import { Controller } from "stimulus"
+import { debounce } from "debounce"
 import { subscription } from "~/javascripts/store/mixins/subscription"
 import LineChart from "~/javascripts/dashboard/LineChart"
 
@@ -6,6 +7,7 @@ export default class extends Controller {
   connect() {
     subscription(this)
     this.subscribe()
+    this.resize = debounce(this.resize, 250).bind(this)
   }
 
   isDataVizEmpty() {
@@ -17,6 +19,13 @@ export default class extends Controller {
       this._lineChart = new LineChart(this.store(), 60, "[data-viz='wrapper']", "[data-viz='tooltip']")
     }
     return this._lineChart
+  }
+
+  resize() {
+    this._lineChart = undefined
+    const wrapper = document.querySelector("[data-viz='wrapper']")
+    wrapper.removeChild(wrapper.lastChild)
+    this.lineChart().createDataVis()
   }
 
   storeUpdated(store, prop) {

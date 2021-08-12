@@ -72,7 +72,7 @@ title: Netlify Build Data
   <% end %>
 </section>
 
-<section data-controller="data-visualisation">
+<section data-controller="data-visualisation" data-action="resize@window->data-visualisation#resize">
   <div data-viz="wrapper" class="line-chart">
     <% tooltip html: { "data-viz": "tooltip" } do %>
       <div class="line-chart--tooltip-text">
