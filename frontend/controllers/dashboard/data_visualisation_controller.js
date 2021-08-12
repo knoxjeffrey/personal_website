@@ -23,7 +23,8 @@ export default class extends Controller {
 
   resize() {
     this._lineChart = undefined
-    document.querySelector("[data-viz='wrapper']").innerHTML = ""
+    const wrapper = document.querySelector("[data-viz='wrapper']")
+    wrapper.removeChild(wrapper.lastChild)
     this.lineChart().createDataVis()
   }
 
