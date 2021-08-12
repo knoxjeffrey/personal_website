@@ -168,8 +168,11 @@ export default class LineChart {
       .scale(this.dv.yScale)
     this.dv.xAxisGenerator = d3.axisBottom()
       .scale(this.dv.xScale)
-      .tickValues(this.store.selectedContextData.map(data => data.build_number))
-      .tickFormat(d3.format(".0f"))
+    if (this.store.selectedContextData.length &lt; 10) {
+      this.dv.xAxisGenerator = this.dv.xAxisGenerator
+        .tickValues(this.store.selectedContextData.map(data => data.build_number))
+        .tickFormat(d3.format(".0f"))
+    }
     // Duration line generator with animation
     this.dv.lineGenerator = d3.line()
       .x(d => this.dv.xScale(this.dv.xAccessor(d)))
