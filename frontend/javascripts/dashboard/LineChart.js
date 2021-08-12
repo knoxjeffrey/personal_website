@@ -309,9 +309,9 @@ export default class LineChart {
    **/
   onClick = event => {
     const deployId = this.dv.deployIdAccessor(this.closestDataPoint(event))
-    window.open(
-      `https://app.netlify.com/sites/jeffreyknox/deploys/${deployId}`, '_blank'
-    );
+    // window.open(
+    //   `https://app.netlify.com/sites/jeffreyknox/deploys/${deployId}`, '_blank'
+    // );
   }
 
   /** 
