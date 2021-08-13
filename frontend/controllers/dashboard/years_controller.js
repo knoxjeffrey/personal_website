@@ -80,7 +80,7 @@ export default class extends Controller {
   }
 
   /** 
-   * Fetch the data for years and months 
+   * Fetch the data for years and months.
    * 
    * @instance
    * @memberof Dashboard.YearsController
