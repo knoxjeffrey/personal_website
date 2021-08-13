@@ -340,7 +340,7 @@ export default class LineChart {
    * @memberof javascripts.dashboard.LineChart
    **/
   closestDataPoint(event) {
-    if (event instanceof TouchEvent) event = event.touches[0];
+    if (window.TouchEvent && event instanceof TouchEvent) event = event.touches[0];
     const mousePosition = d3.pointer(event, event.target)
     const hoveredDate = this.dv.xScale.invert(mousePosition[0])
 
