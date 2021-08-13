@@ -61,7 +61,7 @@ export default class extends Controller {
   }
 
   /** 
-   * Use the button text to set the context
+   * Use the button text to set the context.
    * 
    * @instance
    * @memberof Dashboard.BuildTimeByContextController
