@@ -266,6 +266,7 @@ export default class LineChart {
    * @memberof javascripts.dashboard.LineChart
    **/
   onTouchStart = event => {
+    this.onMouseMove(event)
     event.preventDefault()
   }
 
