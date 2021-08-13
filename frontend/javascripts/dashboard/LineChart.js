@@ -12,6 +12,7 @@ export default class LineChart {
     this.wrapper = d3.select(wrapper)
     this.tooltip = d3.select(tooltip)
     this.tooltipCircle = null
+    this.touchEvent = false
     this.dv = {
       yAccessor: null,
       xAccessor: null,
@@ -159,7 +160,8 @@ export default class LineChart {
         .attr("class", "line-chart--listening-rect")
         .attr("width", this.dimensions.boundedWidth)
         .attr("height", this.dimensions.boundedHeight)
-        .on("mousemove", this.onMouseMove)
+        .on("touchstart", this.onTouchStart)
+        .on("mousemove touchmove", this.onMouseMove)
         .on("mouseleave", this.onMouseLeave)
         .on("click", this.onClick)
 
@@ -256,6 +258,19 @@ export default class LineChart {
   }
 
   /** 
+   *  Prevent default on touch start which stops the entire page moving when a finger drags on the
+   * interface. On touch screens the tool tip stays on the screen after dragging but a brief touch will
+   * clear it.
+   *
+   * @instance
+   * @memberof javascripts.dashboard.LineChart
+   **/
+  onTouchStart = event => {
+    this.onMouseLeave(event)
+    event.preventDefault()
+  }
+
+  /** 
    *  Calculate which data point is selected on mouseover
    *
    * @instance
@@ -318,12 +333,14 @@ export default class LineChart {
   }
 
   /** 
-   *  Get the closest data point based on mouse position in listening rect
+   *  Get the closest data point based on mouse position in listening rect. Also handles a touch event
+   * for a finger dragging on the interface.
    *
    * @instance
    * @memberof javascripts.dashboard.LineChart
    **/
   closestDataPoint(event) {
+    if (event instanceof TouchEvent) event = event.touches[0];
     const mousePosition = d3.pointer(event)
     const hoveredDate = this.dv.xScale.invert(mousePosition[0])
 
