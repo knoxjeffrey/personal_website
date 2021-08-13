@@ -162,7 +162,7 @@ export default class LineChart {
         .attr("height", this.dimensions.boundedHeight)
         .on("touchstart", this.onTouchStart)
         .on("mousemove touchmove", this.onMouseMove)
-        .on("mouseleave", this.onMouseLeave)
+        .on("mouseleave touchend", this.onMouseLeave)
         .on("click", this.onClick)
 
     // Setup tooltip when mousing over the listener rect
@@ -266,7 +266,6 @@ export default class LineChart {
    * @memberof javascripts.dashboard.LineChart
    **/
   onTouchStart = event => {
-    this.onMouseLeave(event)
     event.preventDefault()
   }
 
