@@ -1,10 +1,21 @@
 import { Controller } from "stimulus"
 import { subscription } from "~/javascripts/store/mixins/subscription"
 
+/**
+ * @class Dashboard.YearsController
+ * @classdesc Stimulus controller that fetches the data to populate the years and months buttons.
+ * @extends Controller
+ **/
 export default class extends Controller {
   static targets = [ "buttonGroup", "button" ]
   static values = { status: String }
 
+  /** 
+   * Subscribe to the store. Setup netlifyBuildData and then fetch years and months data
+   * 
+   * @instance
+   * @memberof Dashboard.YearsController
+   **/
   connect() {
     subscription(this)
     this.subscribe()
@@ -14,12 +25,27 @@ export default class extends Controller {
     this.reconnect()
   }
 
+  /** 
+   * Handles a repeated Turbo visit to the dashboard page. Currently not valid as I've set page to reload
+   * because otheriwse d3 won't rebuild the visualisation
+   * 
+   * @instance
+   * @memberof Dashboard.YearsController
+   **/
   reconnect() {
     if (this.store().selectedNetlifyBuildData) {
       this.storeUpdated(this.store(), "yearsAndMonths")
     }
   }
 
+  /** 
+   * Triggered when the years and months data is loaded. Uses a document fragment to fully create the
+   * years buttons before removing the load button and adding all the new years buttons. The last button
+   * is set as selected
+   * 
+   * @instance
+   * @memberof Dashboard.YearsController
+   **/
   statusValueChanged() {
     if (this.statusValue === "loaded") {
       let fragment = document.createDocumentFragment()
@@ -34,6 +60,13 @@ export default class extends Controller {
     }
   }
 
+  /** 
+   * Ignores year if already clicked. Set the months data for the selected year. Set the last month as
+   * selected in the store and gives the class selected to the clicked year.
+   * 
+   * @instance
+   * @memberof Dashboard.YearsController
+   **/
   yearClicked(event) {
     if (this.store().yearSelected === parseInt(event.target.innerHTML)) return
     
@@ -46,6 +79,12 @@ export default class extends Controller {
     event.target.classList.add("selected")
   }
 
+  /** 
+   * Fetch the data for years and months 
+   * 
+   * @instance
+   * @memberof Dashboard.YearsController
+   **/
   yearsAndMonths() {
     fetch("/.netlify/functions/supabase-get-functions", { 
       headers: { "Function-Name": "netlify_deploy_data_years_and_months" }
@@ -64,6 +103,13 @@ export default class extends Controller {
       });
   }
 
+  /** 
+   * Triggered by the store whenever any store data changes. Sets us the store when yearsAndMonths data
+   * has been set following the fetch statement
+   * 
+   * @instance
+   * @memberof Dashboard.YearsController
+   **/
   storeUpdated(store, prop) {
     if (prop === "yearsAndMonths") {
       this.editStore("years", store.yearsAndMonths.map(data => data.year))
@@ -75,6 +121,12 @@ export default class extends Controller {
     }
   }
 
+  /** 
+   * Unsubscribe from the store
+   * 
+   * @instance
+   * @memberof Dashboard.YearsController
+   **/
   disconnect() {
     this.statusValue = "loading"
     this.unsubscribe()

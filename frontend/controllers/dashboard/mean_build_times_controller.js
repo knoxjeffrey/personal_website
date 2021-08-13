@@ -2,11 +2,22 @@ import { Controller } from "stimulus"
 import { subscription } from "~/javascripts/store/mixins/subscription"
 import { targetLineValues } from "~/javascripts/dashboard/utils"
 
+/**
+ * @class Dashboard.MeanBuildTimesController
+ * @classdesc Stimulus controller that populates the mean build time per build context.
+ * @extends Controller
+ **/
 export default class extends Controller {
   static targets = [ "production", "deployPreview", "cms" ]
   static values = { loading: String }
   static classes = [ "success", "warning", "error", "unavailable" ]
 
+  /** 
+   * Subscribe to the store.
+   * 
+   * @instance
+   * @memberof Dashboard.MeanBuildTimesController
+   **/
   connect() {
     subscription(this)
     this.subscribe()
@@ -14,12 +25,25 @@ export default class extends Controller {
     this.reconnect()
   }
 
+  /** 
+   * Handles a repeated Turbo visit to the dashboard page. Currently not valid as I've set page to reload
+   * because otheriwse d3 won't rebuild the visualisation
+   * 
+   * @instance
+   * @memberof Dashboard.MeanBuildTimesController
+   **/
   reconnect() {
     if (this.store().selectedNetlifyBuildData) {
       this.storeUpdated(this.store(), "selectedNetlifyBuildData")
     }
   }
 
+  /** 
+   * Sets the text for the mean build time and changes the color to match the KPI
+   * 
+   * @instance
+   * @memberof Dashboard.MeanBuildTimesController
+   **/
   updateMeanBuildTimesValue(target, text, context) {
     const meanBuildTime = this.calculateMeanBuildTime(context)
     target.innerHTML = `${text} ${meanBuildTime}`
@@ -27,11 +51,21 @@ export default class extends Controller {
     target.classList.add(this.alertColor(meanBuildTime, context))
   }
 
+  /** 
+   * Sets the text whilst waiting for the mean build time
+   * 
+   * @instance
+   * @memberof Dashboard.MeanBuildTimesController
+   **/
   loadingMeanBuildTimesValue(target, text) {
     target.innerHTML = `${text} ${this.loadingValue}`
     this.removeAlertColors(target)
   }
 
+  /** 
+   * @instance
+   * @memberof Dashboard.MeanBuildTimesController
+   **/
   calculateMeanBuildTime(context) {
     const totals = this.store().selectedNetlifyBuildData.reduce((acc , data) => {
       return data.context === context ? { count: acc.count + 1, time: acc.time + data.deploy_time } : acc
@@ -39,10 +73,22 @@ export default class extends Controller {
     return Math.round((totals.time / totals.count) * 100) / 100 || "N/A"
   }
 
+  /** 
+   * Remove all of the color classes for the mean build time
+   * 
+   * @instance
+   * @memberof Dashboard.MeanBuildTimesController
+   **/
   removeAlertColors(target) {
     target.classList.remove(this.successClass, this.warningClass, this.errorClass, this.unavailableClass)
   }
 
+  /** 
+   * Return the color depending on the time in relation to the KPI
+   * 
+   * @instance
+   * @memberof Dashboard.MeanBuildTimesController
+   **/
   alertColor(value, context) {
     const lineValues = targetLineValues(context)
 
@@ -52,6 +98,13 @@ export default class extends Controller {
     return this.errorClass
   }
 
+  /** 
+   * Triggered by the store whenever any store data changes. Controls whether the mean build time should
+   * be populated or display the loading indicator
+   * 
+   * @instance
+   * @memberof Dashboard.MeanBuildTimesController
+   **/
   storeUpdated(store, prop) {
     if (store.fetchingNetlifyBuildData) {
       this.loadingMeanBuildTimesValue(this.productionTarget, "Production")
@@ -65,6 +118,12 @@ export default class extends Controller {
     }
   }
 
+  /** 
+   * Unsubscribe from the store
+   * 
+   * @instance
+   * @memberof Dashboard.MeanBuildTimesController
+   **/
   disconnect() {
     this.unsubscribe()
   }
