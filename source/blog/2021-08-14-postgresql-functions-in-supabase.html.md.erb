@@ -74,7 +74,7 @@ but the problem was using the [JavaScript Supabase client](https://supabase.io/d
 
 I think this is a fairly new addition to Supabase but I found it really straight forward to use. In your Supabase dashboard for your organisation, navigate to `/database/functions` where you can create a new function.
 
-First up, give your function a name (netlify_deploy_data_years_and_months in my case) and next select a return type. Now, this is where I encountered another brief stumbling block but I could only return a single record or a value of a certain type from what I could see. However, I did see the option for returning JSON and I figured if I could wrap my SQL query to return JSON then I could use that no matter how many records I had. After playing with the queries locally I managed to get things working with the following
+First up, give your function a name (netlify_deploy_data_years_and_months in my case) and next select a return type. Now, this is where I encountered another brief stumbling block because I could only return a single record or a value of a certain type from what I could see. However, I did see the option for returning JSON and I figured if I could wrap my SQL query to return JSON then I could use that no matter how many records I had. After playing with the queries locally I managed to get things working with the following
 
 <% highlight code: "bash" do %>
 SELECT array_to_json(array_agg(row_to_json(t)))
@@ -95,6 +95,8 @@ which gives me back
 <% end %>
 
 and now I could use the JSON return type for my function.
+
+In order to add this SQL to the function rather than using plpgsql, I had to click the toggle for `show advanced settings` and change the language to sql. Now you can add the SQL snippet from above to the `Definition` section.
 
 This now makes it really easy to query using the JavaScript client with the following
 
