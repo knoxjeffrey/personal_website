@@ -9,9 +9,9 @@ I love the RESTful API generated automatically from my [Supabase](https://supaba
 
 <!--more-->
 
-This is the [Netlify build data dashboard](/dashboard/) I was working towards building and I wanted to avoid introducing a calendar datepicker interface but rather only show the the years and months I had build data for. Below is a table representing my database columns
+This is the [Netlify build data dashboard](/dashboard/) I was working towards building and I wanted to avoid introducing a calendar datepicker interface but rather only show the the years and months I had build data for from my deploys. Below is a table representing my database columns
 
-<% table caption: "Netlify build data table" do %>
+<% table caption: "Netlify deploy data table" do %>
   <% table_head do %>
     <tr>
       <th>id</th>
@@ -37,7 +37,7 @@ This is the [Netlify build data dashboard](/dashboard/) I was working towards bu
 
 What I wanted was to query the database and return a column of unique years present in the `created_at` column. Additionally, for each year I wanted another column consisting of an array of unique months and I could use this to build out the buttons on the dashboard interface. Essentially the result should look similar to the following
 
-<% table caption: "Netlify deploy data table" do %>
+<% table caption: "Unique years and months" do %>
   <% table_head do %>
     <tr>
       <th>years</th>
