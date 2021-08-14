@@ -37,7 +37,7 @@ This is the [Netlify build data dashboard](https://www.jeffreyknox.dev/dashboard
 
 What I wanted was to query the database and return a column of unique years present in the `created_at` column. Additionally, for each year I wanted another column consisting of an array of unique months and I could use this to build out the buttons on the dashboard interface. Essentially the result should look similar to the following
 
-<% table caption: "Netlify build data table" do %>
+<% table caption: "Netlify deploy data table" do %>
   <% table_head do %>
     <tr>
       <th>years</th>
@@ -47,12 +47,12 @@ What I wanted was to query the database and return a column of unique years pres
 
   <% table_body do %>
     <tr>
-      <th>2021</th>
-      <td>{1,2,3,4,5,6,7}</td>
-    </tr>
-    <tr>
       <th>2020</th>
       <td>{9,10,11,12}</td>
+    </tr>
+    <tr>
+      <th>2021</th>
+      <td>{1,2,3,4,5,6,7}</td>
     </tr>
   <% end %>
 <% end %>
@@ -74,7 +74,7 @@ but the problem was using the [JavaScript Supabase client](https://supabase.io/d
 
 I think this is a fairly new addition to Supabase but I found it really straight forward to use. In your Supabase dashboard for your organisation, navigate to `/database/functions` where you can create a new function.
 
-First up, give your function a name and next select a return type. Now, this is where I encountered another brief stumbling block but I could only return a single record or a value of a certain type from what I could see. However, I did see the option for returning JSON and I figured if I could wrap my SQL query to return JSON then I could use that no matter how many records I had. After playing with the queries locally I managed to get things working with the following
+First up, give your function a name (netlify_deploy_data_years_and_months in my case) and next select a return type. Now, this is where I encountered another brief stumbling block but I could only return a single record or a value of a certain type from what I could see. However, I did see the option for returning JSON and I figured if I could wrap my SQL query to return JSON then I could use that no matter how many records I had. After playing with the queries locally I managed to get things working with the following
 
 <% highlight code: "bash" do %>
 SELECT array_to_json(array_agg(row_to_json(t)))
@@ -91,7 +91,16 @@ FROM (
 which gives me back
 
 ```
-[{"year":2021,"month_numbers":[7,8]}]
+[{"year":2020,"month_numbers":[9,10,11,12]}, {"year":2021,"month_numbers":[1,2,3,4,5,6,7]}]
 ```
 
 and now I could use the JSON return type for my function.
+
+This now makes it really easy to query using the JavaScript client with the following
+
+<% highlight code: "javascript" do %>
+const { data, error } = await supabase
+  .rpc("netlify_deploy_data_years_and_months")
+<% end %>
+
+As I use Supabase more, I'm finding more functionality and I have to say that I'm really impressed with what I've seen, it's a fantastic product.
