@@ -9,33 +9,38 @@ I love the RESTful API generated automatically by [PostgREST](https://postgrest.
 
 <!--more-->
 
-This is the [Netlify build data dashboard](/dashboard/) I was working towards building and I wanted to avoid introducing a calendar datepicker interface but rather only show the the years and months I had build data for from my deploys. Below is a table representing my database columns
+This is the [Netlify deploy data dashboard](/dashboard/) I was working towards building and I wanted to avoid introducing a calendar datepicker interface but rather only show the the years and months I had build data for from my deploys. Below is a table representing my database columns with some sample data for a row
 
 <% table caption: "Netlify deploy data table" do %>
   <% table_head do %>
     <tr>
       <th>id</th>
-      <th>deploy_id</th>
-      <th>branch</th>
-      <th>context</th>
-      <th>deploy_time</th>
-      <th>created_at</th>
+      <td>1</td>
     </tr>
-  <% end %>
-
-  <% table_body do %>
     <tr>
-      <th>1</th>
-      <td>xxxxxxxxxxxxxxxxxxxxxxxx</td>
+      <th>deploy_id</th>
+      <td>xxxxxxxxxx</td>
+    </tr>
+    <tr>
+      <th>branch</th>
       <td>main</td>
+    </tr>
+    <tr>
+      <th>context</th>
       <td>production</td>
+    </tr>
+    <tr>
+      <th>deploy_time</th>
       <td>38</td>
-      <td>2021-07-22T18:11:31.959+00:00</td>
+    </tr>
+    <tr>
+      <th>created_at</th>
+      <td>2021-07-22T18:11:31.959+ 00:00</td>
     </tr>
   <% end %>
 <% end %>
 
-What I wanted was to query the database and return a column of unique years present in the `created_at` column. Additionally, for each year I wanted another column consisting of an array of unique months and I could use this to build out the buttons on the dashboard interface. Essentially the result should look similar to the following
+What I wanted was to query the database and return a column of unique years present in the `created_at` column. Additionally, for each year I wanted another column consisting of an array of unique months and I could use this to build out the buttons on the dashboard interface. Essentially the result on my dummy data would look similar to the following
 
 <% table caption: "Unique years and months" do %>
   <% table_head do %>
@@ -68,7 +73,7 @@ GROUP BY year
 ORDER BY year ASC
 <% end %>
 
-but the problem was using the [JavaScript Supabase client](https://supabase.io/docs/reference/javascript/supabase-client) to create the query. I'm not sure this can be done through the client but that when I read about PostgreSQL Functions in Supabase and saw how it could simplify things for me.
+but the problem was using the [JavaScript Supabase client](https://supabase.io/docs/reference/javascript/supabase-client) to create the query. I'm not sure this can be done through the client but that was when I read about PostgreSQL Functions in Supabase and saw how it could simplify things for me.
 
 ## PostgreSQL Functions
 
