@@ -18,7 +18,20 @@ export default class extends Controller {
   connect() {
     subscription(this)
     this.subscribe()
+    this.reconnect()
     this.resize = debounce(this.resize, 250).bind(this)
+  }
+
+  /** 
+   * Handles a repeated Turbo visit to the dashboard page.
+   * 
+   * @instance
+   * @memberof Dashboard.BuildTimeByContextController
+   **/
+  reconnect() {
+    if (this.store().selectedContextData) {
+      this.storeUpdated(this.store(), "selectedContextData")
+    }
   }
 
   /** 

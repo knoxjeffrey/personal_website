@@ -26,8 +26,7 @@ export default class extends Controller {
   }
 
   /** 
-   * Handles a repeated Turbo visit to the dashboard page. Currently not valid as I've set page to reload
-   * because otheriwse d3 won't rebuild the visualisation
+   * Handles a repeated Turbo visit to the dashboard page.
    * 
    * @instance
    * @memberof Dashboard.MeanBuildTimesController
