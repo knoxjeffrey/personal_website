@@ -1,7 +1,6 @@
 import { createClient } from "@supabase/supabase-js"
 
 const {
-  CONTEXT,
   SUPABASE_ANON_KEY,
   SUPABASE_URL
 } = process.env
@@ -18,8 +17,7 @@ export async function handler(event, _context) {
     const { data, error } = await supabase
       .rpc("netlify_deploy_data_years_and_months")
     if (error) return { statusCode: 500, body: `An error occurred: ${JSON.stringify(error)}` }
-    
-    const payload = CONTEXT === "dev" ? data : data[0].netlify_deploy_data_years_and_months
-    return { statusCode: 200, body: JSON.stringify(payload) }
+
+    return { statusCode: 200, body: JSON.stringify(data) }
   }
 }
