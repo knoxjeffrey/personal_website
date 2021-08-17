@@ -89,6 +89,7 @@ export default class extends Controller {
       headers: { "Function-Name": "netlify_deploy_data_years_and_months" }
     })
       .then(responseCheck => {
+        console.log(responseCheck)
         if (!responseCheck.ok) { throw Error(responseCheck.status); }
         return responseCheck;
       })
