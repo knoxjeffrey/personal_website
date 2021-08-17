@@ -1,7 +1,6 @@
 import { createClient } from "@supabase/supabase-js"
 
 const {
-  CONTEXT,
   SUPABASE_ANON_KEY,
   SUPABASE_URL
 } = process.env
