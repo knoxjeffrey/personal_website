@@ -30,7 +30,7 @@ class RumDataLayer {
     window.addEventListener("rumdatalayerpush", _event => {
       if (this.isPostingRumData === false) {
         this.isPostingRumData = true
-        this.batchPostRumDataTimeout = setTimeout(this.batchPostRumData, 2000)
+        this.batchPostRumDataTimeout = setTimeout(this.batchPostRumData, 500)
       }
     })
     
