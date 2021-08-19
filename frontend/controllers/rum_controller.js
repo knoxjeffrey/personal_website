@@ -160,7 +160,7 @@ export default class extends Controller {
       vitalsScore
     }
     if (this.visitorIsBot(loggerData.userAgent)) return
-    this.postRumLoggerData(loggerData)
+    window.rumDataLayer.push(loggerData)
   }
 
   /** 
@@ -177,28 +177,6 @@ export default class extends Controller {
       "Googlebot" ,"Bingbot", "Slurp", "DuckDuckBot", "Baiduspider", "YandexBot", "Sogou", "Exabot"
     ]
     if (botNames.some(name => userAgent.includes(name))) return true
-  }
-
-  /** 
-   * Sends the Real User Metrics data to a Netlify background function.
-   *
-   * @instance postRumLoggerData
-   * @property {Object} loggerData - RUM logger data object
-   * 
-   * @memberof RUMController
-   * @returns {void}
-   * */
-  postRumLoggerData(loggerData) {
-    fetch("/.netlify/functions/rum_logger-background", { 
-      method: "POST",
-      body: JSON.stringify(loggerData)
-    })
-      .then(responseCheck => {
-        if (!responseCheck.ok) { throw Error(responseCheck.status); }
-      })
-      .catch(error => {
-        console.warn(error)
-      });
   }
 
   /** 

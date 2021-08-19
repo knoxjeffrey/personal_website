@@ -1,3 +1,4 @@
+import "~/javascripts/rum/rum_data_layer"
 import * as Turbo from "@hotwired/turbo"
 import { Application } from "stimulus"
 

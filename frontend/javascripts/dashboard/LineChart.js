@@ -1,10 +1,11 @@
-import d3 from "~/javascripts/dashboard/LineChart_modules"
-import { targetLineValues } from "~/javascripts/dashboard/utils"
-
 /**
  * @class javascripts.dashboard.LineChart
  * @classdesc d3.js line chart for Netlify build times
  */
+
+import d3 from "~/javascripts/dashboard/LineChart_modules"
+import { targetLineValues } from "~/javascripts/dashboard/utils"
+
 export default class LineChart {
   constructor(store, minYValue, wrapper, tooltip) {
     this.store = store
