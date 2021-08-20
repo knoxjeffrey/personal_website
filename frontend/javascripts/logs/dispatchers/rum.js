@@ -63,7 +63,6 @@ export const rum = (() => {
    * @memberof javascripts.logs.dispatchers.rum
    */
   const _postRumData = loggerData => {
-    console.log(loggerData)
     if (window.location.host === _devHost) return
   
     fetch("/.netlify/functions/rum_logger-background", { 
