@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>controllers/dashboard/successful_builds_controller.js - Documentation</title>
+    <title>javascripts/logs/log_layer.js - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -34,7 +34,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">controllers/dashboard/successful_builds_controller.js</h1>
+    <h1 class="page-title">javascripts/logs/log_layer.js</h1>
     
 
     
@@ -44,103 +44,52 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import { Controller } from "stimulus"
-import { subscription } from "~/javascripts/store/mixins/subscription"
+            <pre class="prettyprint source linenums"><code>/**
+ * @namespace javascripts.logs.log_layer
+ * @description Creates a window.logLayer array and dispatches a customer event when set commands are 
+ * performed on the array.
+ */
 
-/**
- * @class Dashboard.SuccessfulBuildsController
- * @classdesc Stimulus controller that populates the number of successful builds per build context.
- * @extends Controller
- **/
-export default class extends Controller {
-  static targets = [ "production", "deployPreview", "cms" ]
-  static values = { loading: String }
+import {logLayerListeners} from "~/javascripts/logs/log_layer_listeners"
 
-  /** 
-   * Subscribe to the store.
+const logLayer = (() => {
+  "use strict"
+
+  /**
+   * Create a set trap for the array when data is added or removed. Creates a new custom events which
+   * dispatches the data that has been added. By using Reflect, the original behavior of the push method
+   * is restored while keeping the added behavior.
    * 
-   * @instance
-   * @memberof Dashboard.SuccessfulBuildsController
-   **/
-  connect() {
-    subscription(this)
-    this.subscribe()
-
-    this.reconnect()
-  }
-
-  /** 
-   * Handles a repeated Turbo visit to the dashboard page.
-   * 
-   * @instance
-   * @memberof Dashboard.SuccessfulBuildsController
-   **/
-  reconnect() {
-    if (this.store().selectedNetlifyBuildData) {
-      this.storeUpdated(this.store(), "selectedNetlifyBuildData")
+   * @const _logLayerPushHandler
+   * @memberof javascripts.logs.log_layer
+   */
+  const _logLayerPushHandler = {
+    set: (target, prop, value) => {
+      if (prop !== "length") {
+        const pushEvent = new CustomEvent("loglayerpush", { detail: value })
+        window.dispatchEvent(pushEvent)
+      }
+      return Reflect.set(target, prop, value)
     }
   }
 
-  /** 
-   * Sets the text for the number of builds
+  /**
+   * Create a proxy for a window.logLayer array, which will intercept set commands and introduce
+   * additional functionality in order to handle logging in this application. Additionally sets up
+   * listeners for events dispatched by the proxy.
    * 
-   * @instance
-   * @memberof Dashboard.SuccessfulBuildsController
-   **/
-  updateSuccessfulBuildsValue(target, text, context) {
-    target.innerHTML = `${text} ${this.calculateNumberOfBuilds(context)}`
+   * @function init
+   * @memberof javascripts.logs.log_layer
+   */
+  const init = () => {
+    logLayerListeners.init()
+    window.logLayer = new Proxy([], _logLayerPushHandler)
   }
 
-  /** 
-   * Sets the text whilst waiting for the number of builds
-   * 
-   * @instance
-   * @memberof Dashboard.SuccessfulBuildsController
-   **/
-  loadingSuccessfulBuildsValue(target, text) {
-    target.innerHTML = `${text} ${this.loadingValue}`
-  }
+  return { init }
+})()
 
-  /** 
-   * @instance
-   * @memberof Dashboard.SuccessfulBuildsController
-   **/
-  calculateNumberOfBuilds(context) {
-    return this.store().selectedNetlifyBuildData.reduce((acc , data) => {
-      return data.context === context ? acc + 1 : acc
-    }, 0)
-  }
-
-  /** 
-   * Triggered by the store whenever any store data changes. Controls whether the number of builds should
-   * be populated or display the loading indicator
-   * 
-   * @instance
-   * @memberof Dashboard.SuccessfulBuildsController
-   **/
-  storeUpdated(store, prop) {
-    if (store.fetchingNetlifyBuildData) {
-      this.loadingSuccessfulBuildsValue(this.productionTarget, "Production")
-      this.loadingSuccessfulBuildsValue(this.deployPreviewTarget, "Deploy preview")
-      this.loadingSuccessfulBuildsValue(this.cmsTarget, "CMS")
-    }
-    if (prop === "selectedNetlifyBuildData") {
-      this.updateSuccessfulBuildsValue(this.productionTarget, "Production ...", "production")
-      this.updateSuccessfulBuildsValue(this.deployPreviewTarget, "Deploy preview ...", "deploy-preview")
-      this.updateSuccessfulBuildsValue(this.cmsTarget, "CMS ...", "cms")
-    }
-  }
-
-  /** 
-   * Unsubscribe from the store
-   * 
-   * @instance
-   * @memberof Dashboard.SuccessfulBuildsController
-   **/
-  disconnect() {
-    this.unsubscribe()
-  }
-}
+logLayer.init()
 </code></pre>
         </article>
     </section>

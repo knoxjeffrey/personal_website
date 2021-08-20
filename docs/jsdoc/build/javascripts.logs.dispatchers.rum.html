@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>controllers/dashboard/successful_builds_controller.js - Documentation</title>
+    <title>rum - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -34,116 +34,461 @@
 
 <div id="main">
     
-    <h1 class="page-title">controllers/dashboard/successful_builds_controller.js</h1>
+    <h1 class="page-title">rum</h1>
     
 
     
 
 
 
+
+<section>
+
+<header>
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>import { Controller } from "stimulus"
-import { subscription } from "~/javascripts/store/mixins/subscription"
+        <h2>
+        rum
+        </h2>
+        
+    
+</header>
 
-/**
- * @class Dashboard.SuccessfulBuildsController
- * @classdesc Stimulus controller that populates the number of successful builds per build context.
- * @extends Controller
- **/
-export default class extends Controller {
-  static targets = [ "production", "deployPreview", "cms" ]
-  static values = { loading: String }
+<article>
+    
+        <div class="container-overview">
+        
+            
 
-  /** 
-   * Subscribe to the store.
-   * 
-   * @instance
-   * @memberof Dashboard.SuccessfulBuildsController
-   **/
-  connect() {
-    subscription(this)
-    this.subscribe()
+<dl class="details">
 
-    this.reconnect()
-  }
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="javascripts_logs_dispatchers_rum.js.html">javascripts/logs/dispatchers/rum.js</a>, <a href="javascripts_logs_dispatchers_rum.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
 
-  /** 
-   * Handles a repeated Turbo visit to the dashboard page.
-   * 
-   * @instance
-   * @memberof Dashboard.SuccessfulBuildsController
-   **/
-  reconnect() {
-    if (this.store().selectedNetlifyBuildData) {
-      this.storeUpdated(this.store(), "selectedNetlifyBuildData")
-    }
-  }
+    
 
-  /** 
-   * Sets the text for the number of builds
-   * 
-   * @instance
-   * @memberof Dashboard.SuccessfulBuildsController
-   **/
-  updateSuccessfulBuildsValue(target, text, context) {
-    target.innerHTML = `${text} ${this.calculateNumberOfBuilds(context)}`
-  }
+    
 
-  /** 
-   * Sets the text whilst waiting for the number of builds
-   * 
-   * @instance
-   * @memberof Dashboard.SuccessfulBuildsController
-   **/
-  loadingSuccessfulBuildsValue(target, text) {
-    target.innerHTML = `${text} ${this.loadingValue}`
-  }
+    
 
-  /** 
-   * @instance
-   * @memberof Dashboard.SuccessfulBuildsController
-   **/
-  calculateNumberOfBuilds(context) {
-    return this.store().selectedNetlifyBuildData.reduce((acc , data) => {
-      return data.context === context ? acc + 1 : acc
-    }, 0)
-  }
+    
 
-  /** 
-   * Triggered by the store whenever any store data changes. Controls whether the number of builds should
-   * be populated or display the loading indicator
-   * 
-   * @instance
-   * @memberof Dashboard.SuccessfulBuildsController
-   **/
-  storeUpdated(store, prop) {
-    if (store.fetchingNetlifyBuildData) {
-      this.loadingSuccessfulBuildsValue(this.productionTarget, "Production")
-      this.loadingSuccessfulBuildsValue(this.deployPreviewTarget, "Deploy preview")
-      this.loadingSuccessfulBuildsValue(this.cmsTarget, "CMS")
-    }
-    if (prop === "selectedNetlifyBuildData") {
-      this.updateSuccessfulBuildsValue(this.productionTarget, "Production ...", "production")
-      this.updateSuccessfulBuildsValue(this.deployPreviewTarget, "Deploy preview ...", "deploy-preview")
-      this.updateSuccessfulBuildsValue(this.cmsTarget, "CMS ...", "cms")
-    }
-  }
+    
 
-  /** 
-   * Unsubscribe from the store
-   * 
-   * @instance
-   * @memberof Dashboard.SuccessfulBuildsController
-   **/
-  disconnect() {
-    this.unsubscribe()
-  }
-}
-</code></pre>
-        </article>
-    </section>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+            
+                <div class="description usertext"><p>Handles the logging events for Real User Metrics</p></div>
+            
+
+            
+        
+        </div>
+    
+
+    
+
+    
+
+    
+    
+    
+
+     
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id="._batchPostLogData"><span class="type-signature">(static) </span>_batchPostLogData<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="javascripts_logs_dispatchers_rum.js.html">javascripts/logs/dispatchers/rum.js</a>, <a href="javascripts_logs_dispatchers_rum.js.html#line46">line 46</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>When the rum data is sent, empty _rumLogData and change the _isRumDispatching to say the timeout
+is over</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="._postRumData"><span class="type-signature">(static) </span>_postRumData<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="javascripts_logs_dispatchers_rum.js.html">javascripts/logs/dispatchers/rum.js</a>, <a href="javascripts_logs_dispatchers_rum.js.html#line59">line 59</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Post the rum data to a Netlify background function</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".pushDispatcher"><span class="type-signature">(static) </span>pushDispatcher<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="javascripts_logs_dispatchers_rum.js.html">javascripts/logs/dispatchers/rum.js</a>, <a href="javascripts_logs_dispatchers_rum.js.html#line14">line 14</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>If it is a rum log event then push the log data onto a new array for rum data. A timeout will
+be created if one is not already running. This timeout will allow for multiple logs that are fired
+quickly, to be batched up and dispatched in one request ratehr than firing multiple requests.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".turboDispatcher"><span class="type-signature">(static) </span>turboDispatcher<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="javascripts_logs_dispatchers_rum.js.html">javascripts/logs/dispatchers/rum.js</a>, <a href="javascripts_logs_dispatchers_rum.js.html#line32">line 32</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Dispatch any remaining logs in _rumLogData when leaving the page and also reset the
+window.logDataLayer so it starts empty on the next page transition</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 

@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>controllers/dashboard/successful_builds_controller.js - Documentation</title>
+    <title>javascripts/logs/dispatchers/index.js - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -34,7 +34,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">controllers/dashboard/successful_builds_controller.js</h1>
+    <h1 class="page-title">javascripts/logs/dispatchers/index.js</h1>
     
 
     
@@ -44,103 +44,27 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import { Controller } from "stimulus"
-import { subscription } from "~/javascripts/store/mixins/subscription"
+            <pre class="prettyprint source linenums"><code>/**
+ * @namespace javascripts.logs.dispatchers.index
+ * @description All push and turbo dispatchers are added here
+ */
 
-/**
- * @class Dashboard.SuccessfulBuildsController
- * @classdesc Stimulus controller that populates the number of successful builds per build context.
- * @extends Controller
- **/
-export default class extends Controller {
-  static targets = [ "production", "deployPreview", "cms" ]
-  static values = { loading: String }
+import { rum } from "~/javascripts/logs/dispatchers/rum"
 
-  /** 
-   * Subscribe to the store.
-   * 
-   * @instance
-   * @memberof Dashboard.SuccessfulBuildsController
-   **/
-  connect() {
-    subscription(this)
-    this.subscribe()
-
-    this.reconnect()
+export const dispatchers = (() => {
+  const pushDispatchers = (log) => {
+    rum.pushDispatcher(log)
   }
 
-  /** 
-   * Handles a repeated Turbo visit to the dashboard page.
-   * 
-   * @instance
-   * @memberof Dashboard.SuccessfulBuildsController
-   **/
-  reconnect() {
-    if (this.store().selectedNetlifyBuildData) {
-      this.storeUpdated(this.store(), "selectedNetlifyBuildData")
-    }
+  const turboDispatchers = () => {
+    rum.turboDispatchers()
   }
 
-  /** 
-   * Sets the text for the number of builds
-   * 
-   * @instance
-   * @memberof Dashboard.SuccessfulBuildsController
-   **/
-  updateSuccessfulBuildsValue(target, text, context) {
-    target.innerHTML = `${text} ${this.calculateNumberOfBuilds(context)}`
+  return {
+    pushDispatchers,
+    turboDispatchers
   }
-
-  /** 
-   * Sets the text whilst waiting for the number of builds
-   * 
-   * @instance
-   * @memberof Dashboard.SuccessfulBuildsController
-   **/
-  loadingSuccessfulBuildsValue(target, text) {
-    target.innerHTML = `${text} ${this.loadingValue}`
-  }
-
-  /** 
-   * @instance
-   * @memberof Dashboard.SuccessfulBuildsController
-   **/
-  calculateNumberOfBuilds(context) {
-    return this.store().selectedNetlifyBuildData.reduce((acc , data) => {
-      return data.context === context ? acc + 1 : acc
-    }, 0)
-  }
-
-  /** 
-   * Triggered by the store whenever any store data changes. Controls whether the number of builds should
-   * be populated or display the loading indicator
-   * 
-   * @instance
-   * @memberof Dashboard.SuccessfulBuildsController
-   **/
-  storeUpdated(store, prop) {
-    if (store.fetchingNetlifyBuildData) {
-      this.loadingSuccessfulBuildsValue(this.productionTarget, "Production")
-      this.loadingSuccessfulBuildsValue(this.deployPreviewTarget, "Deploy preview")
-      this.loadingSuccessfulBuildsValue(this.cmsTarget, "CMS")
-    }
-    if (prop === "selectedNetlifyBuildData") {
-      this.updateSuccessfulBuildsValue(this.productionTarget, "Production ...", "production")
-      this.updateSuccessfulBuildsValue(this.deployPreviewTarget, "Deploy preview ...", "deploy-preview")
-      this.updateSuccessfulBuildsValue(this.cmsTarget, "CMS ...", "cms")
-    }
-  }
-
-  /** 
-   * Unsubscribe from the store
-   * 
-   * @instance
-   * @memberof Dashboard.SuccessfulBuildsController
-   **/
-  disconnect() {
-    this.unsubscribe()
-  }
-}
+})()
 </code></pre>
         </article>
     </section>

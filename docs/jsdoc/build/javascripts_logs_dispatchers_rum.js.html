@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>controllers/dashboard/successful_builds_controller.js - Documentation</title>
+    <title>javascripts/logs/dispatchers/rum.js - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -34,7 +34,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">controllers/dashboard/successful_builds_controller.js</h1>
+    <h1 class="page-title">javascripts/logs/dispatchers/rum.js</h1>
     
 
     
@@ -44,103 +44,90 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import { Controller } from "stimulus"
-import { subscription } from "~/javascripts/store/mixins/subscription"
+            <pre class="prettyprint source linenums"><code>/**
+ * @namespace javascripts.logs.dispatchers.rum
+ * @description Handles the logging events for Real User Metrics
+ */
 
-/**
- * @class Dashboard.SuccessfulBuildsController
- * @classdesc Stimulus controller that populates the number of successful builds per build context.
- * @extends Controller
- **/
-export default class extends Controller {
-  static targets = [ "production", "deployPreview", "cms" ]
-  static values = { loading: String }
+export const rum = (() => {
+  "use strict"
 
-  /** 
-   * Subscribe to the store.
+  const _devHost = "localhost:3000"
+  let _isRumDispatching = false
+  let _rumDispatchTimeout = undefined
+  let _rumLogData = []
+
+  /**
+   * If it is a rum log event then push the log data onto a new array for rum data. A timeout will
+   * be created if one is not already running. This timeout will allow for multiple logs that are fired
+   * quickly, to be batched up and dispatched in one request ratehr than firing multiple requests.
    * 
-   * @instance
-   * @memberof Dashboard.SuccessfulBuildsController
-   **/
-  connect() {
-    subscription(this)
-    this.subscribe()
-
-    this.reconnect()
-  }
-
-  /** 
-   * Handles a repeated Turbo visit to the dashboard page.
-   * 
-   * @instance
-   * @memberof Dashboard.SuccessfulBuildsController
-   **/
-  reconnect() {
-    if (this.store().selectedNetlifyBuildData) {
-      this.storeUpdated(this.store(), "selectedNetlifyBuildData")
+   * @function pushDispatcher
+   * @memberof javascripts.logs.dispatchers.rum
+   */
+  const pushDispatcher = (log) => {
+    if (log.logEvent !== "rum") return
+    
+    _rumLogData.push(log.data)
+    if (_isRumDispatching === false) {
+      _isRumDispatching = true
+      _rumDispatchTimeout = setTimeout(_batchPostLogData, 500)
     }
   }
 
-  /** 
-   * Sets the text for the number of builds
+  /**
+   * Dispatch any remaining logs in _rumLogData when leaving the page and also reset the
+   * window.logDataLayer so it starts empty on the next page transition
    * 
-   * @instance
-   * @memberof Dashboard.SuccessfulBuildsController
-   **/
-  updateSuccessfulBuildsValue(target, text, context) {
-    target.innerHTML = `${text} ${this.calculateNumberOfBuilds(context)}`
+   * @function turboDispatcher
+   * @memberof javascripts.logs.dispatchers.rum
+   */
+  const turboDispatcher = () => {
+    clearTimeout(_rumDispatchTimeout)
+    _batchPostLogData()
+
+    window.logDataLayer.length = 0
   }
 
-  /** 
-   * Sets the text whilst waiting for the number of builds
+  /**
+   * When the rum data is sent, empty _rumLogData and change the _isRumDispatching to say the timeout
+   * is over
    * 
-   * @instance
-   * @memberof Dashboard.SuccessfulBuildsController
-   **/
-  loadingSuccessfulBuildsValue(target, text) {
-    target.innerHTML = `${text} ${this.loadingValue}`
+   * @function _batchPostLogData
+   * @memberof javascripts.logs.dispatchers.rum
+   */
+  const _batchPostLogData = () => {
+    _rumLogData.forEach(logObject => _postRumData(logObject))
+    _rumLogData.length = 0
+    _isRumDispatching = false
   }
 
-  /** 
-   * @instance
-   * @memberof Dashboard.SuccessfulBuildsController
-   **/
-  calculateNumberOfBuilds(context) {
-    return this.store().selectedNetlifyBuildData.reduce((acc , data) => {
-      return data.context === context ? acc + 1 : acc
-    }, 0)
+  /**
+   * Post the rum data to a Netlify background function
+   * 
+   * @function _postRumData
+   * @memberof javascripts.logs.dispatchers.rum
+   */
+  const _postRumData = loggerData => {
+    if (window.location.host === _devHost) return
+  
+    fetch("/.netlify/functions/rum_logger-background", { 
+      method: "POST",
+      body: JSON.stringify(loggerData)
+    })
+      .then(responseCheck => {
+        if (!responseCheck.ok) { throw Error(responseCheck.status); }
+      })
+      .catch(error => {
+        console.warn(error)
+      })
   }
 
-  /** 
-   * Triggered by the store whenever any store data changes. Controls whether the number of builds should
-   * be populated or display the loading indicator
-   * 
-   * @instance
-   * @memberof Dashboard.SuccessfulBuildsController
-   **/
-  storeUpdated(store, prop) {
-    if (store.fetchingNetlifyBuildData) {
-      this.loadingSuccessfulBuildsValue(this.productionTarget, "Production")
-      this.loadingSuccessfulBuildsValue(this.deployPreviewTarget, "Deploy preview")
-      this.loadingSuccessfulBuildsValue(this.cmsTarget, "CMS")
-    }
-    if (prop === "selectedNetlifyBuildData") {
-      this.updateSuccessfulBuildsValue(this.productionTarget, "Production ...", "production")
-      this.updateSuccessfulBuildsValue(this.deployPreviewTarget, "Deploy preview ...", "deploy-preview")
-      this.updateSuccessfulBuildsValue(this.cmsTarget, "CMS ...", "cms")
-    }
+  return {
+    pushDispatcher,
+    turboDispatcher
   }
-
-  /** 
-   * Unsubscribe from the store
-   * 
-   * @instance
-   * @memberof Dashboard.SuccessfulBuildsController
-   **/
-  disconnect() {
-    this.unsubscribe()
-  }
-}
+})()
 </code></pre>
         </article>
     </section>
