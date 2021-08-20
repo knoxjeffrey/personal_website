@@ -32,7 +32,7 @@ export default class LineChart {
         top: 15,
         right: 10,
         bottom: 40,
-        left: 20,
+        left: 25,
       }
     }
     this.dimensions.boundedWidth = this.dimensions.width
@@ -160,8 +160,8 @@ export default class LineChart {
         .attr("class", "line-chart--listening-rect")
         .attr("width", this.dimensions.boundedWidth)
         .attr("height", this.dimensions.boundedHeight)
-        .on("touchstart", this.onTouchStart)
-        .on("mousemove touchmove", this.onMouseMove)
+        .on("touchstart", this.onTouchStart, { passive: false })
+        .on("mousemove touchmove", this.onMouseMove, { passive: true })
         .on("mouseleave touchend", this.onMouseLeave)
         .on("click", this.onClick)
 
