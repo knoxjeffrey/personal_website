@@ -11,7 +11,7 @@ export const dispatchers = (() => {
   }
 
   const turboDispatchers = () => {
-    rum.turboDispatchers()
+    rum.turboDispatcher()
   }
 
   return {
