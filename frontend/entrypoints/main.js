@@ -1,3 +1,4 @@
+import "~/javascripts/logs/log_layer"
 import * as Turbo from "@hotwired/turbo"
 import { Application } from "stimulus"
 
