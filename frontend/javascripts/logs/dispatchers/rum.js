@@ -40,7 +40,7 @@ export const rum = (() => {
     clearTimeout(_rumDispatchTimeout)
     _batchPostLogData()
 
-    window.logDataLayer.length = 0
+    window.logLayer.length = 0
   }
 
   /**
