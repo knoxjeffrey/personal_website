@@ -1,5 +1,5 @@
 /**
- * @namespace javascripts.rum.postRumData
+ * @namespace javascripts.log.post_rum_data
  * @description Posts RUM data to a Netlify function
  */
 
@@ -11,9 +11,10 @@ const devHost = "localhost:3000"
  * @function postRumData
  * @property {Object} loggerData - RUM logger data object
  * 
- * @memberof javascripts.rum.postRumData
+ * @memberof javascripts.log.post_rum_data
  * */
 export const postRumData = loggerData => {
+  console.log(loggerData)
   if (window.location.host === devHost) return
 
   fetch("/.netlify/functions/rum_logger-background", { 
