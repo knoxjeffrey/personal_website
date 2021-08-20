@@ -6,7 +6,6 @@
 export const rum = (() => {
   "use strict"
 
-  const _devHost = "localhost:3000"
   let _isRumDispatching = false
   let _rumDispatchTimeout = undefined
   let _rumLogData = []
@@ -51,7 +50,7 @@ export const rum = (() => {
    * @memberof javascripts.logs.dispatchers.rum
    */
   const _batchPostLogData = () => {
-    _rumLogData.forEach(logObject => _postRumData(logObject))
+    _postRumData(_rumLogData)
     _rumLogData.length = 0
     _isRumDispatching = false
   }
@@ -63,8 +62,6 @@ export const rum = (() => {
    * @memberof javascripts.logs.dispatchers.rum
    */
   const _postRumData = loggerData => {
-    if (window.location.host === _devHost) return
-  
     fetch("/.netlify/functions/rum_logger-background", { 
       method: "POST",
       body: JSON.stringify(loggerData)

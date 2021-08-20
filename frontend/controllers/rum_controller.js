@@ -153,7 +153,7 @@ export default class extends Controller {
       identifier: this.rumIdentifier,
       path: window.location.pathname,
       timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      unixTimeStamp: Math.floor(Date.now() / 1000),
+      timeStamp: new Date().toISOString(),
       userAgent: window.navigator.userAgent,
       metric,
       data,
