@@ -1,6 +1,6 @@
-import { postRumData } from "~/javascripts/log/post_rum_data"
+import { postRumData } from "~/javascripts/logs/post_rum_data"
 
-export const logDataLayerDispatcher = (() => {
+export const logLayerDispatcher = (() => {
   "use strict"
 
   let _isRumDispatching = false

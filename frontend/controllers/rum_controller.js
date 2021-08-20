@@ -160,7 +160,7 @@ export default class extends Controller {
       vitalsScore
     }
     if (this.visitorIsBot(loggerData.userAgent)) return
-    window.logDataLayer.push({ logEvent: "rum", data: loggerData })
+    window.logLayer.push({ logEvent: "rum", data: loggerData })
   }
 
   /** 
