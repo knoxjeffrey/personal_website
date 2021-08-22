@@ -4,7 +4,7 @@
  * performed on the array.
  */
 
-import {pushrListeners} from "~/javascripts/pushr/pushr_listeners"
+import { pushrListeners } from "~/javascripts/pushr/pushr_listeners"
 
 const pushr = (() => {
   "use strict"
