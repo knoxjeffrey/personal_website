@@ -1,4 +1,4 @@
-import "~/javascripts/logs/log_layer"
+import "~/javascripts/pushr"
 import * as Turbo from "@hotwired/turbo"
 import { Application } from "stimulus"
 
