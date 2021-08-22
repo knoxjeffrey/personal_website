@@ -6,8 +6,8 @@
 import { rum } from "~/javascripts/pushr/dispatchers/rum"
 
 export const dispatchers = (() => {
-  const pushrDispatchers = (log) => {
-    rum.pushrDispatcher(log)
+  const pushrDispatchers = (pushrObject) => {
+    rum.pushrDispatcher(pushrObject)
   }
 
   const turboDispatchers = () => {
