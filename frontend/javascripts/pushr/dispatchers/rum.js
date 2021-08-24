@@ -4,8 +4,6 @@
  */
 
 export const rum = (() => {
-  "use strict"
-
   let _isRumDispatching = false
   let _rumDispatchTimeout = undefined
   let _rumObjects = []

@@ -6,8 +6,6 @@
 import { dispatchers } from "~/javascripts/pushr/dispatchers"
 
 export const pushrListeners = (() => {
-  "use strict"
-
   /**
    * Listens for the custom pushrset event when data is pushed to window.pushr and passes the data
    * onto dispatchers that will handle the log events
