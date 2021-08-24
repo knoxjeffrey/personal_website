@@ -20,3 +20,7 @@ To achieve this I can use a [Proxy object](https://developer.mozilla.org/en-US/d
 
 1. A target which is the object I want to proxy, an array in my case.
 2. A handler which is an object that defines which operations will be intercepted and how to redefine those intercepted operations.
+
+I'm going to provide an implementation for the `set()` handler in the proxy which is a trap for setting a property value. In there I'll define a new custom event called `pushrset` which will contain the data that has just been set on the array and then emit the event.
+
+So, to start with I'll create a new directory in my javascript folder called `pushr` and add a file called `index.js`.
