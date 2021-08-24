@@ -11,3 +11,12 @@ I've started using [Perfume.js](https://zizzamia.github.io/perfume/) on this sit
 <!--more-->
 
 My solution is inspired by the idea of a dataLayer as used with Google Tag Manager. It's an array (with some additional functionality in my case) that can have objects with an event name pushed to it from anywhere in the front-end. Those event objects can then be handled on an individual basis, such as forwarding on performance events to supabase in this case. I'm calling my creation pushr!
+
+## Array proxy
+
+I mentioned that the pushr array will have a little bit of additional functionality. Instead of constantly polling the array to check for new event, I'd like for the array to emit a custom event whenever new data is pushed to the array. Then I can create an event listener to handle the data passed with that event.
+
+To achieve this I can use a [Proxy object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) which can intercept and redefine fundamental operations for that object. The proxy takes 2 arguments:
+
+1. A target which is the object I want to proxy, an array in my case.
+2. A handler which is an object that defines which operations will be intercepted and how to redefine those intercepted operations.
