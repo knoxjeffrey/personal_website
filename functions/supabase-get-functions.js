@@ -17,7 +17,8 @@ export async function handler(event, _context) {
     const { data, error } = await supabase
       .rpc("netlify_deploy_data_years_and_months")
     if (error) return { statusCode: 500, body: `An error occurred: ${JSON.stringify(error)}` }
-
-    return { statusCode: 200, body: JSON.stringify(data) }
+    
+    const yearsAndMonths = data[0].netlify_deploy_data_years_and_months
+    return { statusCode: 200, body: JSON.stringify(yearsAndMonths) }
   }
 }
