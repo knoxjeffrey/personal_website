@@ -4,6 +4,8 @@
 .DS_Store
 .env
 .sass-cache
+bin
+!bin/vite
 yarn-error.log
 /build
 dist/
