@@ -6,7 +6,7 @@
 
 import { pushrListeners } from "~/javascripts/pushr/pushr_listeners"
 
-const pushr = (() => {
+export const pushr = (() => {
   /**
    * Create a set trap for the array when data is added or removed. Creates a new custom event which
    * dispatches the data that has been added. By using Reflect, the original behavior of the push method
@@ -40,5 +40,3 @@ const pushr = (() => {
 
   return { init }
 })()
-
-pushr.init()
