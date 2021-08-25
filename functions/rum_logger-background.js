@@ -17,7 +17,7 @@ export async function handler(event, context) {
     const rumEventLogs = JSON.parse(event.body)
 
     const updatedRumEventLogs = rumEventLogs.map(log => {
-      const { identifier, timeZone, ...strippedRumMetrics } = log;
+      const { identifier, time_zone, ...strippedRumMetrics } = log;
       const browser = Bowser.parse(log.user_agent);
 
       return { 
@@ -29,7 +29,7 @@ export async function handler(event, context) {
         platform_type: browser.platform.type
       }
     })
-    console.log(updatedRumEventLogs)
+
     const { data, error } = await supabase
       .from("real_user_metrics")
       .insert(updatedRumEventLogs)
