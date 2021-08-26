@@ -29,7 +29,7 @@ export async function handler(event, context) {
         platform_type: browser.platform.type
       }
     })
-    console.log(updatedRumEventLogs)
+
     const { data, error } = await supabase
       .from("real_user_metrics")
       .insert(updatedRumEventLogs)
