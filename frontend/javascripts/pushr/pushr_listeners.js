@@ -28,7 +28,6 @@ export const pushrListeners = (() => {
    */
   const _turboListener = () => {
     window.addEventListener("turbo:before-visit", () => {
-      console.log("turbo:before-visit")
       dispatchers.turboDispatchers()
     })
   }

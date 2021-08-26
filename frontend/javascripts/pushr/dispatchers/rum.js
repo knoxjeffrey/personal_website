@@ -17,11 +17,14 @@ export const rum = (() => {
    * @memberof javascripts.pushr.dispatchers.rum
    */
   const pushrDispatcher = (pushrObject) => {
+    console.log("p-2")
     if (pushrObject.event !== "rum") return
-    
+    console.log("p-3")
     _rumObjects.push(pushrObject.data)
     if (_isRumDispatching === false) {
+      console.log("p-4")
       _isRumDispatching = true
+      console.log("p-5")
       _rumDispatchTimeout = setTimeout(_batchPostRumData, 500)
     }
   }
@@ -33,7 +36,9 @@ export const rum = (() => {
    * @memberof javascripts.pushr.dispatchers.rum
    */
   const turboDispatcher = () => {
+    console.log("t-2")
     clearTimeout(_rumDispatchTimeout)
+    console.log("t-3")
     if (_rumObjects.length) _batchPostRumData()
   }
 
@@ -45,8 +50,11 @@ export const rum = (() => {
    * @memberof javascripts.pushr.dispatchers.rum
    */
   const _batchPostRumData = () => {
+    console.log("b-1")
     _postRumData(_rumObjects)
+    console.log("b-2")
     _rumObjects.length = 0
+    console.log("b-3")
     _isRumDispatching = false
   }
 
@@ -57,6 +65,7 @@ export const rum = (() => {
    * @memberof javascripts.pushr.dispatchers.rum
    */
   const _postRumData = rumData => {
+    console.log("r-1")
     fetch("/.netlify/functions/rum_logger-background", { 
       method: "POST",
       body: JSON.stringify(rumData)
