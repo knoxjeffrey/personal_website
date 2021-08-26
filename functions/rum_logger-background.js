@@ -29,11 +29,11 @@ export async function handler(event, context) {
         platform_type: browser.platform.type
       }
     })
-
+    console.log(updatedRumEventLogs)
     const { data, error } = await supabase
       .from("real_user_metrics")
       .insert(updatedRumEventLogs)
-  
+
     if (error) return console.log("error", error)
     return { statusCode: 200 }
   }

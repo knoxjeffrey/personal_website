@@ -27,15 +27,14 @@ export const rum = (() => {
   }
 
   /**
-   * Dispatch any remaining logs in _rumObjects when leaving the page and also reset the
-   * window.logDataLayer so it starts empty on the next page transition
+   * Dispatch any remaining logs in _rumObjects when leaving the page
    * 
    * @function turboDispatcher
    * @memberof javascripts.pushr.dispatchers.rum
    */
   const turboDispatcher = () => {
     clearTimeout(_rumDispatchTimeout)
-    _batchPostRumData()
+    if (_rumObjects.length) _batchPostRumData()
   }
 
   /**
