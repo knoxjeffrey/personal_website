@@ -148,23 +148,41 @@ export default class extends Controller {
    * @example
    * this.rumLogger("networkInformation", "4g")
    * */
-  rumLogger(metric, data, vitalsScore = "null") {
-    const loggerData = {
+  rumLogger(metric, data, vitals_score = null) {
+    const { data_float, data_string } = this.organiseDataBasedOnMetric(metric, data)
+    const rumData = {
       identifier: this.rumIdentifier,
       path: window.location.pathname,
-      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      unixTimeStamp: Math.floor(Date.now() / 1000),
-      userAgent: window.navigator.userAgent,
+      time_zone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      time_stamp: new Date().toISOString(),
+      user_agent: window.navigator.userAgent,
       metric,
-      data,
-      vitalsScore
+      data_float,
+      data_string,
+      vitals_score
     }
-    if (this.visitorIsBot(loggerData.userAgent)) return
-    window.logLayer.push({ logEvent: "rum", data: loggerData })
+    if (this.visitorIsBot(rumData.user_agent)) return
+    window.pushr.push({ event: "rum", data: rumData })
   }
 
   /** 
-   * Checks if the part of the userAgent matches against one of the given bot names
+   * The rum metric could be a float or string and I want to store it appropriately in supabase so
+   * this will populate 2 different fields depending on the metric
+   *
+   * @instance organiseDataBasedOnMetric
+   * @property {String} metric - the userAgent string
+   * @property {String|Number} data - the userAgent string
+   * 
+   * @memberof RUMController
+   * @returns {Object}
+   * */
+  organiseDataBasedOnMetric(metric, data) {
+    if (metric === "networkInfo") return { data_float: null, data_string: data }
+    return { data_float: data, data_string: null }
+  }
+
+  /** 
+   * Checks if the part of the user_agent matches against one of the given bot names
    *
    * @instance visitorIsBot
    * @property {String} userAgent - the userAgent string
@@ -172,11 +190,11 @@ export default class extends Controller {
    * @memberof RUMController
    * @returns {Boolean}
    * */
-  visitorIsBot(userAgent) {
+  visitorIsBot(user_agent) {
     const botNames = [
       "Googlebot" ,"Bingbot", "Slurp", "DuckDuckBot", "Baiduspider", "YandexBot", "Sogou", "Exabot"
     ]
-    if (botNames.some(name => userAgent.includes(name))) return true
+    if (botNames.some(name => user_agent.includes(name))) return true
   }
 
   /** 

@@ -1,43 +1,40 @@
+import { createClient } from "@supabase/supabase-js"
 import { countryFromTimeZone } from "./utils/country_data"
 import Bowser from "bowser"
-import faunadb from "faunadb"
 import shaJS from "sha.js"
 
 const {
-  FAUNADB_SECRET
+  CONTEXT,
+  SUPABASE_ANON_KEY,
+  SUPABASE_URL
 } = process.env
 
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 const prodHost = "www.jeffreyknox.dev"
-const q = faunadb.query
-const client = new faunadb.Client({
-  secret: FAUNADB_SECRET
-})
 
 export async function handler(event, context) {
-  const collectionName = event.headers.host === prodHost ? "RealUserMetrics" : "RealUserMetrics_Dev"
+  if (CONTEXT === "dev" || event.headers.host === prodHost) {
+    const rumEventLogs = JSON.parse(event.body)
 
-  const rumMetrics = JSON.parse(event.body)
-  const { identifier, timeZone, ...strippedRumMetrics } = rumMetrics;
-  const browser = Bowser.parse(rumMetrics.userAgent);
+    const updatedRumEventLogs = rumEventLogs.map(log => {
+      const { identifier, time_zone, ...strippedRumMetrics } = log;
+      const browser = Bowser.parse(log.user_agent);
 
-  const rumMetricsForAnalytics = { 
-    ...strippedRumMetrics,
-    identifier: shaJS("sha256").update(`${rumMetrics.identifier}${rumMetrics.userAgent}`).digest("hex"),
-    country: countryFromTimeZone(rumMetrics.timeZone),
-    browserName: browser.browser.name,
-    osName: browser.os.name,
-    platformType: browser.platform.type
+      return { 
+        ...strippedRumMetrics,
+        identifier: shaJS("sha256").update(`${log.identifier}${log.user_agent}`).digest("hex"),
+        country: countryFromTimeZone(log.time_zone),
+        browser_name: browser.browser.name,
+        os_name: browser.os.name,
+        platform_type: browser.platform.type
+      }
+    })
+
+    const { data, error } = await supabase
+      .from("real_user_metrics")
+      .insert(updatedRumEventLogs)
+  
+    if (error) return console.log("error", error)
+    return { statusCode: 200 }
   }
-
-  return client.query(
-    q.Create(
-      q.Collection(collectionName),
-      { data: rumMetricsForAnalytics }
-    )
-  )
-  .then((response) => {
-    return { statusCode: 200 };
-  }).catch((error) => {
-    console.log("error", error)
-  })
 }
