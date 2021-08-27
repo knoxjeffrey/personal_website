@@ -52,10 +52,13 @@
 export const rum = (() => {
   let _isRumDispatching = false
   let _rumDispatchTimeout = undefined
+  let _allowedRumMetrics = ["ttfb", "networkInfo", "fcp", "fid", "lcp", "cls"]
+  let _rumMetricsCollected = []
   let _rumObjects = []
 
   /**
-   * If it is a rum event then push the rum data onto a new array for rum data. A timeout will
+   * If it is a rum event then push the rum data onto a new array for rum data. If the metric type isn't
+   * one that is allow then we exit. If we have already collected it then we exit. A timeout will
    * be created if one is not already running. This timeout will allow for multiple logs that are fired
    * quickly, to be batched up and dispatched in one request rather than firing multiple requests.
    * 
@@ -64,7 +67,10 @@ export const rum = (() => {
    */
   const pushrDispatcher = (pushrObject) => {
     if (pushrObject.event !== "rum") return
+    if (!_allowedRumMetrics.some(metric => metric === pushrObject.data.metric)) return
+    if (_rumMetricsCollected.some(metric => metric === pushrObject.data.metric)) return
     
+    _rumMetricsCollected.push(pushrObject.data.metric)
     _rumObjects.push(pushrObject.data)
     if (_isRumDispatching === false) {
       _isRumDispatching = true
