@@ -1,6 +1,6 @@
 ---
 title: Building a custom data layer for logging web performance metrics
-date: 2021-08-22 21:46
+date: 2021-08-27 11:20
 tags:
   - Software engineering
   - Web performance
@@ -14,7 +14,7 @@ My solution is inspired by the idea of a dataLayer as used with Google Tag Manag
 
 ## Array proxy
 
-I mentioned that the pushr array will have a little bit of additional functionality. Instead of constantly polling the array to check for new event, I'd like for the array to emit a custom event whenever new data is pushed to the array. Then I can create an event listener to handle the data passed with that event.
+I mentioned that the pushr array will have a little bit of additional functionality. Instead of constantly polling the array to check for new events, I'd like for the array to emit a custom event whenever new data is pushed to the array. Then I can create an event listener to handle the data passed with that event.
 
 To achieve this I can use a [Proxy object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) which can intercept and redefine fundamental operations for that object. The proxy takes 2 arguments:
 
@@ -27,7 +27,6 @@ So, to start with I'll create a new directory in my javascript folder called `pu
 
 <% highlight code: "javascript" do %>
 export const pushr = (() => {
-
   const _pushrHandler = {
     set: (target, prop, value) => {
       if (prop !== "length") {
@@ -91,6 +90,7 @@ const init = () => {
 }
 <% end %>
 
+
 ## Dispatching pushr events
 
 Cool, now the required events are being listened to I want to handle those events by creating a dispatcher. Add a new folder at `pushr/dispatchers` and add a new file called `index.js`
@@ -142,10 +142,10 @@ const _turboListener = () => {
 
 To check this all works, I'm going to create a test dispatcher that will handle any events with the name `test`.
 
-Add a new file to `pushr/dispatchers` called `test.js
+Add a new file to `pushr/dispatchers` called `test.js`
 
 <% highlight code: "javascript" do %>
-export const rum = (() => {
+export const test = (() => {
   const pushrDispatcher = (pushrObject) => {
     if (pushrObject.event !== "test") return
     
