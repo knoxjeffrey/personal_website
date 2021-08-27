@@ -137,6 +137,7 @@ const _turboListener = () => {
 ...
 <% end %>
 
+
 ## Handle the first pushr event
 
 To check this all works, I'm going to create a test dispatcher that will handle any events with the name `test`.
@@ -185,3 +186,5 @@ export const dispatchers = (() => {
 <% end %>
 
 Now, if you add `window.pushr.push({ event: "test" })` to somewhere in your code, as soon as that code is evaluated, you should get the `hello test dispatcher!` message in the console. If you give the event another name then you should see nothing. You will also get the `changed page!` on every page transition.
+
+Awesome, I now have a simple data layer to log events on my website. If you're interested, you can see how I'm using this for my performance metrics by [looking in my repo](https://github.com/knoxjeffrey/personal_website/tree/main/frontend/javascripts/pushr). In this case I'm batching up events in pushr so I can cut the number of Netlify function calls I'm making from 6 to 2.
