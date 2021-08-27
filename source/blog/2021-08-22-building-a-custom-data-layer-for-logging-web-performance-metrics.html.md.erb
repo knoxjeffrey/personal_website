@@ -24,3 +24,29 @@ To achieve this I can use a [Proxy object](https://developer.mozilla.org/en-US/d
 I'm going to provide an implementation for the `set()` handler in the proxy which is a trap for setting a property value. In there I'll define a new custom event called `pushrset` which will contain the data that has just been set on the array and then emit the event.
 
 So, to start with I'll create a new directory in my javascript folder called `pushr` and add a file called `index.js`.
+
+<% highlight code: "javascript" do %>
+export const pushr = (() => {
+  
+  const _pushrHandler = {
+    set: (target, prop, value) => {
+      if (prop !== "length") {
+        const pushEvent = new CustomEvent("pushrset", { detail: value })
+        window.dispatchEvent(pushEvent)
+      }
+      return Reflect.set(target, prop, value)
+    }
+  }
+
+  const init = () => {
+    window.pushr = new Proxy([], _pushrHandler)
+  }
+
+  return { init }
+})()
+<% end %>
+
+If I now import `pushr` into my main JS file and ensure I call `pushr.init()` before my other code then I will have the Proxy object available when I call `window.pushr` from the dev tools console. As it is also called before all of my other JavaScript, I can now make a test by inserting `window.pushr.push({ event: "test" })` anywhere in my other JavaScript files.
+
+## Listening for pushr
+
