@@ -187,4 +187,6 @@ export const dispatchers = (() => {
 
 Now, if you add `window.pushr.push({ event: "test" })` to somewhere in your code, as soon as that code is evaluated, you should get the `hello test dispatcher!` message in the console. If you give the event another name then you should see nothing. You will also get the `changed page!` on every page transition.
 
+It's worth noting that you may want to add some additional checks in your dispatcher code to prevent any malicious or excessive events being pushed through. Given that `window.pushr` is globally available then someone could potentially push to the array from the dev tools console for example or a piece of code could accidently rack up hundreds of events very quickly.
+
 Awesome, I now have a simple data layer to log events on my website. If you're interested, you can see how I'm using this for my performance metrics by [looking in my repo](https://github.com/knoxjeffrey/personal_website/tree/main/frontend/javascripts/pushr). In this case I'm batching up events in pushr so I can cut the number of Netlify function calls I'm making from 6 to 2.
