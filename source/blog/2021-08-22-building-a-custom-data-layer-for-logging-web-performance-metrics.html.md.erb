@@ -50,7 +50,7 @@ If I now import `pushr` into my main JS file and ensure I call `pushr.init()` be
 
 ## Listening for pushr
 
-Okay, that's great it's set up but it's not really doing anything useful as the moment. Next I'll create a file called `pushr_listeners`
+Okay, that's great it's set up but it's not really doing anything useful as the moment. Next I'll create a file called `pushr_listeners.js`
 
 <% highlight code: "javascript" do %>
 export const pushrListeners = (() => {
@@ -93,3 +93,95 @@ const init = () => {
 
 ## Dispatching pushr events
 
+Cool, now the required events are being listened to I want to handle those events by creating a dispatcher. Add a new folder at `pushr/dispatchers` and add a new file called `index.js`
+
+<% highlight code: "javascript" do %>
+export const dispatchers = (() => {
+  const pushrDispatchers = (pushrObject) => {
+  }
+
+  const turboDispatchers = () => {
+    window.pushr.length = 0
+  }
+
+  return {
+    pushrDispatchers,
+    turboDispatchers
+  }
+})()
+<% end %>
+
+So here I've added 2 dispatchers to handle the different events. I'm also clearing out the pushr proxy array so it starts fresh on each page transition. Be careful not to clear it like this `window.pushr = []` because otherwise you set the array back to a regular array and lose all the proxy behaviour.
+
+To hook this up to the listeners, change `pushr_listeners.js` like so
+
+<% highlight code: "javascript" do %>
+import { dispatchers } from "~/javascripts/pushr/dispatchers"
+
+...
+
+const _pushrsetListener = () => {
+  window.addEventListener("pushrset", event => {
+    dispatchers.pushrDispatchers(event.detail)
+  })
+}
+
+...
+
+const _turboListener = () => {
+  window.addEventListener("turbo:before-visit", () => {
+    dispatchers.turboDispatchers()
+  })
+}
+
+...
+<% end %>
+
+## Handle the first pushr event
+
+To check this all works, I'm going to create a test dispatcher that will handle any events with the name `test`.
+
+Add a new file to `pushr/dispatchers` called `test.js
+
+<% highlight code: "javascript" do %>
+export const rum = (() => {
+  const pushrDispatcher = (pushrObject) => {
+    if (pushrObject.event !== "test") return
+    
+    console.log("hello test dispatcher!")
+  }
+
+  const turboDispatcher = () => {
+    console.log("changed page!")
+  }
+
+  return {
+    pushrDispatcher,
+    turboDispatcher
+  }
+})()
+<% end %>
+
+and also change `pushr/dispatchers/index.js` like so
+
+<% highlight code: "javascript" do %>
+import { test } from "~/javascripts/pushr/dispatchers/test"
+
+export const dispatchers = (() => {
+  const pushrDispatchers = (pushrObject) => {
+    test.pushrDispatcher(pushrObject)
+  }
+
+  const turboDispatchers = () => {
+    test.turboDispatcher()
+    window.pushr.length = 0
+  }
+
+  return {
+    pushrDispatchers,
+    turboDispatchers
+  }
+})()
+<% end %>
+
+Now, if you add `window.pushr.push({ event: "test" })` to somewhere in your code, as soon as that code is evaluated, you should get the `hello test dispatcher!` message in the console. If you give the event another name then you should see nothing. You will also get the `changed page!` on every page transition.
