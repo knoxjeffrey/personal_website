@@ -27,7 +27,7 @@ So, to start with I'll create a new directory in my javascript folder called `pu
 
 <% highlight code: "javascript" do %>
 export const pushr = (() => {
-  
+
   const _pushrHandler = {
     set: (target, prop, value) => {
       if (prop !== "length") {
@@ -39,7 +39,7 @@ export const pushr = (() => {
   }
 
   const init = () => {
-    window.pushr = new Proxy([], _pushrHandler)
+    window.pushr = new Proxy(\[], _pushrHandler)
   }
 
   return { init }
@@ -49,4 +49,47 @@ export const pushr = (() => {
 If I now import `pushr` into my main JS file and ensure I call `pushr.init()` before my other code then I will have the Proxy object available when I call `window.pushr` from the dev tools console. As it is also called before all of my other JavaScript, I can now make a test by inserting `window.pushr.push({ event: "test" })` anywhere in my other JavaScript files.
 
 ## Listening for pushr
+
+Okay, that's great it's set up but it's not really doing anything useful as the moment. Next I'll create a file called `pushr_listeners`
+
+<% highlight code: "javascript" do %>
+export const pushrListeners = (() => {
+  const _pushrsetListener = () => {
+    window.addEventListener("pushrset", event => {
+    })
+  }
+
+  const _turboListener = () => {
+    window.addEventListener("turbo:before-visit", () => {
+    })
+  }
+
+  const init = () => {
+    _pushrsetListener()
+    _turboListener()
+  }
+
+  return { init }
+})()
+
+<% end %>
+
+You can see from the code that I have now created a listener for the `pushrset` event. In my case I'm also listening for `turbo:before-visit` because I am using [HOTWire's Turbo](https://turbo.hotwired.dev/) on my site so I want to listen for page transitions and potentially add behaviour for this as well to clear events out of my `pushr` queue.
+
+I then need to import this in my `index.js` file with
+
+<% highlight code: "javascript" do %>
+import { pushrListeners } from "~/javascripts/pushr/pushr_listeners"
+<% end %>
+
+and then alter the `init()` function
+
+<% highlight code: "javascript" do %>
+const init = () => {
+  pushrListeners.init()
+  window.pushr = new Proxy([], _pushrHandler)
+}
+<% end %>
+
+## Dispatching pushr events
 
