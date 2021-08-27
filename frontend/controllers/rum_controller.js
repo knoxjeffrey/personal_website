@@ -124,6 +124,7 @@ export default class extends Controller {
   reveal() {
     this.footerTarget.style.display = "none"
     this.metricsTarget.style.display = "block"
+    if (window.fathom) fathom.trackGoal("0YWFGYIZ", 0)
   }
 
   /** 
