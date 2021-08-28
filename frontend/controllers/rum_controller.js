@@ -163,7 +163,7 @@ export default class extends Controller {
       vitals_score
     }
     if (this.visitorIsBot(rumData.user_agent)) return
-    window.pushr.push({ event: "rum", data: rumData })
+    window.pushr.send({ event: "rum", data: rumData })
   }
 
   /** 

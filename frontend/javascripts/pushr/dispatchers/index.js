@@ -12,7 +12,6 @@ export const dispatchers = (() => {
 
   const turboDispatchers = () => {
     rum.turboDispatcher()
-    window.pushr.length = 0
   }
 
   return {
