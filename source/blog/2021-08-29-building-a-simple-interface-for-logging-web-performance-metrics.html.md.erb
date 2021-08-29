@@ -1,0 +1,140 @@
+---
+title: Building a simple interface for logging web performance metrics
+date: 2021-08-29 11:20
+tags:
+  - Software engineering
+  - Web performance
+  - JavaScript
+---
+I've started using [Perfume.js](https://zizzamia.github.io/perfume/) on this site to capture web performance metrics including [Core Web Vitals](https://web.dev/vitals/). As part of this, I wanted to create a flexible logging tool that would help me send this data to my [Supabase](https://supabase.io/) backend but also handle logging any other performance data in the future, and heck, handle anything I might want to log!
+
+<!--more-->
+
+Technologies I've used in the past for logging client side side events have included [Rollbar](https://rollbar.com/), the [Google Tag Manager data layer](https://support.google.com/tagmanager/answer/6164391?hl=en) and [Fathom Analytics](https://usefathom.com/). They all achieve the flexibility I'm looking for with a global interface to log from anywhere in the application and this seems most appropriate for my particular needs. Now I just need a catchy name... 
+
+## Pushr
+
+Pushr will have a single function through which events can be captured and handled on an individual basis, such as forwarding on performance events to Supabase in this case.
+
+So, to start with I'll create a new directory in my javascript folder called `pushr` and add a file called `index.js`.
+
+<% highlight code: "javascript" do %>
+export const pushr = (() => {
+  const _publicInterface = {
+    send: (pushrObject) => {
+    }
+  }
+
+  const _turboListener = () => {
+    window.addEventListener("turbo:before-visit", () => {
+    })
+  }
+
+  const init = () => {
+    _turboListener()
+    window.pushr = _publicInterface
+  }
+
+  return { init }
+})()
+<% end %>
+
+If I now import `pushr` into my main JS file and ensure I call `pushr.init()` before my other code then I will have the `window.pushr.send` function available from the dev tools console. As it is also called before all of my other JavaScript, I can now make a test by inserting `window.pushr.send({ event: "test" })` anywhere in my other JavaScript files, although it won't do much at the moment.
+
+You'll see that I'm also listening for `turbo:before-visit` because I am using [HOTWire's Turbo](https://turbo.hotwired.dev/) on my site so I want to listen for page transitions and potentially add behaviour for this.
+
+## Dispatching pushr events
+
+Cool, now the basics are setup, I want to handle the `send()` function and event listener by creating dispatchers. Add a new folder at `pushr/dispatchers` and add a new file called `index.js`
+
+<% highlight code: "javascript" do %>
+export const dispatchers = (() => {
+  const pushrDispatchers = (pushrObject) => {
+  }
+
+  const turboDispatchers = () => {
+  }
+
+  return {
+    pushrDispatchers,
+    turboDispatchers
+  }
+})()
+<% end %>
+
+So here I've added 2 dispatchers and these now need to be hooked up in `pushr/index.js` like so
+
+<% highlight code: "javascript" do %>
+import { dispatchers } from "~/javascripts/pushr/dispatchers"
+
+...
+
+const _publicInterface = {
+  send: (pushrObject) => {
+    dispatchers.pushrDispatchers(pushrObject)
+  }
+}
+
+const _turboListener = () => {
+  window.addEventListener("turbo:before-visit", () => {
+    dispatchers.turboDispatchers()
+  })
+}
+
+...
+<% end %>
+
+
+## Handle the first pushr event
+
+To check this all works, I'm going to create a test dispatcher that will handle any events with the name `test`.
+
+Add a new file to `pushr/dispatchers` called `test.js`
+
+<% highlight code: "javascript" do %>
+export const test = (() => {
+  const pushrDispatcher = (pushrObject) => {
+    if (pushrObject.event !== "test") return
+    
+    console.log("hello test dispatcher!")
+  }
+
+  const turboDispatcher = () => {
+    console.log("changed page!")
+  }
+
+  return {
+    pushrDispatcher,
+    turboDispatcher
+  }
+})()
+<% end %>
+
+and also change `pushr/dispatchers/index.js` like so
+
+<% highlight code: "javascript" do %>
+import { test } from "~/javascripts/pushr/dispatchers/test"
+
+export const dispatchers = (() => {
+  const pushrDispatchers = (pushrObject) => {
+    test.pushrDispatcher(pushrObject)
+  }
+
+  const turboDispatchers = () => {
+    test.turboDispatcher()
+  }
+
+  return {
+    pushrDispatchers,
+    turboDispatchers
+  }
+})()
+<% end %>
+
+Now, if you add `window.pushr.send({ event: "test" })` to somewhere in your code, as soon as that code is evaluated, you should get the `hello test dispatcher!` message in the console. If you give the event another name then you should see nothing as it has no handler. You will also get the `changed page!` on every page transition.
+
+It's worth noting that you may want to add some additional checks in your custom dispatcher code to prevent any malicious or excessive events being pushed through. Given that `pushr.send()` is globally available then someone could potentially use the `pushr.send()` function from the dev tools console for example or a piece of code could accidently rack up hundreds of events very quickly.
+
+I'd be interested to know what the likes of Rollbar, GTM, etc do to prevent this because I can easily trigger them from the console and potentially do it thousands of times if I was so inclined. In Rollbar for example it might rate limit the account for the application and prevent error reporting for a period of time on anything else happening in the application.
+
+Awesome, I now have a simple interface for logging events on my website. If you're interested, you can see how I'm using this for my performance metrics (and preventing excessive log events) by [looking in my repo](https://github.com/knoxjeffrey/personal_website/tree/main/frontend/javascripts/pushr). In this case I'm batching up events in pushr so I can cut the number of Netlify function calls I'm making from 6 to 2 and in turn cut the number of API calls to Supabase by the same amount.
