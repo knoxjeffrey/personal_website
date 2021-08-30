@@ -8,17 +8,16 @@ title: Jeff Knox CV
 <h2>Summary</h2>
 
 <p>
-  I've been a software engineer for over <%= ((Date.today - Date.new(2015, 8, 1))/365).floor %> years
-  and currently work for <%= link_to "FreeAgent", "https://www.freeagent.com/" %>. This role has
-  required a mix of technical and project management skills to collaborate with multiple departments
-  and deliver projects on time which have driven new business to FreeAgent.
+  I'm a senior software engineer with over <%= ((Date.today - Date.new(2015, 8, 1))/365).floor %> years
+  experience and currently work at <%= link_to "FreeAgent", "https://www.freeagent.com/" %> in the Front
+  End Architecture team. Prior to working with FreeAgent, I was Head of Development at a digital agency
+  called <%= link_to "Primate", "http://primate.co.uk/" %>.
 </p>
 
 <p>
-  Prior to working with FreeAgent I was Head of Development at
-  <%= link_to "Primate", "http://primate.co.uk/" %> where I worked with dozens of companies to help
-  them unlock their potential. Projects ranged from marketing sites, to applications interfacing with
-  large CMS' and CRMs, to MVPs for startups and large scale organisations.
+  I've used my technical and problem solving skills not only to deliver complex web applications but also
+  make improvements to web performance and build pipelines. Excellent communication skills have enabled me
+  to work closely with sales, marketing and engineering teams.
 </p>
 
 <p> 
@@ -31,7 +30,7 @@ title: Jeff Knox CV
 <p> 
   I sold the clinic in February 2015 but had been getting the bug for programming again one year prior
   to this. I knew this was the direction I wanted to take my career and enrolled in a bootcamp
-  specialising in Ruby and Ruby on Rails before finding freelance work and finally working with Primate.
+  specialising in Ruby and Ruby on Rails before finding freelance work and it's been upwards from there!
 </p>
 
 <hr />
@@ -42,35 +41,34 @@ title: Jeff Knox CV
   <%= alert text: "Apr 2021 - Present", type: :primary, html: { class: "margin-bottom--s" } %>
   <% card title: "Senior Software Engineer for FreeAgent" do %>
     Part of a small group of engineers setting up a new Front End Architecture team at FreeAgent. Our
-    initial responsibility is to document the existing legacy JavaScript throughout the application
-    and gradually port everything to a single, modern build pipeline. We favour progressively enhancing
-    the UI with JavaScript where needed and <%= link_to "ViewComponent", "https://viewcomponent.org/" %>
-    and <%= link_to "Stimulus", "https://stimulus.hotwired.dev/" %> are integral to our Architecture
-    strategy moving forward. Our long term aim is to implement systems that improve the lives of the
-    engineering teams working on the FreeAgent front-end, making adding and maintaining features a breeze.
-    These responsibilities will range from enabling teams to easily maintain npm package versions, keeping
-    the build pipeline fast, ease of using reusable code patterns and much, much more. 
+    initial responsibility is to gradually port legacy JavaScript to a single, modern build pipeline.
+
+    Our long term aim is to implement systems that improve the lives of the engineering teams working on 
+    the FreeAgent front-end, making adding and maintaining features a breeze. These responsibilities will
+    range from enabling teams to easily maintain npm package versions, keeping the build pipeline fast,
+    ease of using reusable code patterns and much, much more. 
   <% end %>
 
   <%= alert text: "Apr 2019 - Mar 2021", type: :primary, html: { class: "margin-bottom--s" } %>
   <% card title: "Software Engineer for FreeAgent" do %>
-    Joined the Marketing Platform team which has responsibility for the FreeAgent
-    <%= link_to "marketing site", "https://www.freeagent.com/" %> as well as supporting multiple
-    teams in the business. During my time I helped setup the PageSpeed Insights API in our Data Warehouse
-    for daily tracking of desktop and mobile scores and setup dashboards in Looker to help track the
-    effects of changes in our codebase. Additionally, I added Perfume.js to the website which pushed Core
-    Web Vitals measurements to our GA account for better oversight of Real User Metrics. I also made 
-    significant improvements in deploy times and helped lead the project to move the static website from
-    our self hosted infrastructure over to Netlify. This infrastructure has enabled our team to  work
-    closely with the Sales team to deliver personalised learning experiences for our accountancy
-    practices by using Netlify functions to gate sections of the static site, login using their FreeAgent
-    credentials and fetch data from Salesforce.
+    Joined the Marketing Platform team which has responsibility for the FreeAgent <%= link_to "marketing site", "https://www.freeagent.com/" %>
+    as well as supporting multiple teams throughout the business.
+
+    During my time, I helped setup the PageSpeed Insights API in our Data Warehouse to track the
+    performance effects of changes in our code base. I added Perfume.js to the website which pushed Core
+    Web Vitals measurements to our GA account for better oversight of Real User Metrics.
+
+    I made significant improvements in deploy times and helped lead the project to move the static
+    website from our self hosted infrastructure over to Netlify. This infrastructure enabled engineers to
+    work closely with the Sales team to deliver personalised learning experiences for our accountancy
+    practices and significantly increase engagement.
   <% end %>
 
   <%= alert text: "Aug 2018", type: :primary, html: { class: "margin-bottom--s" } %>
   <% card title: "Head of Development for Primate" do %>
-    Work with the Technical Director assisting other developers. Focus on performance, build internal
-    projects to expand the scope and budget of work we can take on. Sites with my involvement on
+    In addition to the development work from my previous roles within the company, I worked with the
+    Technical Director assisting other developers. On top of this, I started building internal projects to
+    expand the scope and budget of work we could take on. Sites with my involvement on
     backend and server work:
     <%= link_to "Book Week Scotland,", "https://bookweekscotlandevents.com/" %>
     <%= link_to "Light Up A Memory,", "https://www.lightupamemory.com/" %>
@@ -79,16 +77,16 @@ title: Jeff Knox CV
 
   <%= alert text: "Jul 2016", type: :primary, html: { class: "margin-bottom--s" } %>
   <% card title: "Senior Developer for Primate" do %>
-    More responsibility for the overall development of projects from the outset. Server management and
-    contribute to chef server deployment setup. Click on the following projects to find out more about
-    my involvement:
-    <%= link_to "Findr,", "/work/2016/10/24/findr/" %>
-    <%= link_to "The Bulba Handbook,", "/work/2016/11/18/the-bulba-handbook/" %>
-    <%= link_to "Harviestoun,", "/work/2017/04/03/harviestoun/" %>
-    <%= link_to "M3 Consultancy,", "/work/2017/06/07/M3-Consultancy/" %>
-    <%= link_to "e-testing,", "/work/2017/09/27/e-testing/" %>
-    <%= link_to "Distinction Armagnac,", "/work/2018/01/31/distinction-armagnac/" %>
-    <%= link_to "Children’s Hospices Across Scotland.", "/work/2017/11/01/childrens-hospices-across-scotland/" %>
+    I took on more responsibility for the overall development of projects from the outset. Assisting the
+    technical director with server management and reworking the Chef server deployment setup. Click on
+    the following projects to find out more about my involvement:
+    <%= link_to "Findr,", "/blog/findr/" %>
+    <%= link_to "The Bulba Handbook,", "/blog/the-bulba-handbook/" %>
+    <%= link_to "Harviestoun,", "/blog/harviestoun/" %>
+    <%= link_to "M3 Consultancy,", "/blog/m3-consultancy/" %>
+    <%= link_to "e-testing,", "/blog/e-testing/" %>
+    <%= link_to "Distinction Armagnac,", "/blog/distinction-armagnac/" %>
+    <%= link_to "Children’s Hospices Across Scotland.", "/blog/childrens-hospices-across-scotland/" %>
     Other projects where I did the majority of backend work:
     <%= link_to "Draper Esprit,", "https://draperesprit.com/" %>
     <%= link_to "Edinburgh Centre for Carbon Innovation,", "https://edinburghcentre.org/" %>
@@ -101,10 +99,10 @@ title: Jeff Knox CV
     Having worked as a freelancer, I was taken on full time primarily as a Rails developer but also had 
     the chance to work on front end and Wordpress. Click on the following projects to find out more
     about my involvement:
-    <%= link_to "Cruise Loch Ness,", "/work/2016/02/10/cruise-loch-ness/" %>
-    <%= link_to "Craneware Careers,", "/work/2016/02/12/craneware-careers/" %>
-    <%= link_to "Float Blog,", "/work/2015/12/02/float-blog/" %>
-    <%= link_to "Student Accommodation UHI.", "/work/2016/04/14/student-accommodation-uhi/" %>
+    <%= link_to "Cruise Loch Ness,", "/blog/cruise-loch-ness/" %>
+    <%= link_to "Craneware Careers,", "/blog/craneware-careers/" %>
+    <%= link_to "Float Blog,", "/blog/float-blog/" %>
+    <%= link_to "Student Accommodation UHI.", "/blog/student-accommodation-uhi/" %>
   <% end %>
 
   <%= alert text: "Oct 2015", type: :primary, html: { class: "margin-bottom--s" } %>
