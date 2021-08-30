@@ -3,19 +3,15 @@
  * @description All push and turbo dispatchers are added here
  */
 
-import { rum } from "~/javascripts/pushr/dispatchers/rum"
+import { pushrDispatcher, leavePageDispatcher } from "~/javascripts/pushr/dispatchers/rum"
 
-export const dispatchers = (() => {
-  const pushrDispatchers = (pushrObject) => {
-    rum.pushrDispatcher(pushrObject)
-  }
+export const pushrDispatchers = (pushrObject) => {
+  pushrDispatcher(pushrObject)
+}
 
-  const turboDispatchers = () => {
-    rum.turboDispatcher()
-  }
-
-  return {
-    pushrDispatchers,
-    turboDispatchers
-  }
-})()
+export const eventListenerDispatchers = () => {
+  window.addEventListener("turbo:before-visit", () => leavePageDispatcher())
+  window.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") leavePageDispatcher()
+  })
+}
