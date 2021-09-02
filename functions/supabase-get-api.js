@@ -18,17 +18,18 @@ export async function handler(event, _context) {
     year = parseInt(year)
     month = parseInt(month)
 
-    const ltYear = month === "12" ? year + 1 : year
-    const ltMonth = month === "12" ? 1 : month + 1
+    const ltYear = month === 12 ? year + 1 : year
+    const ltMonth = month === 12 ? 1 : month + 1
 
-    const gte = `${year}-0${month}-01T00:00:00+00:00`
-    const lt = `${ltYear}-0${ltMonth}-01T00:00:00+00:00`
-
+    const gte = `${year}-${String(month).padStart(2, "0")}-01T00:00:00+00:00`
+    const lt = `${ltYear}-${String(ltMonth).padStart(2, "0")}-01T00:00:00+00:00`
+    
     const { data, error } = await supabase
       .from("netlify_deploy_data")
       .select()
       .gte("created_at", gte)
       .lt("created_at", lt)
+
     if (error) return { statusCode: 500, body: `An error occurred: ${JSON.stringify(error)}` }
 
     return { statusCode: 200, body: JSON.stringify(data) }

@@ -277,6 +277,7 @@ export default class LineChart {
    * @memberof javascripts.dashboard.LineChart
    **/
   onMouseMove = event => {
+    if(this.store.selectedContextData[0].build_number === 0) return
     const closestDataset = this.closestDataPoint(event)
 
     const closestXValue = this.dv.xAccessor(closestDataset)
@@ -326,6 +327,8 @@ export default class LineChart {
    * @memberof javascripts.dashboard.LineChart
    **/
   onClick = event => {
+    if(this.store.selectedContextData[0].build_number === 0) return
+    
     const deployId = this.dv.deployIdAccessor(this.closestDataPoint(event))
     window.open(
       `https://app.netlify.com/sites/jeffreyknox/deploys/${deployId}`, '_blank'
