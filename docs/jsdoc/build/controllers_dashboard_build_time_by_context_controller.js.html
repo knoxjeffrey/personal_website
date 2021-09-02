@@ -96,12 +96,15 @@ export default class extends Controller {
 
   /** 
    * Get the data for the selected context. Also set the build number to be used on the x axis.
+   * If there are no builds for the context then return a dummy object in an array.
    * 
    * @instance
    * @memberof Dashboard.BuildTimeByContextController
    **/
   selectContextData(context) {
     const contextData =  this.store().selectedNetlifyBuildData.filter(data => data.context === context)
+
+    if(contextData.length === 0) return [{ deploy_time: 0, build_number: 0 }]
     return contextData.map((data, index) => Object.assign(data, { build_number: index + 1 }))
   }
 
