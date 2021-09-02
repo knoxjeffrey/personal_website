@@ -271,15 +271,15 @@ export default class LineChart {
   }
 
   /** 
-   *  Calculate which data point is selected on mouseover
+   *  Calculate which data point is selected on mouseover. Prevent when no builds present.
    *
    * @instance
    * @memberof javascripts.dashboard.LineChart
    **/
   onMouseMove = event => {
     if(this.store.selectedContextData[0].build_number === 0) return
+    
     const closestDataset = this.closestDataPoint(event)
-
     const closestXValue = this.dv.xAccessor(closestDataset)
     const closestYValue = this.dv.yAccessor(closestDataset)
 
@@ -321,7 +321,7 @@ export default class LineChart {
   }
 
   /** 
-   *  Open Netlify build logs for selected build
+   *  Open Netlify build logs for selected build. Prevent clicks when no builds present
    *
    * @instance
    * @memberof javascripts.dashboard.LineChart
