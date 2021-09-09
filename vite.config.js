@@ -5,6 +5,7 @@ import RubyPlugin from "vite-plugin-ruby"
 
 export default defineConfig({
   build: {
+    assetsInlineLimit: 12288,
     brotliSize: false,
     emptyOutDir: true,
     minify: "esbuild",
