@@ -37,6 +37,7 @@ module AssetTagHelpers
 
   def vite_inline_css(name)
     asset_path = vite_asset_path(name, type: :stylesheet)
-    "<style type='text/css'>#{File.read(asset_path)}</style>"
+    altered_path = "build#{asset_path}"
+    "<style type='text/css'>#{File.read(altered_path)}</style>"
   end
 end
