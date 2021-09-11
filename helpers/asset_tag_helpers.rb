@@ -58,11 +58,11 @@ module AssetTagHelpers
       rel: "preload",
       as: "style",
       "data-turbo-track": "reload",
-      onload: "this.onload=null;this.rel='stylesheet'"
+      onload: "this.onload=null;this.insertAdjacentHTML('afterend', '#{vite_stylesheet_tag(asset_name)}')"
     )
   end
 
   def noscript(asset_name)
-    "<noscript>#{vite_stylesheet_tag asset_name}</noscript>"
+    "<noscript>#{vite_stylesheet_tag asset_name, "data-turbo-track": "reload"}</noscript>"
   end
 end
