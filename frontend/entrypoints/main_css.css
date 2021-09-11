@@ -3,3 +3,7 @@
 
 @import "~/stylesheets/contact";
 @import "~/stylesheets/utilities";
+
+.container:not(:first-child) {
+  display: block;
+}

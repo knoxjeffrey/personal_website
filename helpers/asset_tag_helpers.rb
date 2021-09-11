@@ -34,4 +34,35 @@ module AssetTagHelpers
       super(*args)
     end
   end
+
+  def vite_inline_css(asset_name)
+    return build_inline_css(asset_name) if @app.build?
+    vite_stylesheet_tag asset_name, "data-turbo-track": "reload"
+  end
+
+  def vite_async_css(asset_name)
+    "#{preload(asset_name)}\n#{noscript(asset_name)}"
+  end
+
+  private
+
+  def build_inline_css(asset_name)
+    asset_path = vite_asset_path(asset_name, type: :stylesheet)
+    altered_path = "build#{asset_path}"
+    "<style type='text/css'>#{File.read(altered_path)}</style>"
+  end
+
+  def preload(asset_name)
+    vite_stylesheet_tag(
+      asset_name,
+      rel: "preload",
+      as: "style",
+      "data-turbo-track": "reload",
+      onload: "this.onload=null;this.insertAdjacentHTML('afterend', '#{vite_stylesheet_tag(asset_name)}')"
+    )
+  end
+
+  def noscript(asset_name)
+    "<noscript>#{vite_stylesheet_tag asset_name, "data-turbo-track": "reload"}</noscript>"
+  end
 end

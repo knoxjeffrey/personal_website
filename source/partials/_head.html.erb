@@ -14,8 +14,9 @@
   <title><%= current_page.data.title || "Jeff Knox" %></title>
   <meta name="description" content="<%= current_page.data.description || 'Jeff Knox personal website' %>">
   <%= vite_client_tag %>
-  <%= vite_stylesheet_tag "main_css", "data-turbo-track": "reload" %>
-  <%= vite_stylesheet_tag "components_css", "data-turbo-track": "reload" %>
+  <%= vite_inline_css "early_paint_css" %>
+  <%= vite_async_css "main_css" %>
+  <%= vite_async_css "components_css" %>
   <%= yield_content :page_head_css %>
   <%= vite_javascript_tag "main", "data-turbo-track": "reload", defer: true %>
   <%= vite_javascript_tag "components", "data-turbo-track": "reload", defer: true %>
