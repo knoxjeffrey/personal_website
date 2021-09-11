@@ -35,8 +35,15 @@ module AssetTagHelpers
     end
   end
 
-  def vite_inline_css(name)
-    asset_path = vite_asset_path(name, type: :stylesheet)
+  def vite_inline_css(asset_name)
+    return build_inline_css(asset_name) if @app.build?
+    vite_stylesheet_tag asset_name, "data-turbo-track": "reload"
+  end
+
+  private
+
+  def build_inline_css(asset_name)
+    asset_path = vite_asset_path(asset_name, type: :stylesheet)
     altered_path = "build#{asset_path}"
     "<style type='text/css'>#{File.read(altered_path)}</style>"
   end

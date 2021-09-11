@@ -1,74 +1,3 @@
-:root {
-  --global-font-size: 15px;
-  --global-line-height: 1.4em;
-  --global-space: 10px;
-  --font-stack: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
-  --mono-font-stack: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
-  --background-color: #222225;
-  --page-width: 60em;
-  --font-color: #e8e9ed;
-  --invert-font-color: #222225;
-  --primary-color: #62c4ff;
-  --primary-dark-color: #4992bf;
-  --secondary-color: #a3abba;
-  --tertiary-color: #a3abba;
-  --error-color: #ff3c74;
-  --error-dark-color: #bf2e57;
-  --progress-bar-background: #3f3f44;
-  --progress-bar-fill: #62c4ff;
-  --code-bg-color: #3f3f44;
-  --highlight-color: #fad297;
-  --success-color: #19B383;
-  --input-style: solid;
-  --display-h1-decoration: none;
-}
-
-* {
-  box-sizing: border-box;
-  text-rendering: geometricPrecision;
-}
-
-*::-moz-selection {
-  background: var(--primary-color);
-  color: var(--invert-font-color);
-}
-
-*::selection {
-  background: var(--primary-color);
-  color: var(--invert-font-color);
-}
-
-body {
-  font-size: var(--global-font-size);
-  color: var(--font-color);
-  line-height: var(--global-line-height);
-  margin: 0;
-  font-family: var(--font-stack);
-  word-wrap: break-word;
-  background-color: var(--background-color);
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-.logo {
-  line-height: var(--global-line-height);
-}
-
-a {
-  cursor: pointer;
-  color: var(--primary-color);
-  text-decoration: none;
-}
-
-a:hover {
-  background-color: var(--primary-color);
-  color: var(--invert-font-color);
-}
-
 em {
   font-size: var(--global-font-size);
   font-style: italic;
@@ -83,59 +12,12 @@ strong {
   line-height: var(--global-line-height);
 }
 
-blockquote,
-code,
-footer,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-header,
-li,
-ol,
-p,
-section,
-ul,
-.logo {
-  float: none;
-  margin: 0;
-  padding: 0;
-}
-
-blockquote,
-h1,
-ol,
-p,
-ul,
-.logo {
-  margin-top: calc(var(--global-space) * 2);
-  margin-bottom: calc(var(--global-space) * 2);
-}
-
-h1,
-.logo {
-  position: relative;
-  display: inline-block;
-  display: table-cell;
-  padding: calc(var(--global-space) * 2) 0 calc(var(--global-space) * 2);
-  margin: 0;
-  overflow: hidden;
-  font-weight: 600;
-}
-
 h1::after {
   content: "====================================================================================================";
   position: absolute;
   bottom: 5px;
   left: 0;
   display: var(--display-h1-decoration);
-}
-
-h1 + *,
-.logo + * {
-  margin-top: 0;
 }
 
 h2,
@@ -165,57 +47,8 @@ blockquote::after {
   color: #9ca2ab;
 }
 
-.terminal blockquote,
-.terminal code,
-.terminal h1,
-.terminal h2,
-.terminal h3,
-.terminal h4,
-.terminal h5,
-.terminal h6,
-.terminal strong,
-.terminal .logo {
-  font-size: var(--global-font-size);
-  font-style: normal;
-  font-family: var(--font-stack);
-  color: var(--font-color);
-}
-
-.terminal h1,
-.terminal .logo {
-  font-size: calc(var(--global-font-size) * 1.15);
-}
-
 .terminal h2 {
   font-size: calc(var(--global-font-size) * 1.1);
-}
-
-@-webkit-keyframes cursor {
-  0% {
-    opacity: 0;
-  }
-
-  50% {
-    opacity: 1;
-  }
-
-  to {
-    opacity: 0;
-  }
-}
-
-@keyframes cursor {
-  0% {
-    opacity: 0;
-  }
-
-  50% {
-    opacity: 1;
-  }
-
-  to {
-    opacity: 0;
-  }
 }
 
 li,
@@ -278,16 +111,6 @@ h1 + hr {
 p {
   margin: 0 0 var(--global-line-height);
   color: var(--global-font-color);
-}
-
-.container {
-  max-width: var(--page-width);
-}
-
-.container,
-.container-fluid {
-  margin: 0 auto;
-  padding: 0 calc(var(--global-space) * 2);
 }
 
 img {
