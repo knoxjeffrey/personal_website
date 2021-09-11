@@ -1,5 +1,5 @@
 <% content_for :page_head_css do %>
-  <%= vite_stylesheet_tag "game_css", "data-turbo-track": "reload" %>
+  <%= vite_async_css "game_css" %>
 <% end %>
 
 <% content_for :page_head_js do %>

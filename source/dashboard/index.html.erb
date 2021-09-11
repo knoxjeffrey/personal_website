@@ -77,5 +77,5 @@ title: Netlify Build Data
   </div>
 </section>
 
-<%= vite_stylesheet_tag "data_viz_css", "data-turbo-track": "reload" %>
+<%= vite_async_css "data_viz_css" %>
 <%= vite_javascript_tag "dashboard", "data-turbo-track": "reload", defer: true %>
