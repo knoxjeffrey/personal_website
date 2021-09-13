@@ -77,7 +77,7 @@ One final very important piece of CSS I had to add to the end of that file was
   }
 <% end %>
 
-Again, this is very much going to vary depending on the structure of you site. In my case the body of the HTML looks roughly as follows
+Again, this is very much going to vary depending on the structure of you site. In my case, the body of the HTML looks roughly as follows
 
 <% highlight code: "html" do %>
   <body>
@@ -86,4 +86,14 @@ Again, this is very much going to vary depending on the structure of you site. I
   </body>
 <% end %>
 
-with the first div being the nav component. Therefore any container classes that come after this should not be displayed.
+with the first div being the nav component. Therefore any container classes that come after this should not be displayed. If you don't do this then you're going to get a flash of unstyled content (FOUC) which looks pretty janky. The easiest way to then show this content again is to add the following to the main CSS file which is loaded in asynchronously
+
+<% highlight code: "css" do %>
+  .container:not(:first-child) {
+    display: block;
+  }
+<% end %>
+
+Because at this point you have the majority of the missing styles needed then it's safe to now display the content.
+
+One thing I should mention is that using `display: none;` seems to be a safer bet than using `visibility: hidden;`. This is how I had originally implemented a similar solution at my work and it worked really well with the Core Web Vitals scoring but then we suddenly started seeing lots of poor scoring for Cumulative Layout Shift (CLS). I was a bit stumped by the change and only after quite a bit of experimenting did I discover that shifting to `display: none;` fixed it. Therefore had been no visible shifting on the screen and to the user the 2 solutions looked exactly the same but the algorithm for CLS must be picking up on the shifts even though they are hidden.
