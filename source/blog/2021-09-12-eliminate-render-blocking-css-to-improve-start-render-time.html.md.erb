@@ -14,8 +14,16 @@ The best place to begin is with a sample run of my homepage on [WebPageTest](htt
 
 From this you can see that there are 2 render blocking CSS assets, marked by white x's on an orange background to the left of the asset name. This means that there will be absolutely nothing on the screen until those assets have finished being downloaded and parsed. You may also notice that, even with this done, there is still a period of time before start render occurs which is represented with the final vertical green lime. Just before this, there is an intensive block of purple in the browser main thread which is taken up with layout and paint.
 
-You can see the effects of this in the following filmstrip
+You can see the effects of this in the following filmstrip.
 
 ![](webpagetest_screenshot.jpg)
 
-with the screen being totally blank until 1.7s, at which point there is a fully rendered view.
+The screen is totally blank until 1.7s, at which point there is a fully rendered view. Not a very progressive load I'm sure you'll agree!
+
+## The ideal solution
+
+My preference was to have at least something on the screen very soon after the page content has been fetched at around 1s. Creating this impression in the users mind that at least something is happening is very important to keep the user hanging around. Too much time with a blank screen and they'll quickly abandon the visit and move onto something else.
+
+Therefore, my plan was to have the background colour visible as well as the navigation component at the top of the screen before finally displaying the rest of the content.
+
+In order to make this happen, I needed to alter my CSS so that I inlined the portion of CSS required for the background plus navigation and then load the rest of the CSS asynchronously.
