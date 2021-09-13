@@ -8,12 +8,14 @@ Although this website scores a perfect 100 in [PageSpeed Insights](https://devel
 
 <!--more-->
 
-The best place to start is with a sample run of my homepage on [WebPageTest](https://www.webpagetest.org/) on an Emulated Motorola G (gen 4) device using a Chrome browser with a 3G fast connection.
+The best place to begin is with a sample run of my homepage on [WebPageTest](https://www.webpagetest.org/) on an Emulated Motorola G (gen 4) device using a Chrome browser with a 3G fast connection.
 
 ![](webpagetest.jpg)
 
-From this you can see that there are 2 render blocking CSS assets. This means that there will be absolutely nothing on the screen until those assets have finished being downloaded and parsed. You may also notice that, even with this done, there is still a period of time before start render occurs which is represented with the final vertical green time. Just before this, there is an intensive block of purple in the browser main thread which is taken up with layout and paint.
+From this you can see that there are 2 render blocking CSS assets, marked by white x's on an orange background to the left of the asset name. This means that there will be absolutely nothing on the screen until those assets have finished being downloaded and parsed. You may also notice that, even with this done, there is still a period of time before start render occurs which is represented with the final vertical green lime. Just before this, there is an intensive block of purple in the browser main thread which is taken up with layout and paint.
 
 You can see the effects of this in the following filmstrip
 
 ![](webpagetest_screenshot.jpg)
+
+with the screen being totally blank until 1.7s, at which point there is a fully rendered view.
