@@ -26,4 +26,10 @@ My preference was to have at least something on the screen very soon after the p
 
 Therefore, my plan was to have the background colour visible as well as the navigation component at the top of the screen before finally displaying the rest of the content.
 
-In order to make this happen, I needed to alter my CSS so that I inlined the portion of CSS required for the background plus navigation and then load the rest of the CSS asynchronously.
+In order to make this happen, I needed to alter my CSS so that I inlined the portion of CSS required for the background and navigation and then load the rest of the CSS asynchronously. Having a minimal area of the screen rendering straight away meant that I wouldn't have to inline too much CSS. It's a bit of a balancing act but I try to keep at 5kb's worth or under (this value is the total before any compression with gzip or brotli) of inlined CSS. You'll take the pain of downloading that inlined CSS on every page load because it can't be cached with the rest of your assets so it's best to keep it as minimal as possible.
+
+## My approach
+
+I fired up my dev server and loaded up the home page. Next, I open the Chrome Dev tools and navigate to the Network tab. Finally, I right click on each of my CSS files and choose to block the request URL. Then when I reload the page I have a totally unstyled page and this makes it easy to then start adding the inlined styles to get to a point where I only added the bare minimum to achieve the initial load I was after.
+
+The next part is going to vary depending on your asset bundling setup but I'll show what I did and hopefully that will give you some pointers. I use [Vite](https://vitejs.dev/) under the hood but with my site being Ruby based I used [Vite Ruby](https://vite-ruby.netlify.app/) to add some additional helper methods. If you like, you can read more about this setup [here](/blog/dropping-webpack-for-vite-part-2/).
