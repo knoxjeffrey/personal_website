@@ -4,6 +4,16 @@ date: 2021-09-12 10:27
 tags:
   - Web performance
 ---
-This website scores a perfect 100 in [PageSpeed Insights](https://developers.google.com/speed/pagespeed/insights) but that doesn't mean things can't be improved. First time visitors on slower connections used to see nothing for over 1.6s before finally seeing a fully rendered view. I'd like to explain how I rendered the view more progressively with inline and async CSS to improve start render time by 0.5s.
+Although this website scores a perfect 100 in [PageSpeed Insights](https://developers.google.com/speed/pagespeed/insights), that doesn't mean things can't be improved. First time visitors on slower connections used to see nothing for over 1.6s before finally seeing a fully rendered view. I'd like to explain how I rendered the view more progressively with inline and async CSS to improve start render time by 0.5s.
 
 <!--more-->
+
+The best place to start is with a sample run on my homepage on [WebPageTest](https://www.webpagetest.org/)
+
+![](webpagetest.jpg)
+
+From this you can see that there are 2 render blocking CSS assets. This means that there will be absolutely nothing on the screen until those assets have finished being downloaded and parsed. You may also notice that, even with this done, there is still a period of time before start render occurs which is represented with the final vertical green time. Just before this, there is an intensive block of purple in the browser main thread which is taken up with layout and paint.
+
+You can see the effects of this in the following filmstrip
+
+![](webpagetest_screenshot.jpg)
