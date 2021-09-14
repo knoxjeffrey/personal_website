@@ -40,13 +40,13 @@ Usually I would call my CSS files in the head with the following helper method a
   vite_stylesheet_tag early_paint_css, "data-turbo-track": "reload"
 <% end %>
 
-but instead I change the method call to
+but instead I changed the method call to
 
 <% highlight code: "ruby" do %>
   vite_inline_css "early_paint_css"
 <% end %>
 
-and then add this `vite_inline_css` method to my helpers.
+and then added this `vite_inline_css` method to my helpers.
 
 <% highlight code: "ruby" do %>
   def vite_inline_css(asset_name)
@@ -77,17 +77,18 @@ One final very important piece of CSS I had to add to the end of that file was
   }
 <% end %>
 
-Again, this is very much going to vary depending on the structure of you site. In my case, the body of the HTML looks roughly as follows
+Again, this is very much going to vary depending on the structure of your site. In my case, the body of the HTML looks roughly as follows
 
 <% highlight code: "html" do %>
 
   <body>
     <div class="container"></div>
     <div class="container"></div>
+    ...
   </body>
 <% end %>
 
-with the first div being the nav component. Therefore any container classes that come after this should not be displayed. If you don't do this then you're going to get a flash of unstyled content (FOUC) which looks pretty janky. The easiest way to then show this content again is to add the following to the main CSS file which is loaded in asynchronously
+with the first div being the nav component. Therefore any container classes that come after this should not be displayed initially. If you don't do this then you're going to get a flash of unstyled content (FOUC) which looks pretty janky. The easiest way to then show this content again is to add the following to the main CSS file which is loaded in asynchronously
 
 <% highlight code: "css" do %>
   .container:not(:first-child) {
@@ -97,7 +98,7 @@ with the first div being the nav component. Therefore any container classes that
 
 At the point this is loaded, you have the majority of the styles required for a stable view without any noticeable FOUC.
 
-One thing I should mention is that using `display: none;` seems to be a safer bet than using `visibility: hidden;`. This is how I had originally implemented a similar solution at my work and it worked really well with the Core Web Vitals scoring but then we suddenly started seeing lots of poor scoring for Cumulative Layout Shift (CLS). I was a bit stumped by the change and only after quite a bit of experimenting did I discover that shifting to `display: none;` fixed it. Therefore had been no visible shifting on the screen and to the user the 2 solutions looked exactly the same but the algorithm for CLS must have changed to start picking up on the shifts with visibility set to hidden.
+One thing I should mention is that using `display: none;` seems to be a safer bet than using `visibility: hidden;`. This is how I had originally implemented a similar solution at my work and it worked really well with the Core Web Vitals scoring but then months later we suddenly started seeing lots of poor scoring for Cumulative Layout Shift (CLS). I was a bit stumped by the change and only after quite a bit of experimenting did I discover that shifting to `display: none;` fixed it. There had been no visible shifting on the screen and to the user the 2 solutions looked exactly the same but the algorithm for CLS must have changed to start picking up on the shifts with visibility set to hidden.
 
 ## Asynchronously loaded CSS
 
@@ -151,4 +152,8 @@ As you can see, the render blocking assets are no longer an issue and the start 
 
 ![](webpagetest_screenshot_after.jpg)
 
-and you can see that I now have some content rendering on the page a rather impressive 0.6s earlier making for a more progressive and satisfying page load.
+and you can see that I now have some content rendering on the page a rather impressive 0.6s earlier making for a much more progressive and satisfying page load.
+
+On larger sites this can take more time to implement but I feel the results are certainly worth it and hopefully you'll see more users sticking around to read your awesome content!
+
+Please let me know if you've done something similar, or if you have any questions at all about this article. I always love to hear how others are improving the performance of their sites.
