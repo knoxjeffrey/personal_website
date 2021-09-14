@@ -94,6 +94,6 @@ with the first div being the nav component. Therefore any container classes that
   }
 <% end %>
 
-Because at this point you have the majority of the missing styles needed then it's safe to now display the content.
+At the point this is loaded, you have the majority of the styles required for a stable view without any noticeable FOUC.
 
 One thing I should mention is that using `display: none;` seems to be a safer bet than using `visibility: hidden;`. This is how I had originally implemented a similar solution at my work and it worked really well with the Core Web Vitals scoring but then we suddenly started seeing lots of poor scoring for Cumulative Layout Shift (CLS). I was a bit stumped by the change and only after quite a bit of experimenting did I discover that shifting to `display: none;` fixed it. Therefore had been no visible shifting on the screen and to the user the 2 solutions looked exactly the same but the algorithm for CLS must have changed to start picking up on the shifts with visibility set to hidden.
