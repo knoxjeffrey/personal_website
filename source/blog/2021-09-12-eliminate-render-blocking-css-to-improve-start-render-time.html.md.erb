@@ -101,3 +101,39 @@ One thing I should mention is that using `display: none;` seems to be a safer be
 ## Asynchronously loaded CSS
 
 If you're following along, you will likely notice that things don't look very different and nothing is rendered until the CSS files have loaded in. The final piece of the puzzle is to load these files async.
+
+Loading CSS asynchronously isn't quite so simple as loading JavaScript asynchronously but here is an excellent article from the [Filament Group](https://www.filamentgroup.com/lab/load-css-simpler/) that explains how to do it.
+
+Like before, I changed my use of `vite_stylesheet_tag` to instead use my own helper.
+
+<% highlight code: "ruby" do %>
+  vite_async_css "main_css"
+<% end %>
+
+and the helper code looks as follows
+
+<% highlight code: "ruby" do %>
+  def vite_async_css(asset_name)
+    "#{preload(asset_name)}\n#{noscript(asset_name)}"
+  end
+
+  ...
+
+  private
+
+  def preload(asset_name)
+    vite_stylesheet_tag(
+      asset_name,
+      rel: "preload",
+      as: "style",
+      "data-turbo-track": "reload",
+      onload: "this.onload=null;this.insertAdjacentHTML('afterend', '#{vite_stylesheet_tag(asset_name)}')"
+    )
+  end
+
+  def noscript(asset_name)
+    "<noscript>#{vite_stylesheet_tag asset_name, "data-turbo-track": "reload"}</noscript>"
+  end
+<% end %>
+
+I had to alter the `onload` implementation because I'm using [HOTWire Turbo](https://turbo.hotwired.dev/) to handle my page transitions. For those that haven't used this before
