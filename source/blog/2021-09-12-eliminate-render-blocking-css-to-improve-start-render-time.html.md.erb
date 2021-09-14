@@ -12,7 +12,7 @@ The best place to begin is with a sample run of my homepage on [WebPageTest](htt
 
 ![](webpagetest.jpg)
 
-From this you can see that there are 2 render blocking CSS assets, marked by white x's on an orange background to the left of the asset name. This means that there will be absolutely nothing on the screen until those assets have finished being downloaded and parsed. You may also notice that, even with this done, there is still a period of time before start render occurs which is represented with the final vertical green lime. Just before this, there is an intensive block of purple in the browser main thread which is taken up with layout and paint.
+From this you can see that there are 2 render blocking CSS assets, marked by white x's on an orange background to the left of the asset name. This means that there will be absolutely nothing on the screen until those assets have finished being downloaded and parsed. You may also notice that, even with this done, there is still a period of time before start render occurs which is represented with the final vertical green line. Just before this, there is an intensive block of purple in the browser main thread which is taken up with layout and paint.
 
 You can see the effects of this in the following filmstrip.
 
@@ -30,7 +30,7 @@ In order to make this happen, I needed to alter my CSS so that I inlined the por
 
 ## My approach
 
-I fired up my dev server and loaded up the home page. Next, I open the Chrome Dev tools and navigate to the Network tab. Finally, I right click on each of my CSS files and choose to block the request URL. Then when I reload the page I have a totally unstyled page and this makes it easy to then start adding the inlined styles to get to a point where I only added the bare minimum to achieve the initial load I was after.
+I fired up my dev server and loaded the home page. Next, I open the Chrome Dev tools and navigate to the Network tab. Finally, I right click on each of my CSS files and choose to block the request URL. Then when I reload the page I have a totally unstyled page and this makes it easy to then start adding the inlined styles to get to a point where I only added the bare minimum to achieve the initial load I was after.
 
 The next part is going to vary depending on your asset bundling setup but I'll show what I did and hopefully that will give you some pointers. I use [Vite](https://vitejs.dev/) under the hood but with my site being Ruby based I used [Vite Ruby](https://vite-ruby.netlify.app/) to add some additional helper methods. If you like, you can read more about this setup [here](/blog/dropping-webpack-for-vite-part-2/).
 
