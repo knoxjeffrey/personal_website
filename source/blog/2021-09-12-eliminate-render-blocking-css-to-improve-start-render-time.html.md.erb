@@ -53,7 +53,7 @@ and then add this `vite_inline_css` method to my helpers.
     return build_inline_css(asset_name) if @app.build?
     vite_stylesheet_tag asset_name, "data-turbo-track": "reload"
   end
-  
+
   ...
 
   private
@@ -80,6 +80,7 @@ One final very important piece of CSS I had to add to the end of that file was
 Again, this is very much going to vary depending on the structure of you site. In my case, the body of the HTML looks roughly as follows
 
 <% highlight code: "html" do %>
+
   <body>
     <div class="container"></div>
     <div class="container"></div>
@@ -104,13 +105,13 @@ If you're following along, you will likely notice that things don't look very di
 
 Loading CSS asynchronously isn't quite so simple as loading JavaScript asynchronously but here is an excellent article from the [Filament Group](https://www.filamentgroup.com/lab/load-css-simpler/) that explains how to do it.
 
-Like before, I changed my use of `vite_stylesheet_tag` to instead use my own helper.
+Like before, I changed my use of `vite_stylesheet_tag` to instead use my own helper method.
 
 <% highlight code: "ruby" do %>
   vite_async_css "main_css"
 <% end %>
 
-and the helper code looks as follows
+and the helper code implementation looks as follows
 
 <% highlight code: "ruby" do %>
   def vite_async_css(asset_name)
@@ -136,6 +137,18 @@ and the helper code looks as follows
   end
 <% end %>
 
-I had to alter the `onload` implementation because I'm using [HOTWire Turbo Drive](https://turbo.hotwired.dev/) for speedier page transitions which doesn't need full page reloads. For those that haven't used this before, check out the link to read more about it.
+I had to alter the `onload` implementation because I'm using [HOTWire Turbo Drive](https://turbo.hotwired.dev/) for speedier page transitions by not requiring full page reloads. For those that haven't used this before, check out the link to read more about it.
 
-If I kept the implementation as it was in the Filament Group demo, then the change of the `media` key from `print` to `all` means that Turbo thinks the `link` tag has been altered and then always does a full page reload on page transitions. I could stop this from happening by removing the `"data-turbo-track": "reload"` from the link but this could cause some breaking change. This data attribute helps when I've pushed changed to my assets. If the user has loaded a page with one finger printed version of the assets, then before they move to a new page I have pushed a code change to my assets and then they visit a new page, Turbo Drive will recognise that the finger printing is different and force a full reload. 
+If I kept the implementation as it was in the Filament Group demo, then the change of the `media` key from `print` to `all` means that Turbo thinks the `link` tag has been altered and then always does a full page reload on page transitions. I could stop this from happening by removing the `"data-turbo-track": "reload"` from the link but this could cause some breaking change. This data attribute helps when I've pushed changed to my assets. If the user has loaded a page with one finger printed version of the assets, then before they move to a new page I have pushed a code change to my assets and then they visit a new page, Turbo Drive will recognise that the finger printing is different and force a full reload. Therefore I don't want to remove that or the layout could look broken.
+
+## Final result
+
+That's all the changes I needed to make this work. To be honest, the trickiest part was finding what CSS to strip out and inline. Now for the part you've been waiting for, the final result. Here we go with the WebPageTest run with the same settings as before on an Emulated Motorola G (gen 4) device using a Chrome browser with a 3G fast connection
+
+![](webpagetest_after.jpg)
+
+As you can see, the render blocking assets are no longer an issue and the start render is starting considerably earlier. Here is the filmstrip view as well
+
+![](webpagetest_screenshot_after.jpg)
+
+and you can see that I now have some content rendering on the page a rather impressive 0.6s earlier making for a more progressive and satisfying page load.
