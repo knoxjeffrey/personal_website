@@ -136,4 +136,6 @@ and the helper code looks as follows
   end
 <% end %>
 
-I had to alter the `onload` implementation because I'm using [HOTWire Turbo](https://turbo.hotwired.dev/) to handle my page transitions. For those that haven't used this before
+I had to alter the `onload` implementation because I'm using [HOTWire Turbo Drive](https://turbo.hotwired.dev/) for speedier page transitions which doesn't need full page reloads. For those that haven't used this before, check out the link to read more about it.
+
+If I kept the implementation as it was in the Filament Group demo, then the change of the `media` key from `print` to `all` means that Turbo thinks the `link` tag has been altered and then always does a full page reload on page transitions. I could stop this from happening by removing the `"data-turbo-track": "reload"` from the link but this could cause some breaking change. This data attribute helps when I've pushed changed to my assets. If the user has loaded a page with one finger printed version of the assets, then before they move to a new page I have pushed a code change to my assets and then they visit a new page, Turbo Drive will recognise that the finger printing is different and force a full reload. 
