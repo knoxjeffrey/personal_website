@@ -6,8 +6,6 @@ page "/*.xml", layout: false
 page "/*.json", layout: false
 page "/*.txt", layout: false
 
-config[:images_dir] = "assets/images"
-
 proxy "_headers", "netlify-headers", ignore: true
 proxy "_redirects", "netlify-redirects", ignore: true
 

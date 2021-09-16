@@ -2,13 +2,13 @@
 module AssetTagHelpers
   def image_tag(url, options={})
     options.symbolize_keys!
-
     # adds an alt tag with empty string if none is given as this is better for accessibility/SEO
     options[:alt] ||= ""
     # lazy load all images by default
     options[:loading] ||= "lazy"
 
-    super(url, options)
+    image_url = url.start_with?("http") ? url : vite_asset_path("images/#{url}")
+    super(image_url, options)
   end
 
   def link_to(*args, &block)
