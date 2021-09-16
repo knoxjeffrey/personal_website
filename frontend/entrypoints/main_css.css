@@ -5,7 +5,7 @@
 @import "~/stylesheets/utilities";
 
 .testClass {
-  color: red !important;
+  color: green !important;
 }
 .container:not(:first-child) {
   display: block;
