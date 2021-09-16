@@ -4,9 +4,6 @@
 @import "~/stylesheets/contact";
 @import "~/stylesheets/utilities";
 
-.testClass {
-  color: green !important;
-}
 .container:not(:first-child) {
   display: block;
 }
