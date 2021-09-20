@@ -33,8 +33,8 @@ export default class extends Controller {
    * @memberof Dashboard.SuccessfulBuildsController
    **/
   reconnect() {
-    if (this.store("selectedNetlifyBuildData")) {
-      this.storeUpdated(this.store(), "selectedNetlifyBuildData", this.storeIdValue)
+    if (this.store("selectedDataVizData")) {
+      this.storeUpdated(this.store(), "selectedDataVizData", this.storeIdValue)
     }
   }
 
@@ -63,7 +63,7 @@ export default class extends Controller {
    * @memberof Dashboard.SuccessfulBuildsController
    **/
   calculateNumberOfBuilds(context) {
-    return this.store("selectedNetlifyBuildData").reduce((acc , data) => {
+    return this.store("selectedDataVizData").reduce((acc , data) => {
       return data.context === context ? acc + 1 : acc
     }, 0)
   }
@@ -76,12 +76,12 @@ export default class extends Controller {
    * @memberof Dashboard.SuccessfulBuildsController
    **/
   storeUpdated(store, prop, storeId) {
-    if (this.store("fetchingNetlifyBuildData")) {
+    if (this.store("fetchingDataVizData")) {
       this.loadingSuccessfulBuildsValue(this.productionTarget, "Production")
       this.loadingSuccessfulBuildsValue(this.deployPreviewTarget, "Deploy preview")
       this.loadingSuccessfulBuildsValue(this.cmsTarget, "CMS")
     }
-    if (prop === "selectedNetlifyBuildData" && storeId === this.storeIdValue) {
+    if (prop === "selectedDataVizData" && storeId === this.storeIdValue) {
       this.updateSuccessfulBuildsValue(this.productionTarget, "Production ...", "production")
       this.updateSuccessfulBuildsValue(this.deployPreviewTarget, "Deploy preview ...", "deploy-preview")
       this.updateSuccessfulBuildsValue(this.cmsTarget, "CMS ...", "cms")

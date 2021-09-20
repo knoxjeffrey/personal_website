@@ -35,8 +35,8 @@ export default class extends Controller {
    * @memberof Dashboard.MeanBuildTimesController
    **/
   reconnect() {
-    if (this.store("selectedNetlifyBuildData")) {
-      this.storeUpdated(this.store(), "selectedNetlifyBuildData", this.storeIdValue)
+    if (this.store("selectedDataVizData")) {
+      this.storeUpdated(this.store(), "selectedDataVizData", this.storeIdValue)
     }
   }
 
@@ -69,7 +69,7 @@ export default class extends Controller {
    * @memberof Dashboard.MeanBuildTimesController
    **/
   calculateMeanBuildTime(context) {
-    const totals = this.store("selectedNetlifyBuildData").reduce((acc , data) => {
+    const totals = this.store("selectedDataVizData").reduce((acc , data) => {
       return data.context === context ? { count: acc.count + 1, time: acc.time + data.deploy_time } : acc
     }, { count: 0, time: 0 })
     return Math.round((totals.time / totals.count) * 100) / 100 || "N/A"
@@ -108,12 +108,12 @@ export default class extends Controller {
    * @memberof Dashboard.MeanBuildTimesController
    **/
   storeUpdated(store, prop, storeId) {
-    if (this.store("fetchingNetlifyBuildData")) {
+    if (this.store("fetchingDataVizData")) {
       this.loadingMeanBuildTimesValue(this.productionTarget, "Production")
       this.loadingMeanBuildTimesValue(this.deployPreviewTarget, "Deploy preview")
       this.loadingMeanBuildTimesValue(this.cmsTarget, "CMS")
     }
-    if (prop === "selectedNetlifyBuildData" && storeId === this.storeIdValue) {
+    if (prop === "selectedDataVizData" && storeId === this.storeIdValue) {
       this.updateMeanBuildTimesValue(this.productionTarget, "Production ...", "production")
       this.updateMeanBuildTimesValue(this.deployPreviewTarget, "Deploy preview ...", "deploy-preview")
       this.updateMeanBuildTimesValue(this.cmsTarget, "CMS ...", "cms")

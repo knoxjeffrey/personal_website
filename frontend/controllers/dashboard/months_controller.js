@@ -14,6 +14,7 @@ const monthMapper = {
 export default class extends Controller {
   static targets = [ "buttonGroup", "button" ]
   static values = {
+    function: String,
     storeId: String,
     yearSelected: Number
   }
@@ -38,7 +39,7 @@ export default class extends Controller {
    * @memberof Dashboard.MonthsController
    **/
   reconnect() {
-    if (this.store("selectedNetlifyBuildData")) {
+    if (this.store("selectedDataVizData")) {
       this.storeUpdated(this.store(), "monthSelected", this.storeIdValue)
     }
   }
@@ -53,7 +54,6 @@ export default class extends Controller {
    **/
   yearSelectedValueChanged() {
     if (this.yearSelectedValue !== 0) {
-      console.log(this.yearSelectedValue)
       const yearAndMonths = this.store("yearsAndMonths").find(data => data.year === this.yearSelectedValue)
       let fragment = document.createDocumentFragment()
 
@@ -96,17 +96,18 @@ export default class extends Controller {
    * @instance
    * @memberof Dashboard.MonthsController
    **/
-  fetchNetlifyBuildData() {
+  fetchDataVizData() {
     const year = this.store("yearSelected")
     const month =this.store("monthSelected")
 
-    const data = this.store("netlifyBuildData")[`${year}${month}`]
+    const data = this.store("dataVizData")[`${year}${month}`]
     if (data) {
-      this.editStore("selectedNetlifyBuildData", data)
+      this.editStore("selectedDataVizData", data)
     } else {
-      this.editStore("fetchingNetlifyBuildData", true)
+      this.editStore("fetchingDataVizData", true)
+
       fetch(`/.netlify/functions/supabase-get-api?year=${year}&month=${month}`, { 
-        headers: { "Function-Name": "netlify_build_data_for_year_and_month" }
+        headers: { "Function-Name": this.functionValue }
       })
         .then(responseCheck => {
           if (!responseCheck.ok) { throw Error(responseCheck.status); }
@@ -114,15 +115,15 @@ export default class extends Controller {
         })
         .then(res => res.json())
         .then(buildData => {
-          this.editStore("fetchingNetlifyBuildData", false)
-          let netlifyBuildDataToUpdate = this.store("netlifyBuildData")
-          netlifyBuildDataToUpdate[`${year}${month}`] = buildData
-          this.editStore("netlifyBuildData", netlifyBuildDataToUpdate)
-          this.editStore("selectedNetlifyBuildData", this.store("netlifyBuildData")[`${year}${month}`])
+          this.editStore("fetchingDataVizData", false)
+          let dataToUpdate = this.store("dataVizData")
+          dataToUpdate[`${year}${month}`] = buildData
+          this.editStore("dataVizData", dataToUpdate)
+          this.editStore("selectedDataVizData", this.store("dataVizData")[`${year}${month}`])
         })
         .catch(error => {
           console.warn(error)
-          this.editStore("fetchingNetlifyBuildData", false)
+          this.editStore("fetchingDataVizData", false)
         });
     }
   }
@@ -136,7 +137,7 @@ export default class extends Controller {
    **/
   storeUpdated(store, prop, storeId) {
     this.yearSelectedValue = this.store("yearSelected")
-    if (prop === "monthSelected" && storeId === this.storeIdValue) this.fetchNetlifyBuildData()
+    if (prop === "monthSelected" && storeId === this.storeIdValue) this.fetchDataVizData()
   }
 
   /** 

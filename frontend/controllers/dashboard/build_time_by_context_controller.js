@@ -31,8 +31,8 @@ export default class extends Controller {
    * @memberof Dashboard.BuildTimeByContextController
    **/
   reconnect() {
-    if (this.store("selectedNetlifyBuildData")) {
-      this.storeUpdated(this.store(), "selectedNetlifyBuildData", this.storeIdValue)
+    if (this.store("selectedDataVizData")) {
+      this.storeUpdated(this.store(), "selectedDataVizData", this.storeIdValue)
     }
   }
 
@@ -59,7 +59,7 @@ export default class extends Controller {
    * @memberof Dashboard.BuildTimeByContextController
    **/
   selectContextData(context) {
-    const contextData =  this.store("selectedNetlifyBuildData").filter(data => data.context === context)
+    const contextData =  this.store("selectedDataVizData").filter(data => data.context === context)
 
     if(contextData.length === 0) return [{ deploy_time: 0, build_number: 0 }]
     return contextData.map((data, index) => Object.assign(data, { build_number: index + 1 }))
@@ -77,14 +77,14 @@ export default class extends Controller {
 
   /** 
    * Triggered by the store whenever any store data changes. In this case it checks for
-   * selectedNetlifyBuildData to be set and then sets production as the initially selected context
+   * selectedDataVizData to be set and then sets production as the initially selected context
    * button.
    * 
    * @instance
    * @memberof Dashboard.BuildTimeByContextController
    **/
   storeUpdated(store, prop, storeId) {
-    if (prop === "selectedNetlifyBuildData" && storeId === this.storeIdValue) {
+    if (prop === "selectedDataVizData" && storeId === this.storeIdValue) {
       this.editStore("contextSelected", this.contextSelected("production"))
       this.editStore("selectedContextData", this.selectContextData("production"))
       this.buttonTargets.forEach(buttonTarget => buttonTarget.classList.remove("selected"))

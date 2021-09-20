@@ -9,7 +9,7 @@ title: Web Vitals Data
   <meta name="turbo-cache-control" content="no-cache">
 <% end %>
 
-<section class="margin-bottom--m" data-controller="years" data-years-function-value="netlify_vitals_data_years_and_months" data-years-status-value="loading">
+<section class="margin-bottom--m" data-controller="years" data-years-store-id-value="vitals_" data-years-function-value="netlify_vitals_data_years_and_months" data-years-status-value="loading">
   <% button_group do %>
     <div data-years-target="buttonGroup">
       <%= button text: "#{loading contained: true}", type: :default, html: { class: "invert", "data-years-target": "button", "data-action": "click->years#yearClicked" } %>
@@ -17,7 +17,7 @@ title: Web Vitals Data
   <% end %>
 </section>
 
-<section data-controller="months" data-months-year-selected-value="">
+<section data-controller="months" data-months-store-id-value="vitals_" data-months-function-value="netlify_vitals_data_for_year_and_month" data-months-year-selected-value="0">
   <% button_group do %>
     <div data-months-target="buttonGroup">
       <%= button text: "#{loading contained: true}", type: :default, html: { class: "invert", "data-months-target": "button", "data-action": "click->months#monthClicked" } %>

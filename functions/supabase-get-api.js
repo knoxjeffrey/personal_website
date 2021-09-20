@@ -34,4 +34,8 @@ export async function handler(event, _context) {
 
     return { statusCode: 200, body: JSON.stringify(data) }
   }
+
+  if (functionRequested == "netlify_vitals_data_for_year_and_month") {
+
+  }
 }

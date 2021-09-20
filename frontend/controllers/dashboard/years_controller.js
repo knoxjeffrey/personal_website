@@ -15,7 +15,7 @@ export default class extends Controller {
   }
 
   /** 
-   * Subscribe to the store. Setup netlifyBuildData and then fetch years and months data
+   * Subscribe to the store. Setup dataVizData and then fetch years and months data
    * 
    * @instance
    * @memberof Dashboard.YearsController
@@ -23,7 +23,7 @@ export default class extends Controller {
   connect() {
     subscription(this)
     this.subscribe()
-    if (!this.store("netlifyBuildData")) this.editStore("netlifyBuildData", {})
+    if (!this.store("dataVizData")) this.editStore("dataVizData", {})
     if (!this.store("yearsAndMonths")) this.yearsAndMonths()
     
     this.reconnect()
@@ -36,7 +36,7 @@ export default class extends Controller {
    * @memberof Dashboard.YearsController
    **/
   reconnect() {
-    if (this.store("selectedNetlifyBuildData")) {
+    if (this.store("selectedDataVizData")) {
       this.storeUpdated(this.store(), "yearsAndMonths", this.storeIdValue)
     }
   }
