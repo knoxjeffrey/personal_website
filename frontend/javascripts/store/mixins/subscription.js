@@ -2,12 +2,16 @@ import Store from "@/javascripts/store/stimulus_store.js"
 
 export const subscription = controller => {
   Object.assign(controller, {
-    store() {
+    storeContent() {
       return Store.instance.store
     },
 
+    store(key) {
+      return this.storeContent()[`${this.storeIdValue}${key}`]
+    },
+
     editStore(prop, value) {
-      Store.instance.editStore(prop, value)
+      Store.instance.editStore(prop, value, this.storeIdValue)
     },
 
     subscribe() {

@@ -6,8 +6,9 @@ import { targetLineValues } from "~/javascripts/dashboard/utils"
  * @classdesc d3.js line chart for Netlify build times
  */
 export default class LineChart {
-  constructor(store, minYValue, wrapper, tooltip) {
-    this.store = store
+  constructor(selectedData, selectedContext, minYValue, wrapper, tooltip) {
+    this.selectedData = selectedData
+    this.selectedContext = selectedContext
     this.minYValue = minYValue
     this.wrapper = d3.select(wrapper)
     this.tooltip = d3.select(tooltip)
@@ -63,8 +64,11 @@ export default class LineChart {
    * @instance
    * @memberof javascripts.dashboard.LineChart
    **/
-  updateDataVis() {
-    const data = this.store.selectedContextData
+  updateDataVis(selectedData, selectedContext) {
+    this.selectedData = selectedData
+    this.selectedContext = selectedContext
+
+    const data = this.selectedData
     const updatedLine = this.dv.bounds.select("path").data(data)
 
     this.setScales()
@@ -103,12 +107,12 @@ export default class LineChart {
   setScales() {
     this.dv.yScale = d3.scaleLinear()
       .domain([
-        0, d3.max([this.minYValue, d3.max(this.store.selectedContextData.map(data => data.deploy_time))])
+        0, d3.max([this.minYValue, d3.max(this.selectedData.map(data => data.deploy_time))])
       ])
       .range([this.dimensions.boundedHeight, 0])
       .nice()
     this.dv.xScale = d3.scaleLinear()
-      .domain(d3.extent(this.store.selectedContextData, this.dv.xAccessor))
+      .domain(d3.extent(this.selectedData, this.dv.xAccessor))
       .range([0, this.dimensions.boundedWidth])
   }
 
@@ -123,9 +127,9 @@ export default class LineChart {
       .scale(this.dv.yScale)
     this.dv.xAxisGenerator = d3.axisBottom()
       .scale(this.dv.xScale)
-    if (this.store.selectedContextData.length < 10) {
+    if (this.selectedData.length < 10) {
       this.dv.xAxisGenerator = this.dv.xAxisGenerator
-        .tickValues(this.store.selectedContextData.map(data => data.build_number))
+        .tickValues(this.selectedData.map(data => data.build_number))
         .tickFormat(d3.format(".0f"))
     }
     // Duration line generator with animation
@@ -173,7 +177,7 @@ export default class LineChart {
     // Setup build duration line
     const line = this.dv.bounds.append("path")
         .attr("class", "line-chart--path")
-        .attr("d", this.dv.lineGenerator(this.store.selectedContextData))
+        .attr("d", this.dv.lineGenerator(this.selectedData))
         .call(this.lineTransitionIn)
 
     // Setup axis
@@ -196,14 +200,14 @@ export default class LineChart {
     // Setup KPI lines to start from zero on y axis. These will animate into position with kpiLineTransition
     const targetKpiLine = this.dv.bounds.append("line")
         .attr("class", "line-chart--success-line")
-        .attr("x1", this.dv.xScale(this.dv.xAccessor(this.store.selectedContextData)))
+        .attr("x1", this.dv.xScale(this.dv.xAccessor(this.selectedData)))
         .attr("x2", this.dimensions.boundedWidth)
         .attr("y1", this.dv.yScale(0))
         .attr("y2", this.dv.yScale(0))
 
     const lowerBoundtKpiLine = this.dv.bounds.append("line")
         .attr("class", "line-chart--fail-line")
-        .attr("x1", this.dv.xScale(this.dv.xAccessor(this.store.selectedContextData)))
+        .attr("x1", this.dv.xScale(this.dv.xAccessor(this.selectedData)))
         .attr("x2", this.dimensions.boundedWidth)
         .attr("y1", this.dv.yScale(0))
         .attr("y2", this.dv.yScale(0))
@@ -239,8 +243,8 @@ export default class LineChart {
    * @memberof javascripts.dashboard.LineChart
    **/
   kpiLineTransition() {
-    const data = this.store.selectedContextData
-    const lineValues = targetLineValues(this.store.contextSelected)
+    const data = this.selectedData
+    const lineValues = targetLineValues(this.selectedContext)
 
     this.dv.bounds.select(".line-chart--success-line")
         .transition().duration(250)
@@ -277,7 +281,7 @@ export default class LineChart {
    * @memberof javascripts.dashboard.LineChart
    **/
   onMouseMove = event => {
-    if(this.store.selectedContextData[0].build_number === 0) return
+    if(this.selectedData[0].build_number === 0) return
     
     const closestDataset = this.closestDataPoint(event)
     const closestXValue = this.dv.xAccessor(closestDataset)
@@ -327,7 +331,7 @@ export default class LineChart {
    * @memberof javascripts.dashboard.LineChart
    **/
   onClick = event => {
-    if(this.store.selectedContextData[0].build_number === 0) return
+    if(this.selectedData[0].build_number === 0) return
     
     const deployId = this.dv.deployIdAccessor(this.closestDataPoint(event))
     window.open(
@@ -348,9 +352,9 @@ export default class LineChart {
     const hoveredDate = this.dv.xScale.invert(mousePosition[0])
 
     const getDistanceFromHoveredDate = d => Math.abs(this.dv.xAccessor(d) - hoveredDate)
-    const closestIndex = d3.leastIndex(this.store.selectedContextData, (a, b) => (
+    const closestIndex = d3.leastIndex(this.selectedData, (a, b) => (
       getDistanceFromHoveredDate(a) - getDistanceFromHoveredDate(b)
     ))
-    return this.store.selectedContextData[closestIndex]
+    return this.selectedData[closestIndex]
   }
 }

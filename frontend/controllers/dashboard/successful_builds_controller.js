@@ -8,7 +8,10 @@ import { subscription } from "~/javascripts/store/mixins/subscription"
  **/
 export default class extends Controller {
   static targets = [ "production", "deployPreview", "cms" ]
-  static values = { loading: String }
+  static values = {
+    loading: String,
+    storeId: String
+  }
 
   /** 
    * Subscribe to the store.
@@ -30,8 +33,8 @@ export default class extends Controller {
    * @memberof Dashboard.SuccessfulBuildsController
    **/
   reconnect() {
-    if (this.store().selectedNetlifyBuildData) {
-      this.storeUpdated(this.store(), "selectedNetlifyBuildData")
+    if (this.store("selectedNetlifyBuildData")) {
+      this.storeUpdated(this.store(), "selectedNetlifyBuildData", this.storeIdValue)
     }
   }
 
@@ -60,7 +63,7 @@ export default class extends Controller {
    * @memberof Dashboard.SuccessfulBuildsController
    **/
   calculateNumberOfBuilds(context) {
-    return this.store().selectedNetlifyBuildData.reduce((acc , data) => {
+    return this.store("selectedNetlifyBuildData").reduce((acc , data) => {
       return data.context === context ? acc + 1 : acc
     }, 0)
   }
@@ -72,13 +75,13 @@ export default class extends Controller {
    * @instance
    * @memberof Dashboard.SuccessfulBuildsController
    **/
-  storeUpdated(store, prop) {
-    if (store.fetchingNetlifyBuildData) {
+  storeUpdated(store, prop, storeId) {
+    if (this.store("fetchingNetlifyBuildData")) {
       this.loadingSuccessfulBuildsValue(this.productionTarget, "Production")
       this.loadingSuccessfulBuildsValue(this.deployPreviewTarget, "Deploy preview")
       this.loadingSuccessfulBuildsValue(this.cmsTarget, "CMS")
     }
-    if (prop === "selectedNetlifyBuildData") {
+    if (prop === "selectedNetlifyBuildData" && storeId === this.storeIdValue) {
       this.updateSuccessfulBuildsValue(this.productionTarget, "Production ...", "production")
       this.updateSuccessfulBuildsValue(this.deployPreviewTarget, "Deploy preview ...", "deploy-preview")
       this.updateSuccessfulBuildsValue(this.cmsTarget, "CMS ...", "cms")

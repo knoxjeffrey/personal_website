@@ -13,7 +13,10 @@ const monthMapper = {
  **/
 export default class extends Controller {
   static targets = [ "buttonGroup", "button" ]
-  static values = { yearSelected: Number }
+  static values = {
+    storeId: String,
+    yearSelected: Number
+  }
 
   /** 
    * Subscribe to the store.
@@ -35,8 +38,8 @@ export default class extends Controller {
    * @memberof Dashboard.MonthsController
    **/
   reconnect() {
-    if (this.store().selectedNetlifyBuildData) {
-      this.storeUpdated(this.store(), "monthSelected")
+    if (this.store("selectedNetlifyBuildData")) {
+      this.storeUpdated(this.store(), "monthSelected", this.storeIdValue)
     }
   }
 
@@ -49,8 +52,9 @@ export default class extends Controller {
    * @memberof Dashboard.MonthsController
    **/
   yearSelectedValueChanged() {
-    if (!isNaN(this.yearSelectedValue)) {
-      const yearAndMonths = this.store().yearsAndMonths.find(data => data.year === this.yearSelectedValue)
+    if (this.yearSelectedValue !== 0) {
+      console.log(this.yearSelectedValue)
+      const yearAndMonths = this.store("yearsAndMonths").find(data => data.year === this.yearSelectedValue)
       let fragment = document.createDocumentFragment()
 
       yearAndMonths.month_numbers.forEach(monthNumber => {
@@ -74,7 +78,7 @@ export default class extends Controller {
    * @memberof Dashboard.MonthsController
    **/
   monthClicked(event) {
-    if (this.store().monthSelected === parseInt(event.target.innerHTML)) return
+    if (this.store("monthSelected") === parseInt(event.target.innerHTML)) return
 
     this.editStore(
       "monthSelected",
@@ -93,10 +97,10 @@ export default class extends Controller {
    * @memberof Dashboard.MonthsController
    **/
   fetchNetlifyBuildData() {
-    const year = this.store().yearSelected
-    const month =this.store().monthSelected
+    const year = this.store("yearSelected")
+    const month =this.store("monthSelected")
 
-    const data = this.store().netlifyBuildData[`${year}${month}`]
+    const data = this.store("netlifyBuildData")[`${year}${month}`]
     if (data) {
       this.editStore("selectedNetlifyBuildData", data)
     } else {
@@ -111,10 +115,10 @@ export default class extends Controller {
         .then(res => res.json())
         .then(buildData => {
           this.editStore("fetchingNetlifyBuildData", false)
-          let netlifyBuildDataToUpdate = this.store().netlifyBuildData
+          let netlifyBuildDataToUpdate = this.store("netlifyBuildData")
           netlifyBuildDataToUpdate[`${year}${month}`] = buildData
           this.editStore("netlifyBuildData", netlifyBuildDataToUpdate)
-          this.editStore("selectedNetlifyBuildData", this.store().netlifyBuildData[`${year}${month}`])
+          this.editStore("selectedNetlifyBuildData", this.store("netlifyBuildData")[`${year}${month}`])
         })
         .catch(error => {
           console.warn(error)
@@ -130,9 +134,9 @@ export default class extends Controller {
    * @instance
    * @memberof Dashboard.MonthsController
    **/
-  storeUpdated(store, prop) {
-    this.yearSelectedValue = store.yearSelected
-    if (prop === "monthSelected") this.fetchNetlifyBuildData()
+  storeUpdated(store, prop, storeId) {
+    this.yearSelectedValue = this.store("yearSelected")
+    if (prop === "monthSelected" && storeId === this.storeIdValue) this.fetchNetlifyBuildData()
   }
 
   /** 

@@ -9,7 +9,10 @@ import { targetLineValues } from "~/javascripts/dashboard/utils"
  **/
 export default class extends Controller {
   static targets = [ "production", "deployPreview", "cms" ]
-  static values = { loading: String }
+  static values = {
+    loading: String,
+    storeId: String
+  }
   static classes = [ "success", "warning", "error", "unavailable" ]
 
   /** 
@@ -32,8 +35,8 @@ export default class extends Controller {
    * @memberof Dashboard.MeanBuildTimesController
    **/
   reconnect() {
-    if (this.store().selectedNetlifyBuildData) {
-      this.storeUpdated(this.store(), "selectedNetlifyBuildData")
+    if (this.store("selectedNetlifyBuildData")) {
+      this.storeUpdated(this.store(), "selectedNetlifyBuildData", this.storeIdValue)
     }
   }
 
@@ -66,7 +69,7 @@ export default class extends Controller {
    * @memberof Dashboard.MeanBuildTimesController
    **/
   calculateMeanBuildTime(context) {
-    const totals = this.store().selectedNetlifyBuildData.reduce((acc , data) => {
+    const totals = this.store("selectedNetlifyBuildData").reduce((acc , data) => {
       return data.context === context ? { count: acc.count + 1, time: acc.time + data.deploy_time } : acc
     }, { count: 0, time: 0 })
     return Math.round((totals.time / totals.count) * 100) / 100 || "N/A"
@@ -104,13 +107,13 @@ export default class extends Controller {
    * @instance
    * @memberof Dashboard.MeanBuildTimesController
    **/
-  storeUpdated(store, prop) {
-    if (store.fetchingNetlifyBuildData) {
+  storeUpdated(store, prop, storeId) {
+    if (this.store("fetchingNetlifyBuildData")) {
       this.loadingMeanBuildTimesValue(this.productionTarget, "Production")
       this.loadingMeanBuildTimesValue(this.deployPreviewTarget, "Deploy preview")
       this.loadingMeanBuildTimesValue(this.cmsTarget, "CMS")
     }
-    if (prop === "selectedNetlifyBuildData") {
+    if (prop === "selectedNetlifyBuildData" && storeId === this.storeIdValue) {
       this.updateMeanBuildTimesValue(this.productionTarget, "Production ...", "production")
       this.updateMeanBuildTimesValue(this.deployPreviewTarget, "Deploy preview ...", "deploy-preview")
       this.updateMeanBuildTimesValue(this.cmsTarget, "CMS ...", "cms")

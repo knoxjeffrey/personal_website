@@ -8,6 +8,9 @@ import { subscription } from "~/javascripts/store/mixins/subscription"
  **/
 export default class extends Controller {
   static targets = [ "button", "production" ]
+  static values = {
+    storeId: String
+  }
 
   /** 
    * Subscribe to the store.
@@ -28,8 +31,8 @@ export default class extends Controller {
    * @memberof Dashboard.BuildTimeByContextController
    **/
   reconnect() {
-    if (this.store().selectedNetlifyBuildData) {
-      this.storeUpdated(this.store(), "selectedNetlifyBuildData")
+    if (this.store("selectedNetlifyBuildData")) {
+      this.storeUpdated(this.store(), "selectedNetlifyBuildData", this.storeIdValue)
     }
   }
 
@@ -56,7 +59,7 @@ export default class extends Controller {
    * @memberof Dashboard.BuildTimeByContextController
    **/
   selectContextData(context) {
-    const contextData =  this.store().selectedNetlifyBuildData.filter(data => data.context === context)
+    const contextData =  this.store("selectedNetlifyBuildData").filter(data => data.context === context)
 
     if(contextData.length === 0) return [{ deploy_time: 0, build_number: 0 }]
     return contextData.map((data, index) => Object.assign(data, { build_number: index + 1 }))
@@ -80,8 +83,8 @@ export default class extends Controller {
    * @instance
    * @memberof Dashboard.BuildTimeByContextController
    **/
-  storeUpdated(store, prop) {
-    if (prop === "selectedNetlifyBuildData") {
+  storeUpdated(store, prop, storeId) {
+    if (prop === "selectedNetlifyBuildData" && storeId === this.storeIdValue) {
       this.editStore("contextSelected", this.contextSelected("production"))
       this.editStore("selectedContextData", this.selectContextData("production"))
       this.buttonTargets.forEach(buttonTarget => buttonTarget.classList.remove("selected"))
