@@ -21,7 +21,7 @@ export async function handler(event, _context) {
     return { statusCode: 200, body: JSON.stringify(data) }
   }
 
-  if (functionRequested === "netlify_vitals_data_years_and_months") {
+  if (functionRequested === "vitals_data_years_and_months") {
     const { data, error } = await supabase
       .rpc("netlify_vitals_data_years_and_months")
     if (error) return { statusCode: 500, body: `An error occurred: ${JSON.stringify(error)}` }
