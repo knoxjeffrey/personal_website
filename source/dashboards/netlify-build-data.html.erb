@@ -9,7 +9,7 @@ title: Netlify Build Data
   <meta name="turbo-cache-control" content="no-cache">
 <% end %>
 
-<section class="margin-bottom--m" data-controller="years" data-years-status-value="loading">
+<section class="margin-bottom--m" data-controller="years" data-years-store-id-value="builds_" data-years-function-value="netlify_deploy_data_years_and_months" data-years-status-value="loading">
   <% button_group do %>
     <div data-years-target="buttonGroup">
       <%= button text: "#{loading contained: true}", type: :default, html: { class: "invert", "data-years-target": "button", "data-action": "click->years#yearClicked" } %>
@@ -17,7 +17,7 @@ title: Netlify Build Data
   <% end %>
 </section>
 
-<section data-controller="months" data-months-year-selected-value="">
+<section data-controller="months" data-months-store-id-value="builds_" data-months-function-value="netlify_build_data_for_year_and_month" data-months-year-selected-value="0">
   <% button_group do %>
     <div data-months-target="buttonGroup">
       <%= button text: "#{loading contained: true}", type: :default, html: { class: "invert", "data-months-target": "button", "data-action": "click->months#monthClicked" } %>
@@ -27,7 +27,7 @@ title: Netlify Build Data
 
 <hr/>
 
-<section data-controller="successful-builds" data-successful-builds-loading-value='<%= loading html: { class: "primary"} %>'>
+<section data-controller="successful-builds" data-successful-builds-store-id-value="builds_" data-successful-builds-loading-value='<%= loading html: { class: "primary"} %>'>
   <header>
     <h2>Successful builds</h2>
   </header>
@@ -40,7 +40,7 @@ title: Netlify Build Data
 
 <hr/>
 
-<section data-controller="mean-build-times" data-mean-build-times-loading-value='<%= loading %>' data-mean-build-times-success-class="terminal-alert-success" data-mean-build-times-warning-class="terminal-alert-warning" data-mean-build-times-error-class="terminal-alert-error", data-mean-build-times-unavailable-class="terminal-alert-primary">
+<section data-controller="mean-build-times" data-mean-build-times-store-id-value="builds_" data-mean-build-times-loading-value='<%= loading %>' data-mean-build-times-success-class="terminal-alert-success" data-mean-build-times-warning-class="terminal-alert-warning" data-mean-build-times-error-class="terminal-alert-error", data-mean-build-times-unavailable-class="terminal-alert-primary">
   <header>
     <h2>Mean build time (s)</h2>
   </header>
@@ -53,7 +53,7 @@ title: Netlify Build Data
 
 <hr/>
 
-<section class="margin-bottom--m" data-controller="build-time-by-context">
+<section class="margin-bottom--m" data-controller="build-time-by-context" data-build-time-by-context-store-id-value="builds_">
   <header>
     <h2>Build time by context (s)</h2>
   </header>
@@ -64,7 +64,7 @@ title: Netlify Build Data
   <% end %>
 </section>
 
-<section data-controller="data-visualisation" data-action="resize@window->data-visualisation#resize">
+<section data-controller="data-visualisation" data-data-visualisation-store-id-value="builds_" data-action="resize@window->data-visualisation#resize">
   <div data-viz="wrapper" class="line-chart">
     <% tooltip html: { "data-viz": "tooltip" } do %>
       <div class="line-chart--tooltip-text">

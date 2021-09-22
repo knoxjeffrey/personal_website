@@ -19,15 +19,15 @@ export default class StimulusStore {
     return this._store
   }
 
-  editStore(prop, value) {
-    this._store[prop] = value
-    this._store.subscribers && this.emit(prop)
+  editStore(prop, value, storeId) {
+    this._store[`${storeId}${prop}`] = value
+    this._store.subscribers && this.emit(prop, storeId)
   }
 
-  emit(prop) {
+  emit(prop, storeId) {
     this._store.subscribers.forEach(controller => {
       typeof controller.storeUpdated === "function" && 
-      controller.storeUpdated(this._store, prop);
+      controller.storeUpdated(this._store, prop, storeId);
     });
   }
   

@@ -9,6 +9,10 @@ import LineChart from "~/javascripts/dashboard/LineChart"
  * @extends Controller
  **/
 export default class extends Controller {
+  static values = {
+    storeId: String
+  }
+
   /** 
    * Subscribe to the store. Debounces the method for handling window resizes
    * 
@@ -29,8 +33,8 @@ export default class extends Controller {
    * @memberof Dashboard.BuildTimeByContextController
    **/
   reconnect() {
-    if (this.store().selectedContextData) {
-      this.storeUpdated(this.store(), "selectedContextData")
+    if (this.store("selectedContextData")) {
+      this.storeUpdated(this.store(), "selectedContextData", this.storeIdValue)
     }
   }
 
@@ -54,7 +58,13 @@ export default class extends Controller {
   lineChart() {
     if (this._lineChart === undefined) {
       this._windowWidth = window.innerWidth
-      this._lineChart = new LineChart(this.store(), 60, "[data-viz='wrapper']", "[data-viz='tooltip']")
+      this._lineChart = new LineChart(
+        this.store("selectedContextData"),
+        this.store("contextSelected"),
+        60,
+        "[data-viz='wrapper']",
+        "[data-viz='tooltip']"
+      )
     }
     return this._lineChart
   }
@@ -82,9 +92,13 @@ export default class extends Controller {
    * @instance
    * @memberof Dashboard.DataVisualisationController
    **/
-  storeUpdated(store, prop) {
-    if (prop !== "selectedContextData") return
-    this.isDataVizEmpty() ? this.lineChart().createDataVis() : this.lineChart().updateDataVis()
+  storeUpdated(store, prop, storeId) {
+    if (prop !== "selectedContextData" && storeId === this.storeIdValue) return
+    if(this.isDataVizEmpty()) {
+      this.lineChart().createDataVis()
+    } else {
+      this.lineChart().updateDataVis(this.store("selectedContextData"), this.store("contextSelected"))
+    }
   }
 
   /** 

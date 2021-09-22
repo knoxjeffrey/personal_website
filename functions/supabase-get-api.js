@@ -31,7 +31,18 @@ export async function handler(event, _context) {
       .lt("created_at", lt)
 
     if (error) return { statusCode: 500, body: `An error occurred: ${JSON.stringify(error)}` }
+    return { statusCode: 200, body: JSON.stringify(data) }
+  }
 
+  if (functionRequested == "vitals_data_for_year_and_month") {
+    let { year, month } = event.queryStringParameters
+    year = parseInt(year)
+    month = parseInt(month)
+
+    const { data, error } = await supabase
+      .rpc("core_vitals_for_year_and_month", { yearvalue: year, monthvalue: month })
+
+    if (error) return { statusCode: 500, body: `An error occurred: ${JSON.stringify(error)}` }
     return { statusCode: 200, body: JSON.stringify(data) }
   }
 }
