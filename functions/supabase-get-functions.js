@@ -23,11 +23,9 @@ export async function handler(event, _context) {
 
   if (functionRequested === "vitals_data_years_and_months") {
     const { data, error } = await supabase
-      .rpc("netlify_vitals_data_years_and_months")
-    console.log(error)
-    console.log(data)
+      .rpc("vitals_data_years_and_months")
     if (error) return { statusCode: 500, body: `An error occurred: ${JSON.stringify(error)}` }
 
-    return { statusCode: 200, body: JSON.stringify(data) }
+    return { statusCode: 200, body: JSON.stringify(data[0].vitals_data_years_and_months) }
   }
 }
