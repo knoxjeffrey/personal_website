@@ -37,32 +37,32 @@ The next part is going to vary depending on your asset bundling setup but I'll s
 Usually I would call my CSS files in the head with the following helper method as an example
 
 <% highlight code: "ruby" do %>
-  vite_stylesheet_tag early_paint_css, "data-turbo-track": "reload"
+vite_stylesheet_tag early_paint_css, "data-turbo-track": "reload"
 <% end %>
 
 but instead I changed the method call to
 
 <% highlight code: "ruby" do %>
-  vite_inline_css "early_paint_css"
+vite_inline_css "early_paint_css"
 <% end %>
 
 and then added this `vite_inline_css` method to my helpers.
 
 <% highlight code: "ruby" do %>
-  def vite_inline_css(asset_name)
-    return build_inline_css(asset_name) if @app.build?
-    vite_stylesheet_tag asset_name, "data-turbo-track": "reload"
-  end
+def vite_inline_css(asset_name)
+  return build_inline_css(asset_name) if @app.build?
+  vite_stylesheet_tag asset_name, "data-turbo-track": "reload"
+end
 
-  ...
+...
 
-  private
+private
 
-  def build_inline_css(asset_name)
-    asset_path = vite_asset_path(asset_name, type: :stylesheet)
-    altered_path = "build#{asset_path}"
-    "<style type='text/css'>#{File.read(altered_path)}</style>"
-  end
+def build_inline_css(asset_name)
+  asset_path = vite_asset_path(asset_name, type: :stylesheet)
+  altered_path = "build#{asset_path}"
+  "<style type='text/css'>#{File.read(altered_path)}</style>"
+end
 <% end %>
 
 If the static site is being built, as noted by `@app.build?` then I find the path to the asset file that has been built by Vite and then take the content of that file and output it in place between style tags. I can't do this in development because Vite doesn't create a bundled file (that's why it's so fast) so in development I simply serve the file as a render blocking resource as I was doing before.
@@ -72,27 +72,27 @@ With that done I could start going through the gradual process of taking CSS out
 One final very important piece of CSS I had to add to the end of that file was
 
 <% highlight code: "css" do %>
-  .container:not(:first-child) {
-    display: none;
-  }
+.container:not(:first-child) {
+  display: none;
+}
 <% end %>
 
 Again, this is very much going to vary depending on the structure of your site. In my case, the body of the HTML looks roughly as follows
 
 <% highlight code: "html" do %>
-  <body>
-    <div class="container"></div>
-    <div class="container"></div>
-    ...
-  </body>
+<body>
+  <div class="container"></div>
+  <div class="container"></div>
+  ...
+</body>
 <% end %>
 
 with the first div being the nav component. Therefore any container classes that come after this should not be displayed initially. If you don't do this then you're going to get a flash of unstyled content (FOUC) which looks pretty janky. The easiest way to then show this content again is to add the following to the main CSS file which is loaded in asynchronously
 
 <% highlight code: "css" do %>
-  .container:not(:first-child) {
-    display: block;
-  }
+.container:not(:first-child) {
+  display: block;
+}
 <% end %>
 
 At the point this is loaded, you have the majority of the styles required for a stable view without any noticeable FOUC.
@@ -108,33 +108,33 @@ Loading CSS asynchronously isn't quite so simple as loading JavaScript asynchron
 Like before, I changed my use of `vite_stylesheet_tag` to instead use my own helper method.
 
 <% highlight code: "ruby" do %>
-  vite_async_css "main_css"
+vite_async_css "main_css"
 <% end %>
 
 and the helper code implementation looks as follows
 
 <% highlight code: "ruby" do %>
-  def vite_async_css(asset_name)
-    "#{preload(asset_name)}\n#{noscript(asset_name)}"
-  end
+def vite_async_css(asset_name)
+  "#{preload(asset_name)}\n#{noscript(asset_name)}"
+end
 
-  ...
+...
 
-  private
+private
 
-  def preload(asset_name)
-    vite_stylesheet_tag(
-      asset_name,
-      rel: "preload",
-      as: "style",
-      "data-turbo-track": "reload",
-      onload: "this.onload=null;this.insertAdjacentHTML('afterend', '#{vite_stylesheet_tag(asset_name)}')"
-    )
-  end
+def preload(asset_name)
+  vite_stylesheet_tag(
+    asset_name,
+    rel: "preload",
+    as: "style",
+    "data-turbo-track": "reload",
+    onload: "this.onload=null;this.insertAdjacentHTML('afterend', '#{vite_stylesheet_tag(asset_name)}')"
+  )
+end
 
-  def noscript(asset_name)
-    "<noscript>#{vite_stylesheet_tag asset_name, "data-turbo-track": "reload"}</noscript>"
-  end
+def noscript(asset_name)
+  "<noscript>#{vite_stylesheet_tag asset_name, "data-turbo-track": "reload"}</noscript>"
+end
 <% end %>
 
 I had to alter the `onload` implementation because I'm using [HOTWire Turbo Drive](https://turbo.hotwired.dev/) for speedier page transitions by not requiring full page reloads. For those that haven't used this before, check out the link to read more about it.
