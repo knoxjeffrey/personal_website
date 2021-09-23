@@ -7,9 +7,13 @@ import { subscription } from "~/javascripts/store/mixins/subscription"
  * @extends Controller
  **/
 export default class extends Controller {
-  static targets = [ "button", "production" ]
+  static targets = [ "button" ]
   static values = {
-    storeId: String
+    contextKey: String,
+    defaultContext: String,
+    storeId: String,
+    xAxis: String,
+    yAxis: String
   }
 
   /** 
@@ -59,10 +63,15 @@ export default class extends Controller {
    * @memberof Dashboard.BuildTimeByContextController
    **/
   selectContextData(context) {
-    const contextData =  this.store("selectedDataVizData").filter(data => data.context === context)
+    const contextData =  this.store("selectedDataVizData").filter(data => data[this.contextKeyValue] === context)
 
-    if(contextData.length === 0) return [{ deploy_time: 0, build_number: 0 }]
-    return contextData.map((data, index) => Object.assign(data, { build_number: index + 1 }))
+    if(this.storeIdValue === "builds_") {
+      if(contextData.length === 0) return [{ [this.yAxisValue]: 0, [this.xAxisValue]: 0 }]
+      return contextData.map((data, index) => Object.assign(data, { [this.xAxisValue]: index + 1 }))
+    } else {
+      if(contextData.length === 0) return [{ [this.yAxisValue]: 0, [this.xAxisValue]: 0 }]
+      return contextData.map((data) => Object.assign(data, { [this.xAxisValue]: new Date(data.time_stamp).getDate() }))
+    }
   }
 
   /** 
@@ -85,8 +94,8 @@ export default class extends Controller {
    **/
   storeUpdated(store, prop, storeId) {
     if (prop === "selectedDataVizData" && storeId === this.storeIdValue) {
-      this.editStore("contextSelected", this.contextSelected("production"))
-      this.editStore("selectedContextData", this.selectContextData("production"))
+      this.editStore("contextSelected", this.contextSelected(this.defaultContextValue))
+      this.editStore("selectedContextData", this.selectContextData(this.defaultContextValue))
       this.buttonTargets.forEach(buttonTarget => buttonTarget.classList.remove("selected"))
       this.buttonTargets[0].classList.add("selected")
     }

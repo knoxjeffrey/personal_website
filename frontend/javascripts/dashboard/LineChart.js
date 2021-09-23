@@ -1,15 +1,20 @@
 import d3 from "~/javascripts/dashboard/LineChart_modules"
-import { targetLineValues } from "~/javascripts/dashboard/utils"
+import { 
+  targetLineValues, minYAxisValues, yAxisTextValues, yAxisMeasurementValues
+} from "~/javascripts/dashboard/utils"
 
 /**
  * @class javascripts.dashboard.LineChart
  * @classdesc d3.js line chart for Netlify build times
  */
 export default class LineChart {
-  constructor(selectedData, selectedContext, minYValue, wrapper, tooltip) {
+  constructor(selectedData, selectedContext, yKey, xKey, dateKey, timeFormat, wrapper, tooltip) {
     this.selectedData = selectedData
     this.selectedContext = selectedContext
-    this.minYValue = minYValue
+    this.yKey = yKey
+    this.xKey = xKey
+    this.dateKey = dateKey
+    this.timeFormat = timeFormat
     this.wrapper = d3.select(wrapper)
     this.tooltip = d3.select(tooltip)
     this.tooltipCircle = null
@@ -33,7 +38,7 @@ export default class LineChart {
         top: 15,
         right: 10,
         bottom: 40,
-        left: 25,
+        left: 35,
       }
     }
     this.dimensions.boundedWidth = this.dimensions.width
@@ -92,9 +97,9 @@ export default class LineChart {
    * @memberof javascripts.dashboard.LineChart
    **/
   initialiseAccessors() {
-    this.dv.yAccessor = d => d.deploy_time
-    this.dv.xAccessor = d => d.build_number
-    this.dv.dateAccessor = d => new Date(d.created_at)
+    this.dv.yAccessor = d => d[this.yKey]
+    this.dv.xAccessor = d => d[this.xKey] 
+    this.dv.dateAccessor = d => new Date(d[this.dateKey])
     this.dv.deployIdAccessor = d => d.deploy_id
   }
 
@@ -107,7 +112,9 @@ export default class LineChart {
   setScales() {
     this.dv.yScale = d3.scaleLinear()
       .domain([
-        0, d3.max([this.minYValue, d3.max(this.selectedData.map(data => data.deploy_time))])
+        0, d3.max(
+          [minYAxisValues(this.selectedContext), d3.max(this.selectedData.map(data => data[this.yKey]))
+        ])
       ])
       .range([this.dimensions.boundedHeight, 0])
       .nice()
@@ -129,7 +136,7 @@ export default class LineChart {
       .scale(this.dv.xScale)
     if (this.selectedData.length < 10) {
       this.dv.xAxisGenerator = this.dv.xAxisGenerator
-        .tickValues(this.selectedData.map(data => data.build_number))
+        .tickValues(this.selectedData.map(data => data[this.xKey]))
         .tickFormat(d3.format(".0f"))
     }
     // Duration line generator with animation
@@ -195,7 +202,7 @@ export default class LineChart {
         .attr("class", "line-chart--x-axis-label")
         .attr("x", this.dimensions.boundedWidth / 2)
         .attr("y", this.dimensions.margin.bottom - 5)
-        .text("Build number")
+        .text(yAxisTextValues(this.selectedContext))
 
     // Setup KPI lines to start from zero on y axis. These will animate into position with kpiLineTransition
     const targetKpiLine = this.dv.bounds.append("line")
@@ -287,12 +294,12 @@ export default class LineChart {
     const closestXValue = this.dv.xAccessor(closestDataset)
     const closestYValue = this.dv.yAccessor(closestDataset)
 
-    const formatDate = d3.timeFormat("%a %-d %b, %H:%M")
+    const formatDate = d3.timeFormat(this.timeFormat)
     this.tooltip.select("[data-viz='date']")
         .text(formatDate(this.dv.dateAccessor(closestDataset)))
 
     this.tooltip.select("[data-viz='duration']")
-        .html(`${closestYValue} s`)
+        .html(`${closestYValue}${yAxisMeasurementValues(this.selectedContext)}`)
 
     const x = this.dv.xScale(closestXValue) + this.dimensions.margin.left
     const y = this.dv.yScale(closestYValue) + this.dimensions.margin.top

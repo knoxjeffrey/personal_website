@@ -27,5 +27,29 @@ title: Web Vitals Data
 
 <hr/>
 
+<section class="margin-bottom--m" data-controller="build-time-by-context" data-build-time-by-context-store-id-value="vitals_" data-build-time-by-context-x-axis-value="day" data-build-time-by-context-y-axis-value="value" data-build-time-by-context-default-context-value="lcp" data-build-time-by-context-context-key-value="metric">
+  <header>
+    <h2>Daily Core Web Vitals</h2>
+  </header>
+  <% button_group do %>
+   <%= button text: "LCP", type: :default, html: { class: "invert selected", "data-build-time-by-context-target": "button", "data-action": "click->build-time-by-context#contextClicked" } %>
+   <%= button text: "FID", type: :default, html: { class: "invert", "data-build-time-by-context-target": "button", "data-action": "click->build-time-by-context#contextClicked" } %>
+   <%= button text: "CLS", type: :default, html: { class: "invert", "data-build-time-by-context-target": "button", "data-action": "click->build-time-by-context#contextClicked" } %>
+  <% end %>
+</section>
+
+<section data-controller="data-visualisation" data-data-visualisation-store-id-value="vitals_" data-data-visualisation-x-axis-value="day" data-data-visualisation-y-axis-value="value" data-data-visualisation-date-value="time_stamp" data-data-visualisation-time-format-value="%a %-d %b" data-action="resize@window->data-visualisation#resize">
+  <div data-viz="wrapper" class="line-chart">
+    <% tooltip html: { "data-viz": "tooltip" } do %>
+      <div class="line-chart--tooltip-text">
+        <strong><small><span data-viz="date"></span></small></strong>
+      </div>
+      <div class="line-chart--tooltip-text">
+        <small>Value: <span data-viz="duration"></span></small>
+      </div>
+    <% end %>
+  </div>
+</section>
+
 <%= vite_async_css "data_viz_css" %>
 <%= vite_javascript_tag "dashboard", "data-turbo-track": "reload", defer: true %>
