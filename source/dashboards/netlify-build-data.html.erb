@@ -53,7 +53,7 @@ title: Netlify Build Data
 
 <hr/>
 
-<section class="margin-bottom--m" data-controller="build-time-by-context" data-build-time-by-context-store-id-value="builds_">
+<section class="margin-bottom--m" data-controller="build-time-by-context" data-build-time-by-context-store-id-value="builds_" data-build-time-by-context-x-axis-value="build_number" data-build-time-by-context-y-axis-value="deploy_time" data-build-time-by-context-default-context-value="production" data-build-time-by-context-context-key-value="context">
   <header>
     <h2>Build time by context (s)</h2>
   </header>
@@ -64,7 +64,7 @@ title: Netlify Build Data
   <% end %>
 </section>
 
-<section data-controller="data-visualisation" data-data-visualisation-store-id-value="builds_" data-action="resize@window->data-visualisation#resize">
+<section data-controller="data-visualisation" data-data-visualisation-store-id-value="builds_" data-data-visualisation-x-axis-value="build_number" data-data-visualisation-y-axis-value="deploy_time" data-data-visualisation-date-value="created_at" data-data-visualisation-time-format-value="%a %-d %b, %H:%M" data-action="resize@window->data-visualisation#resize">
   <div data-viz="wrapper" class="line-chart">
     <% tooltip html: { "data-viz": "tooltip" } do %>
       <div class="line-chart--tooltip-text">

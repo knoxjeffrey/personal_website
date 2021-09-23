@@ -10,7 +10,11 @@ import LineChart from "~/javascripts/dashboard/LineChart"
  **/
 export default class extends Controller {
   static values = {
-    storeId: String
+    date: String,
+    storeId: String,
+    timeFormat: String,
+    xAxis: String,
+    yAxis: String
   }
 
   /** 
@@ -61,7 +65,10 @@ export default class extends Controller {
       this._lineChart = new LineChart(
         this.store("selectedContextData"),
         this.store("contextSelected"),
-        60,
+        this.yAxisValue,
+        this.xAxisValue,
+        this.dateValue,
+        this.timeFormatValue,
         "[data-viz='wrapper']",
         "[data-viz='tooltip']"
       )
