@@ -1,6 +1,6 @@
 import d3 from "~/javascripts/dashboard/LineChart_modules"
 import { 
-  targetLineValues, minYAxisValues, yAxisTextValues, yAxisMeasurementValues
+  targetLineValues, minYAxisValues, yAxisTextValues, yAxisMeasurementValues, allowClicks
 } from "~/javascripts/dashboard/utils"
 
 /**
@@ -339,6 +339,7 @@ export default class LineChart {
    **/
   onClick = event => {
     if(this.selectedData[0].build_number === 0) return
+    if(!allowClicks(this.selectedContext)) return
     
     const deployId = this.dv.deployIdAccessor(this.closestDataPoint(event))
     window.open(

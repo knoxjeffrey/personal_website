@@ -61,3 +61,18 @@ export function yAxisTextValues(context) {
   if (context === "fid") return " ms"
   if (context === "cls") return ""
 }
+
+/** 
+ * Allow clicks on the given context
+ *
+ * @function allowClicks
+ * @memberof javascripts.dashboard.utils
+ */
+ export function allowClicks(context) {
+  if (context === "production") return true
+  if (context === "deploy-preview") return true
+  if (context === "cms") return true
+  if (context === "lcp") return false
+  if (context === "fid") return false
+  if (context === "cls") return false
+}
