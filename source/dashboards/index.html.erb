@@ -12,7 +12,7 @@ title: Dashboards
   </aside>
   <main>
     <a href="/dashboards/netlify-build-data/">
-      <%= figure media: image_tag("netlify.jpg", alt: "Netlify logo", title: "Netlify logo") %>
+      <%= figure media: image_tag("netlify.jpg", alt: "Netlify logo", title: "Netlify logo", loading: :eager) %>
     </a>
   </main>
 </div>
@@ -28,12 +28,19 @@ title: Dashboards
 
 <div class="components components-grid">
   <aside>
-    <p><strong>Coming soon</strong> - A dashboard displaying Real User Monitoring (RUM) data for this site.</p>
-    <p>Tracking Core Web Vitals reveals the quality of the user experience for this site. These metrics plus other Web Vitals are displayed in the dashboard.</p>
+    <p>A dashboard displaying Real User Monitoring (RUM) data for this site.</p>
+    <p>Core Web Vitals reveal the quality of the user experience for this site. These metrics plus other Web Vitals are displayed in the dashboard.</p>
   </aside>
   <main>
-    <a href="#">
+    <a href="/dashboards/web-vitals-data/">
       <%= figure media: image_tag("web_vitals.jpg", alt: "Web Vitals logo", title: "Web Vitals logo") %>
     </a>
   </main>
 </div>
+
+<%= button text: "Visit Web Vitals dashboard",
+           link: true,
+           href: "/dashboards/web-vitals-data/",
+           type: :primary,
+           block: true,
+           html: { class: "margin-top--m" } %>
