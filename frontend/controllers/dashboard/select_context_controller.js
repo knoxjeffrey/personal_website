@@ -2,8 +2,8 @@ import { Controller } from "stimulus"
 import { subscription } from "~/javascripts/store/mixins/subscription"
 
 /**
- * @class Dashboard.BuildTimeByContextController
- * @classdesc Stimulus controller that handles the buttons for the build context.
+ * @class Dashboard.SelectContextController
+ * @classdesc Stimulus controller that handles the buttons for the various contexts.
  * @extends Controller
  **/
 export default class extends Controller {
@@ -20,7 +20,7 @@ export default class extends Controller {
    * Subscribe to the store.
    * 
    * @instance
-   * @memberof Dashboard.BuildTimeByContextController
+   * @memberof Dashboard.SelectContextController
    **/
   connect() {
     subscription(this)
@@ -32,7 +32,7 @@ export default class extends Controller {
    * Handles a repeated Turbo visit to the dashboard page.
    * 
    * @instance
-   * @memberof Dashboard.BuildTimeByContextController
+   * @memberof Dashboard.SelectContextController
    **/
   reconnect() {
     if (this.store("selectedDataVizData")) {
@@ -45,7 +45,7 @@ export default class extends Controller {
    * the data for the context
    * 
    * @instance
-   * @memberof Dashboard.BuildTimeByContextController
+   * @memberof Dashboard.SelectContextController
    **/
   contextClicked(event) {    
     this.buttonTargets.forEach(buttonTarget => buttonTarget.classList.remove("selected"))
@@ -56,11 +56,11 @@ export default class extends Controller {
   }
 
   /** 
-   * Get the data for the selected context. Also set the build number to be used on the x axis.
-   * If there are no builds for the context then return a dummy object in an array.
+   * Get the data for the selected context. Also set the value to be used on the x axis.
+   * If there is no data for the context then return a dummy object in an array.
    * 
    * @instance
-   * @memberof Dashboard.BuildTimeByContextController
+   * @memberof Dashboard.SelectContextController
    **/
   selectContextData(context) {
     const contextData =  this.store("selectedDataVizData").filter(data => data[this.contextKeyValue] === context)
@@ -78,7 +78,7 @@ export default class extends Controller {
    * Use the button text to set the context.
    * 
    * @instance
-   * @memberof Dashboard.BuildTimeByContextController
+   * @memberof Dashboard.SelectContextController
    **/
   contextSelected(buttonText) {
     return buttonText.toLowerCase().replace(" ", "-")
@@ -90,9 +90,9 @@ export default class extends Controller {
    * button.
    * 
    * @instance
-   * @memberof Dashboard.BuildTimeByContextController
+   * @memberof Dashboard.SelectContextController
    **/
-  storeUpdated(store, prop, storeId) {
+  storeUpdated(prop, storeId) {
     if (prop === "selectedDataVizData" && storeId === this.storeIdValue) {
       this.editStore("contextSelected", this.contextSelected(this.defaultContextValue))
       this.editStore("selectedContextData", this.selectContextData(this.defaultContextValue))
@@ -105,7 +105,7 @@ export default class extends Controller {
    * Unsubscribe from the store
    * 
    * @instance
-   * @memberof Dashboard.BuildTimeByContextController
+   * @memberof Dashboard.SelectContextController
    **/
   disconnect() {
     this.unsubscribe()
