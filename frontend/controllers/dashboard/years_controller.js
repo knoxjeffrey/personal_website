@@ -74,7 +74,9 @@ export default class extends Controller {
     if (this.store("yearSelected") === parseInt(event.target.innerHTML)) return
     
     this.editStore("yearSelected", parseInt(event.target.innerHTML))
-    const yearAndMonths = this.store("yearsAndMonths").find(data => data.year === this.store("yearSelected"))
+    const yearAndMonths = this.store("yearsAndMonths").find(
+      data => data.year === this.store("yearSelected")
+    )
     this.editStore("months", yearAndMonths.month_numbers)
     this.editStore("monthSelected", this.store("months")[this.store("months").length - 1])
 
@@ -113,11 +115,13 @@ export default class extends Controller {
    * @instance
    * @memberof Dashboard.YearsController
    **/
-  storeUpdated(store, prop, storeId) {
+  storeUpdated(prop, storeId) {
     if (prop === "yearsAndMonths" && storeId === this.storeIdValue) {
       this.editStore("years", this.store("yearsAndMonths").map(data => data.year))
       this.editStore("yearSelected", this.store("years")[this.store("years").length - 1])
-      this.editStore("months", this.store("yearsAndMonths").slice(-1).map(data => data.month_numbers).flat())
+      this.editStore(
+        "months", this.store("yearsAndMonths").slice(-1).map(data => data.month_numbers).flat()
+      )
       this.editStore("monthSelected", this.store("months")[this.store("months").length - 1])
 
       this.statusValue = "loaded"

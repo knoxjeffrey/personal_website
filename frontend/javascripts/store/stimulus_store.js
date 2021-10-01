@@ -27,7 +27,7 @@ export default class StimulusStore {
   emit(prop, storeId) {
     this._store.subscribers.forEach(controller => {
       typeof controller.storeUpdated === "function" && 
-      controller.storeUpdated(this._store, prop, storeId);
+      controller.storeUpdated(prop, storeId);
     });
   }
   

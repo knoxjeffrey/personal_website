@@ -34,7 +34,7 @@ export default class extends Controller {
    * Handles a repeated Turbo visit to the dashboard page.
    * 
    * @instance
-   * @memberof Dashboard.BuildTimeByContextController
+   * @memberof Dashboard.DataVisualisationController
    **/
   reconnect() {
     if (this.store("selectedContextData")) {
@@ -99,7 +99,7 @@ export default class extends Controller {
    * @instance
    * @memberof Dashboard.DataVisualisationController
    **/
-  storeUpdated(store, prop, storeId) {
+  storeUpdated(prop, storeId) {
     if (prop !== "selectedContextData" && storeId === this.storeIdValue) return
     if(this.isDataVizEmpty()) {
       this.lineChart().createDataVis()

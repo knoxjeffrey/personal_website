@@ -90,7 +90,7 @@ export default class extends Controller {
   }
 
   /** 
-   * Fetch all of the build data for the selected month. If the data for the month is already present
+   * Fetch all of the data for the selected month. If the data for the month is already present
    * then it does not fetch again.
    * 
    * @instance
@@ -114,10 +114,10 @@ export default class extends Controller {
           return responseCheck;
         })
         .then(res => res.json())
-        .then(buildData => {
+        .then(fetchedData => {
           this.editStore("fetchingDataVizData", false)
           let dataToUpdate = this.store("dataVizData")
-          dataToUpdate[`${year}${month}`] = buildData
+          dataToUpdate[`${year}${month}`] = fetchedData
           this.editStore("dataVizData", dataToUpdate)
           this.editStore("selectedDataVizData", this.store("dataVizData")[`${year}${month}`])
         })
@@ -129,13 +129,13 @@ export default class extends Controller {
   }
 
   /** 
-   * Triggered by the store whenever any store data changes. Fetches the build data when a month is
+   * Triggered by the store whenever any store data changes. Fetches the relevant data when a month is
    * selected
    * 
    * @instance
    * @memberof Dashboard.MonthsController
    **/
-  storeUpdated(store, prop, storeId) {
+  storeUpdated(prop, storeId) {
     this.yearSelectedValue = this.store("yearSelected")
     if (prop === "monthSelected" && storeId === this.storeIdValue) this.fetchDataVizData()
   }

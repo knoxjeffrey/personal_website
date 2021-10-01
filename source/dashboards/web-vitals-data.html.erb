@@ -27,14 +27,14 @@ title: Web Vitals Data
 
 <hr/>
 
-<section class="margin-bottom--m" data-controller="build-time-by-context" data-build-time-by-context-store-id-value="vitals_" data-build-time-by-context-x-axis-value="day" data-build-time-by-context-y-axis-value="value" data-build-time-by-context-default-context-value="lcp" data-build-time-by-context-context-key-value="metric">
+<section class="margin-bottom--m" data-controller="select-context" data-select-context-store-id-value="vitals_" data-select-context-x-axis-value="day" data-select-context-y-axis-value="value" data-select-context-default-context-value="lcp" data-select-context-context-key-value="metric">
   <header>
     <h2>Daily Core Web Vitals</h2>
   </header>
   <% button_group do %>
-   <%= button text: "LCP", type: :default, html: { class: "invert selected", "data-build-time-by-context-target": "button", "data-action": "click->build-time-by-context#contextClicked" } %>
-   <%= button text: "FID", type: :default, html: { class: "invert", "data-build-time-by-context-target": "button", "data-action": "click->build-time-by-context#contextClicked" } %>
-   <%= button text: "CLS", type: :default, html: { class: "invert", "data-build-time-by-context-target": "button", "data-action": "click->build-time-by-context#contextClicked" } %>
+   <%= button text: "LCP", type: :default, html: { class: "invert selected", "data-select-context-target": "button", "data-action": "click->select-context#contextClicked" } %>
+   <%= button text: "FID", type: :default, html: { class: "invert", "data-select-context-target": "button", "data-action": "click->select-context#contextClicked" } %>
+   <%= button text: "CLS", type: :default, html: { class: "invert", "data-select-context-target": "button", "data-action": "click->select-context#contextClicked" } %>
   <% end %>
 </section>
 

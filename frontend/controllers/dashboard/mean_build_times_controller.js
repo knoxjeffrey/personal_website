@@ -107,7 +107,7 @@ export default class extends Controller {
    * @instance
    * @memberof Dashboard.MeanBuildTimesController
    **/
-  storeUpdated(store, prop, storeId) {
+  storeUpdated(prop, storeId) {
     if (this.store("fetchingDataVizData")) {
       this.loadingMeanBuildTimesValue(this.productionTarget, "Production")
       this.loadingMeanBuildTimesValue(this.deployPreviewTarget, "Deploy preview")

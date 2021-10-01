@@ -53,14 +53,14 @@ title: Netlify Build Data
 
 <hr/>
 
-<section class="margin-bottom--m" data-controller="build-time-by-context" data-build-time-by-context-store-id-value="builds_" data-build-time-by-context-x-axis-value="build_number" data-build-time-by-context-y-axis-value="deploy_time" data-build-time-by-context-default-context-value="production" data-build-time-by-context-context-key-value="context">
+<section class="margin-bottom--m" data-controller="select-context" data-select-context-store-id-value="builds_" data-select-context-x-axis-value="build_number" data-select-context-y-axis-value="deploy_time" data-select-context-default-context-value="production" data-select-context-context-key-value="context">
   <header>
     <h2>Build time by context (s)</h2>
   </header>
   <% button_group do %>
-   <%= button text: "Production", type: :default, html: { class: "invert selected", "data-build-time-by-context-target": "button", "data-action": "click->build-time-by-context#contextClicked" } %>
-   <%= button text: "Deploy preview", type: :default, html: { class: "invert", "data-build-time-by-context-target": "button", "data-action": "click->build-time-by-context#contextClicked" } %>
-   <%= button text: "CMS", type: :default, html: { class: "invert", "data-build-time-by-context-target": "button", "data-action": "click->build-time-by-context#contextClicked" } %>
+   <%= button text: "Production", type: :default, html: { class: "invert selected", "data-select-context-target": "button", "data-action": "click->select-context#contextClicked" } %>
+   <%= button text: "Deploy preview", type: :default, html: { class: "invert", "data-select-context-target": "button", "data-action": "click->select-context#contextClicked" } %>
+   <%= button text: "CMS", type: :default, html: { class: "invert", "data-select-context-target": "button", "data-action": "click->select-context#contextClicked" } %>
   <% end %>
 </section>
 

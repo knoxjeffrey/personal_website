@@ -75,7 +75,7 @@ export default class extends Controller {
    * @instance
    * @memberof Dashboard.SuccessfulBuildsController
    **/
-  storeUpdated(store, prop, storeId) {
+  storeUpdated(prop, storeId) {
     if (this.store("fetchingDataVizData")) {
       this.loadingSuccessfulBuildsValue(this.productionTarget, "Production")
       this.loadingSuccessfulBuildsValue(this.deployPreviewTarget, "Deploy preview")
