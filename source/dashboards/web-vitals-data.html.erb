@@ -27,7 +27,7 @@ title: Web Vitals Data
 
 <hr/>
 
-<section class="margin-bottom--m" data-controller="select-context" data-select-context-store-id-value="vitals_" data-select-context-x-axis-value="day" data-select-context-y-axis-value="value" data-select-context-default-context-value="lcp" data-select-context-context-key-value="metric">
+<section class="margin-bottom--m" data-controller="select-context" data-select-context-store-id-value="vitals_" data-select-context-default-context-value="lcp" data-select-context-context-key-value="metric">
   <header>
     <h2>Daily Core Web Vitals</h2>
   </header>
@@ -38,7 +38,7 @@ title: Web Vitals Data
   <% end %>
 </section>
 
-<section data-controller="data-visualisation" data-data-visualisation-store-id-value="vitals_" data-data-visualisation-x-axis-value="day" data-data-visualisation-y-axis-value="value" data-data-visualisation-date-value="time_stamp" data-data-visualisation-time-format-value="%a %-d %b" data-action="resize@window->data-visualisation#resize">
+<section data-controller="data-visualisation" data-data-visualisation-store-id-value="vitals_" data-data-visualisation-x-axis-value="day" data-data-visualisation-y-axis-value="value" data-data-visualisation-date-value="date" data-data-visualisation-time-format-value="%a %-d %b" data-action="resize@window->data-visualisation#resize">
   <div data-viz="wrapper" class="line-chart">
     <% tooltip html: { "data-viz": "tooltip" } do %>
       <div class="line-chart--tooltip-text">

@@ -11,9 +11,7 @@ export default class extends Controller {
   static values = {
     contextKey: String,
     defaultContext: String,
-    storeId: String,
-    xAxis: String,
-    yAxis: String
+    storeId: String
   }
 
   /** 
@@ -66,11 +64,31 @@ export default class extends Controller {
     const contextData =  this.store("selectedDataVizData").filter(data => data[this.contextKeyValue] === context)
 
     if(this.storeIdValue === "builds_") {
-      if(contextData.length === 0) return [{ [this.yAxisValue]: 0, [this.xAxisValue]: 0 }]
-      return contextData.map((data, index) => Object.assign(data, { [this.xAxisValue]: index + 1 }))
-    } else {
-      if(contextData.length === 0) return [{ [this.yAxisValue]: 0, [this.xAxisValue]: 0 }]
-      return contextData.map((data) => Object.assign(data, { [this.xAxisValue]: new Date(data.time_stamp).getDate() }))
+      if(contextData.length === 0) return [{ deploy_time: 0, build_number: 0 }]
+      return contextData.map((data, index) => Object.assign(data, { build_number: index + 1 }))
+    } else if (this.storeIdValue === "vitals_") {
+      if(contextData.length === 0) return [{ value: 0, day: 0 }]
+      
+      const groupSumCount = contextData.reduce((acc , data) => {
+        if (!acc.get(data.date)) {
+          acc.set(
+            data.date, { date: data.date, metric: data.metric, data_float: data.data_float, count: 1 }
+          )
+          return acc
+        }
+        const dateContent = acc.get(data.date)
+        dateContent.data_float += data.data_float
+        dateContent.count += 1
+        return acc
+      }, new Map())
+
+      for (let result of groupSumCount.values()) {
+        result.value = Math.round(((result.data_float/result.count) + Number.EPSILON) * 10000) / 10000
+      }
+
+      return [...groupSumCount.values()].map((data) => {
+        return Object.assign(data, { day: new Date(data.date).getDate() })
+      })
     }
   }
 
