@@ -34,7 +34,7 @@ export default class extends Controller {
    **/
   reconnect() {
     if (this.store("selectedDataVizData")) {
-      this.storeUpdated(this.store(), "selectedDataVizData", this.storeIdValue)
+      this.storeUpdated("selectedDataVizData", this.storeIdValue)
     }
   }
 
@@ -68,7 +68,7 @@ export default class extends Controller {
       return contextData.map((data, index) => Object.assign(data, { build_number: index + 1 }))
     } else if (this.storeIdValue === "vitals_") {
       if(contextData.length === 0) return [{ value: 0, day: 0 }]
-      
+
       const groupSumCount = contextData.reduce((acc , data) => {
         if (!acc.get(data.date)) {
           acc.set(

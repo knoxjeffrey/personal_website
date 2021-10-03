@@ -39,7 +39,7 @@ export default class extends Controller {
    **/
   reconnect() {
     if (this.store("selectedContextData")) {
-      this.storeUpdated(this.store(), "selectedContextData", this.storeIdValue)
+      this.storeUpdated("selectedContextData", this.storeIdValue)
     }
   }
 
