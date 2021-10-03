@@ -39,7 +39,8 @@ title: Web Vitals Data
 </section>
 
 <section data-controller="data-visualisation" data-data-visualisation-store-id-value="vitals_" data-data-visualisation-x-axis-value="day" data-data-visualisation-y-axis-value="value" data-data-visualisation-date-value="date" data-data-visualisation-time-format-value="%a %-d %b" data-action="resize@window->data-visualisation#resize">
-  <div data-viz="wrapper" class="line-chart">
+  <%= alert text: "Loading #{loading}", type: :default, html: { class: "line-chart--loading", "data-data-visualisation-target": "loading" } %>
+  <div data-viz="wrapper" class="line-chart" data-data-visualisation-target="visualisation">
     <% tooltip html: { "data-viz": "tooltip" } do %>
       <div class="line-chart--tooltip-text">
         <strong><small><span data-viz="date"></span></small></strong>

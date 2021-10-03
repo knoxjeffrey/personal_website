@@ -50,6 +50,7 @@ export async function handler(event, _context) {
       const { data, error, count } = await supabase
         .from("real_user_metrics")
         .select("path, time_stamp, metric, data_float", { count: "exact" })
+        .in("metric", ["fid", "lcp", "cls"])
         .gte("time_stamp", dates.gte)
         .lt("time_stamp", dates.lt)
         .order("time_stamp")

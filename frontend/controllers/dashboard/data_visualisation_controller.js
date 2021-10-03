@@ -9,6 +9,7 @@ import LineChart from "~/javascripts/dashboard/LineChart"
  * @extends Controller
  **/
 export default class extends Controller {
+  static targets = [ "loading", "visualisation" ]
   static values = {
     date: String,
     storeId: String,
@@ -100,11 +101,19 @@ export default class extends Controller {
    * @memberof Dashboard.DataVisualisationController
    **/
   storeUpdated(prop, storeId) {
-    if (prop !== "selectedContextData" && storeId === this.storeIdValue) return
-    if(this.isDataVizEmpty()) {
-      this.lineChart().createDataVis()
+    if (this.store("fetchingDataVizData")) {
+      this.loadingTarget.style.display = "block"
+      this.visualisationTarget.style.display = "none"
     } else {
-      this.lineChart().updateDataVis(this.store("selectedContextData"), this.store("contextSelected"))
+      if (prop !== "selectedContextData" && storeId === this.storeIdValue) return
+
+      this.loadingTarget.style.display = "none"
+      this.visualisationTarget.style.display = "block"
+      if(this.isDataVizEmpty()) {
+        this.lineChart().createDataVis()
+      } else {
+        this.lineChart().updateDataVis(this.store("selectedContextData"), this.store("contextSelected"))
+      }
     }
   }
 
