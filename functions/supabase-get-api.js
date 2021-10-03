@@ -41,18 +41,28 @@ export async function handler(event, _context) {
   }
 
   if (functionRequested == "vitals_data_for_year_and_month") {
+    const batchSize = 1000
+    let combinedBatches = []
+    let counter = 0
     const dates = dateRanges(event)
 
-    const { data, error } = await supabase
-      .from("real_user_metrics")
-      .select()
-      .gte("time_stamp", dates.gte)
-      .lt("time_stamp", dates.lt)
-      .order("time_stamp")
+    const query = async (counter) => {
+      const { data, error, count } = await supabase
+        .from("real_user_metrics")
+        .select("path, time_stamp, metric, data_float", { count: "exact" })
+        .gte("time_stamp", dates.gte)
+        .lt("time_stamp", dates.lt)
+        .order("time_stamp")
+        .range((batchSize * counter), batchSize * (counter + 1))
 
-    if (error) return { statusCode: 500, body: `An error occurred: ${JSON.stringify(error)}` }
-    
-    const assignDateWithoutTime = data.map((rumObject) => {
+      if (error) return { statusCode: 500, body: `An error occurred: ${JSON.stringify(error)}` }
+      
+      combinedBatches = combinedBatches.concat(data)
+      if (count/(counter + 1) * batchSize >= 1) await query(counter += 1)
+    }
+    await query(counter)
+
+    const assignDateWithoutTime = combinedBatches.map((rumObject) => {
       return Object.assign(rumObject, { date: rumObject.time_stamp.split("T")[0] })
     })
     return { statusCode: 200, body: JSON.stringify(assignDateWithoutTime) }
