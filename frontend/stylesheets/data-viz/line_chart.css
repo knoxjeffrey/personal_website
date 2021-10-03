@@ -1,4 +1,10 @@
 .line-chart {
+  display: none;
+  position: relative;
+}
+
+.line-chart--loading {
+  display: block;
   position: relative;
 }
 

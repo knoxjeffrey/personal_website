@@ -40,7 +40,7 @@ export default class extends Controller {
    **/
   reconnect() {
     if (this.store("selectedDataVizData")) {
-      this.storeUpdated(this.store(), "monthSelected", this.storeIdValue)
+      this.storeUpdated("monthSelected", this.storeIdValue)
     }
   }
 

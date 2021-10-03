@@ -37,7 +37,7 @@ export default class extends Controller {
    **/
   reconnect() {
     if (this.store("selectedDataVizData")) {
-      this.storeUpdated(this.store(), "yearsAndMonths", this.storeIdValue)
+      this.storeUpdated("yearsAndMonths", this.storeIdValue)
     }
   }
 
@@ -74,9 +74,9 @@ export default class extends Controller {
     if (this.store("yearSelected") === parseInt(event.target.innerHTML)) return
     
     this.editStore("yearSelected", parseInt(event.target.innerHTML))
-    const yearAndMonths = this.store("yearsAndMonths").find(
-      data => data.year === this.store("yearSelected")
-    )
+    const yearAndMonths = this.store("yearsAndMonths").find(data => {
+      return data.year === this.store("yearSelected")
+    })
     this.editStore("months", yearAndMonths.month_numbers)
     this.editStore("monthSelected", this.store("months")[this.store("months").length - 1])
 
