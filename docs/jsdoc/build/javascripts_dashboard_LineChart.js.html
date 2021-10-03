@@ -227,7 +227,7 @@ export default class LineChart {
         .attr("class", "line-chart--tooltip-circle")
         .attr("r", 4)
 
-    // Setup build duration line
+    // Setup the data visualisation graph line
     const line = this.dv.bounds.append("path")
         .attr("class", "line-chart--path")
         .attr("d", this.dv.lineGenerator(this.selectedData))
