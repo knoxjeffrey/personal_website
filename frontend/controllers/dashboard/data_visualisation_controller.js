@@ -110,9 +110,9 @@ export default class extends Controller {
       this.loadingTarget.style.display = "none"
       this.visualisationTarget.style.display = "block"
       if(this.isDataVizEmpty()) {
-        this.lineChart().createDataVis()
+        // this.lineChart().createDataVis()
       } else {
-        this.lineChart().updateDataVis(this.store("selectedContextData"), this.store("contextSelected"))
+        // this.lineChart().updateDataVis(this.store("selectedContextData"), this.store("contextSelected"))
       }
     }
   }

@@ -1,0 +1,21 @@
+.histogram {
+  display: none;
+  position: relative;
+}
+
+.histogram--loading {
+  display: block;
+  position: relative;
+}
+
+.histogram--fail-line, .histogram--success-line {
+  stroke-dasharray: 1px 1px;
+}
+
+.histogram--fail-line {
+  stroke: var(--error-color);
+}
+
+.histogram--success-line {
+  stroke: var(--success-color);
+}

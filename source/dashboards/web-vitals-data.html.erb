@@ -52,5 +52,10 @@ title: Web Vitals Data
   </div>
 </section>
 
+<section data-controller="histogram" data-histogram-store-id-value="vitals_">
+  <%= alert text: "Loading #{loading}", type: :default, html: { class: "histogram--loading", "data-histogram-target": "loading" } %>
+  <div data-histogram="wrapper" class="histogram" data-histogram-target="visualisation"></div>
+</section>
+
 <%= vite_async_css "data_viz_css" %>
 <%= vite_javascript_tag "dashboard", "data-turbo-track": "reload", defer: true %>

@@ -67,27 +67,33 @@ export default class extends Controller {
       if(contextData.length === 0) return [{ deploy_time: 0, build_number: 0 }]
       return contextData.map((data, index) => Object.assign(data, { build_number: index + 1 }))
     } else if (this.storeIdValue === "vitals_") {
-      if(contextData.length === 0) return [{ value: 0, day: 0 }]
+      // if(contextData.length === 0) return [{ value: 0, day: 0 }]
 
-      const groupSumCount = contextData.reduce((acc , data) => {
-        if (!acc.get(data.date)) {
-          acc.set(
-            data.date, { date: data.date, metric: data.metric, data_float: data.data_float, count: 1 }
-          )
-          return acc
-        }
-        const dateContent = acc.get(data.date)
-        dateContent.data_float += data.data_float
-        dateContent.count += 1
-        return acc
-      }, new Map())
+      // const groupSumCount = contextData.reduce((acc , data) => {
+      //   if (!acc.get(data.date)) {
+      //     acc.set(
+      //       data.date, { date: data.date, metric: data.metric, data_float: data.data_float, count: 1 }
+      //     )
+      //     return acc
+      //   }
+      //   const dateContent = acc.get(data.date)
+      //   dateContent.data_float += data.data_float
+      //   dateContent.count += 1
+      //   return acc
+      // }, new Map())
 
-      for (let result of groupSumCount.values()) {
-        result.value = Math.round(((result.data_float/result.count) + Number.EPSILON) * 10000) / 10000
-      }
+      // for (let result of groupSumCount.values()) {
+      //   result.value = Math.round(((result.data_float/result.count) + Number.EPSILON) * 10000) / 10000
+      // }
 
-      return [...groupSumCount.values()].map((data) => {
-        return Object.assign(data, { day: new Date(data.date).getDate() })
+      // return [...groupSumCount.values()].map((data) => {
+      //   return Object.assign(data, { day: new Date(data.date).getDate() })
+      // })
+
+
+      if(contextData.length === 0) return []
+      return contextData.map(data => { 
+        return { value: data.data_float }
       })
     }
   }

@@ -1,6 +1,6 @@
 import d3 from "~/javascripts/dashboard/LineChart_modules"
 import { 
-  targetLineValues, minYAxisValues, yAxisTextValues, yAxisMeasurementValues, allowClicks
+  targetLineValues, minAxisValues, yAxisTextValues, yAxisMeasurementValues, allowClicks
 } from "~/javascripts/dashboard/utils"
 
 /**
@@ -113,7 +113,7 @@ export default class LineChart {
     this.dv.yScale = d3.scaleLinear()
       .domain([
         0, d3.max(
-          [minYAxisValues(this.selectedContext), d3.max(this.selectedData.map(data => data[this.yKey]))
+          [minAxisValues(this.selectedContext), d3.max(this.selectedData.map(data => data[this.yKey]))
         ])
       ])
       .range([this.dimensions.boundedHeight, 0])

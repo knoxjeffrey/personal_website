@@ -18,12 +18,12 @@ export function targetLineValues(context) {
 }
 
 /** 
- * Get the minimum y axis value for the given context
+ * Get the minimum axis value for the given context
  *
- * @function minYAxisValues
+ * @function minAxisValues
  * @memberof javascripts.dashboard.utils
  */
-export function minYAxisValues(context) {
+export function minAxisValues(context) {
   if (context === "production") return 60
   if (context === "deploy-preview") return 60
   if (context === "cms") return 60
