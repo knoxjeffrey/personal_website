@@ -8,6 +8,23 @@
   position: relative;
 }
 
+.histogram--x-axis path {
+  stroke: var(--secondary-color);
+}
+
+.histogram .tick line {
+  stroke: var(--secondary-color);
+}
+
+.histogram .tick text {
+  fill: var(--secondary-color);
+}
+
+.histogram--x-axis-label {
+  fill: var(--progress-bar-background);
+  font-size: 1.2em;
+}
+
 .histogram--fail-line, .histogram--success-line {
   stroke-dasharray: 1px 1px;
 }
@@ -18,4 +35,10 @@
 
 .histogram--success-line {
   stroke: var(--success-color);
+}
+
+.histogram--bar-text {
+  fill: var(--secondary-color);
+  font-size: 0.8em;
+  text-anchor: middle;
 }

@@ -112,24 +112,24 @@ export default class Histogram {
         .attr("y1", -20)
         .attr("y2", this.dimensions.boundedHeight)
     this.dv.bounds.append("g")
-        .attr("class", "x-axis")
+        .attr("class", "histogram--x-axis")
         .style("transform", `translateY(${this.dimensions.boundedHeight}px)`)
       .append("text")
-        .attr("class", "x-axis-label")
+        .attr("class", "histogram--x-axis-label")
   }
 
   setGenerators() {
     const xAxisGenerator = d3.axisBottom()
       .scale(this.dv.xScale)
   
-    const xAxis = this.dv.bounds.select(".x-axis")
+    const xAxis = this.dv.bounds.select(".histogram--x-axis")
       .transition(this.updateTransition())
       .call(xAxisGenerator)
 
-    const xAxisLabel = xAxis.select(".x-axis-label")
+    const xAxisLabel = xAxis.select(".histogram--x-axis-label")
         .attr("x", this.dimensions.boundedWidth / 2)
-        .attr("y", this.dimensions.margin.bottom - 10)
-        .text(this.metric)
+        .attr("y", this.dimensions.margin.bottom )
+        .text(this.selectedContext.toUpperCase())
   }
 
   drawData() {
@@ -193,7 +193,10 @@ export default class Histogram {
       .transition(this.updateTransition())
         .attr("x", d => this.dv.xScale(d.x0) + (this.dv.xScale(d.x1) - this.dv.xScale(d.x0)) / 2)
         .attr("y", d => this.dv.yScale(this.dv.yAccessor(d)) - 5)
-        .text(this.dv.yAccessor)
+        .text(function(d) {
+          return d.length > 0 ? d.length : null
+        })
+        .attr("class", "histogram--bar-text")
   }
 
   kpiLineTransition() {
