@@ -1,4 +1,5 @@
 import { Controller } from "stimulus"
+import { debounce } from "debounce"
 import { subscription } from "~/javascripts/store/mixins/subscription"
 import Histogram from "~/javascripts/dashboard/Histogram"
 
@@ -16,7 +17,7 @@ export default class extends Controller {
   }
 
   /** 
-   * Subscribe to the store.
+   * Subscribe to the store. Debounces the method for handling window resizes
    * 
    * @instance
    * @memberof Dashboard.HistogramController
@@ -25,6 +26,7 @@ export default class extends Controller {
     subscription(this)
     this.subscribe()
     this.reconnect()
+    this.resize = debounce(this.resize, 250).bind(this)
   }
 
   /** 
@@ -67,6 +69,23 @@ export default class extends Controller {
       )
     }
     return this._histogram
+  }
+
+  /** 
+   * Handles a resize of the screen by width but ignores height changes. Deletes the current
+   * visualisation and the instance of the Histogram class so it will be created from scratch again.
+   * 
+   * @instance
+   * @memberof Dashboard.HistogramController
+   **/
+  resize() {
+    if (window.innerWidth === this._windowWidth) return
+
+    this._windowWidth = window.innerWidth
+    this._histogram = undefined
+    const wrapper = document.querySelector("[data-histogram='wrapper']")
+    wrapper.removeChild(wrapper.lastChild)
+    this.histogram().createDataVis()
   }
 
   /** 

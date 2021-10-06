@@ -52,7 +52,7 @@ title: Web Vitals Data
   </div>
 </section>
 
-<section data-controller="histogram" data-histogram-store-id-value="vitals_">
+<section data-controller="histogram" data-histogram-store-id-value="vitals_" data-action="resize@window->histogram#resize">
   <%= alert text: "Loading #{loading}", type: :default, html: { class: "histogram--loading", "data-histogram-target": "loading" } %>
   <div data-histogram="wrapper" class="histogram" data-histogram-target="visualisation"></div>
 </section>
