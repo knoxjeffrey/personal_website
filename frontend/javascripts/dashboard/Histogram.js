@@ -1,14 +1,15 @@
 // import d3 from "~/javascripts/dashboard/LineChart_modules"
 import * as d3 from "d3"
-import { targetLineValues, minAxisValues } from "~/javascripts/dashboard/utils"
+import { targetLineValues, minAxisValues, axisMeasurementValues } from "~/javascripts/dashboard/utils"
 
 export default class Histogram {
   constructor(selectedData, selectedContext, metric, wrapper) {
     this.selectedData = selectedData
+    this.selectedDataLength = selectedData.length
     this.selectedContext = selectedContext
     this.metric = metric
     this.wrapper = d3.select(wrapper)
-    this.barPadding = 1
+    this.barPadding = 2
     this.dv = {
       yAccessor: null,
       metricAccessor: null,
@@ -27,7 +28,7 @@ export default class Histogram {
         top: 15,
         right: 20,
         bottom: 40,
-        left: 10,
+        left: 20,
       }
     }
     this.dimensions.boundedWidth = this.dimensions.width
@@ -48,6 +49,7 @@ export default class Histogram {
 
   updateDataVis(selectedData, selectedContext) {
     this.selectedData = selectedData
+    this.selectedDataLength = selectedData.length
     this.selectedContext = selectedContext
   
     this.setScales()
@@ -57,15 +59,15 @@ export default class Histogram {
 
   initialiseAccessors() {
     this.dv.yAccessor = d => d.length
-    this.dv.metricAccessor = d => d[this.metric]
+    this.dv.metricAccessor = d => {
+      return d[this.metric] <= minAxisValues(this.selectedContext) ? d[this.metric] : minAxisValues(this.selectedContext)
+    }
   }
 
   setScales() {
     this.dv.xScale = d3.scaleLinear()
       .domain([
-        0, d3.max(
-          [minAxisValues(this.selectedContext), d3.max(this.selectedData.map(data => data[this.metric]))
-        ])
+        0, minAxisValues(this.selectedContext)
       ])
       .range([0, this.dimensions.boundedWidth])
       .nice()
@@ -73,7 +75,7 @@ export default class Histogram {
     const binsGenerator = d3.bin()
       .domain(this.dv.xScale.domain())
       .value(this.dv.metricAccessor)
-      .thresholds(20)
+      .thresholds(this.dimensions.width < 720 ? 8 : 24)
 
     this.dv.bins = binsGenerator(this.selectedData)
 
@@ -98,7 +100,7 @@ export default class Histogram {
 
     // init static elements
     this.dv.bounds.append("g")
-        .attr("class", "bins")
+        .attr("class", "histogram--bins")
     this.dv.bounds.append("line")
         .attr("class", "histogram--success-line")
         .attr("x1", this.dv.xScale(0))
@@ -112,6 +114,9 @@ export default class Histogram {
         .attr("y1", -20)
         .attr("y2", this.dimensions.boundedHeight)
     this.dv.bounds.append("g")
+      .append("text")
+        .attr("class", "histogram--y-axis-label")
+    this.dv.bounds.append("g")
         .attr("class", "histogram--x-axis")
         .style("transform", `translateY(${this.dimensions.boundedHeight}px)`)
       .append("text")
@@ -121,7 +126,13 @@ export default class Histogram {
   setGenerators() {
     const xAxisGenerator = d3.axisBottom()
       .scale(this.dv.xScale)
-  
+      .tickFormat(d => d === minAxisValues(this.selectedContext) ? `${d}+` : d)
+    
+    const yAxisLabel = this.dv.bounds.select(".histogram--y-axis-label")
+        .attr("x", -20)
+        .attr("y", this.dimensions.boundedHeight / 2 )
+        .text("%")
+
     const xAxis = this.dv.bounds.select(".histogram--x-axis")
       .transition(this.updateTransition())
       .call(xAxisGenerator)
@@ -129,12 +140,12 @@ export default class Histogram {
     const xAxisLabel = xAxis.select(".histogram--x-axis-label")
         .attr("x", this.dimensions.boundedWidth / 2)
         .attr("y", this.dimensions.margin.bottom )
-        .text(this.selectedContext.toUpperCase())
+        .text(`${this.selectedContext.toUpperCase()} ${axisMeasurementValues(this.selectedContext)}`)
   }
 
   drawData() {
-    this.dv.binGroups = this.dv.bounds.select(".bins")
-      .selectAll(".bin")
+    this.dv.binGroups = this.dv.bounds.select(".histogram--bins")
+      .selectAll(".histogram--bin")
       .data(this.dv.bins)
 
     this.oldBinGroups()
@@ -146,7 +157,6 @@ export default class Histogram {
   oldBinGroups() {
     this.dv.oldBinGroups = this.dv.binGroups.exit()
     this.dv.oldBinGroups.selectAll("rect")
-      .style("fill", "red")
       .transition(this.exitTransition())
       .attr("height", 0)
       .attr("y", d => this.dimensions.boundedHeight)
@@ -159,7 +169,7 @@ export default class Histogram {
 
   newBinGroups() {
     this.dv.newBinGroups = this.dv.binGroups.enter().append("g")
-        .attr("class", "bin")
+        .attr("class", "histogram--bin")
     this.dv.newBinGroups.append("rect")
         .attr("x", d => this.dv.xScale(d.x0) + this.barPadding)
         .attr("y", d => this.dimensions.boundedHeight)
@@ -168,7 +178,6 @@ export default class Histogram {
           this.dv.xScale(d.x1) - this.dv.xScale(d.x0) - this.barPadding
         ]))
         .attr("height", 0)
-        .style("fill", "yellowgreen")
     this.dv.newBinGroups.append("text")
       .attr("x", d => this.dv.xScale(d.x0) + (this.dv.xScale(d.x1) - this.dv.xScale(d.x0)) / 2)
       .attr("y", this.dimensions.boundedHeight)
@@ -186,22 +195,24 @@ export default class Histogram {
           this.dv.xScale(d.x1) - this.dv.xScale(d.x0) - this.barPadding
         ]))
         .attr("height", d => this.dimensions.boundedHeight - this.dv.yScale(this.dv.yAccessor(d)))
-        .transition()
-          .style("fill", "cornflowerblue")
-
+    
     const barText = this.dv.binGroups.select("text")
       .transition(this.updateTransition())
         .attr("x", d => this.dv.xScale(d.x0) + (this.dv.xScale(d.x1) - this.dv.xScale(d.x0)) / 2)
         .attr("y", d => this.dv.yScale(this.dv.yAccessor(d)) - 5)
-        .text(function(d) {
-          return d.length > 0 ? d.length : null
+        .text(d => {
+          if (d.length === 0) return null
+          const percentage = Math.round(
+            (((d.length / this.selectedDataLength) * 100) + Number.EPSILON) * 10
+          ) / 10
+          return `${percentage}`
         })
         .attr("class", "histogram--bar-text")
   }
 
   kpiLineTransition() {
     const lineValues = targetLineValues(this.selectedContext)
-    console.log(lineValues)
+
     this.dv.bounds.select(".histogram--success-line")
       .transition(this.updateTransition())
         .attr("x1", this.dv.xScale(lineValues.successLineValue))

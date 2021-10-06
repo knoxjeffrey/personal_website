@@ -35,10 +35,10 @@ export function minAxisValues(context) {
 /** 
  * Get the x axis legend text for the given context
  *
- * @function minYAxisValues
+ * @function axisTextValues
  * @memberof javascripts.dashboard.utils
  */
-export function yAxisTextValues(context) {
+export function axisTextValues(context) {
   if (context === "production") return "Build number"
   if (context === "deploy-preview") return "Build number"
   if (context === "cms") return "Build number"
@@ -50,10 +50,10 @@ export function yAxisTextValues(context) {
 /** 
  * Get the y axis unit of measurment in the tooltip for the given context
  *
- * @function yAxisMeasurementValues
+ * @function axisMeasurementValues
  * @memberof javascripts.dashboard.utils
  */
- export function yAxisMeasurementValues(context) {
+ export function axisMeasurementValues(context) {
   if (context === "production") return " s"
   if (context === "deploy-preview") return " s"
   if (context === "cms") return " s"

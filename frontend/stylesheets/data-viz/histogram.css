@@ -20,6 +20,7 @@
   fill: var(--secondary-color);
 }
 
+.histogram--y-axis-label,
 .histogram--x-axis-label {
   fill: var(--progress-bar-background);
   font-size: 1.2em;
@@ -27,6 +28,7 @@
 
 .histogram--fail-line, .histogram--success-line {
   stroke-dasharray: 1px 1px;
+  stroke-width: 2px;
 }
 
 .histogram--fail-line {
@@ -41,4 +43,12 @@
   fill: var(--secondary-color);
   font-size: 0.8em;
   text-anchor: middle;
+}
+
+.histogram--bin rect {
+  fill: var(--primary-dark-color);
+}
+
+.histogram--bin text {
+  font-size: 0.7em;
 }
