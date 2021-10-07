@@ -1,4 +1,4 @@
-import { Controller } from "stimulus"
+import { Controller } from "@hotwired/stimulus"
 import { subscription } from "~/javascripts/store/mixins/subscription"
 
 const monthMapper = {

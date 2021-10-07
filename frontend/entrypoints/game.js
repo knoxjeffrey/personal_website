@@ -1,4 +1,4 @@
-import { Application } from "stimulus"
+import { Application } from "@hotwired/stimulus"
 
 import EPController from "~/controllers/game/e_p_controller"
 import HIPSController from "~/controllers/game/h_i_p_s_controller"

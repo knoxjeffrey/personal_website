@@ -1,4 +1,4 @@
-import { Controller } from "stimulus"
+import { Controller } from "@hotwired/stimulus"
 import { debounce } from "debounce"
 import { subscription } from "~/javascripts/store/mixins/subscription"
 import Histogram from "~/javascripts/dashboard/Histogram"
@@ -100,7 +100,6 @@ export default class extends Controller {
       this.visualisationTarget.style.display = "none"
     } else {
       if (prop !== "selectedContextData" && storeId === this.storeIdValue) return
-      console.log('yo')
       this.loadingTarget.style.display = "none"
       this.visualisationTarget.style.display = "block"
       if(this.isDataVizEmpty()) {

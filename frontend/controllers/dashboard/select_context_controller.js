@@ -1,4 +1,4 @@
-import { Controller } from "stimulus"
+import { Controller } from "@hotwired/stimulus"
 import { subscription } from "~/javascripts/store/mixins/subscription"
 
 /**
@@ -67,34 +67,37 @@ export default class extends Controller {
       if(contextData.length === 0) return [{ deploy_time: 0, build_number: 0 }]
       return contextData.map((data, index) => Object.assign(data, { build_number: index + 1 }))
     } else if (this.storeIdValue === "vitals_") {
-      // if(contextData.length === 0) return [{ value: 0, day: 0 }]
+      if (this.store("frameSelected") === undefined) this.editStore("frameSelected", "daily")
 
-      // const groupSumCount = contextData.reduce((acc , data) => {
-      //   if (!acc.get(data.date)) {
-      //     acc.set(
-      //       data.date, { date: data.date, metric: data.metric, data_float: data.data_float, count: 1 }
-      //     )
-      //     return acc
-      //   }
-      //   const dateContent = acc.get(data.date)
-      //   dateContent.data_float += data.data_float
-      //   dateContent.count += 1
-      //   return acc
-      // }, new Map())
+      if (this.store("frameSelected") === "daily") {
+        if(contextData.length === 0) return [{ value: 0, day: 0 }]
 
-      // for (let result of groupSumCount.values()) {
-      //   result.value = Math.round(((result.data_float/result.count) + Number.EPSILON) * 10000) / 10000
-      // }
+        const groupSumCount = contextData.reduce((acc , data) => {
+          if (!acc.get(data.date)) {
+            acc.set(
+              data.date, { date: data.date, metric: data.metric, data_float: data.data_float, count: 1 }
+            )
+            return acc
+          }
+          const dateContent = acc.get(data.date)
+          dateContent.data_float += data.data_float
+          dateContent.count += 1
+          return acc
+        }, new Map())
 
-      // return [...groupSumCount.values()].map((data) => {
-      //   return Object.assign(data, { day: new Date(data.date).getDate() })
-      // })
+        for (let result of groupSumCount.values()) {
+          result.value = Math.round(((result.data_float/result.count) + Number.EPSILON) * 10000) / 10000
+        }
 
-
-      if(contextData.length === 0) return []
-      return contextData.map(data => { 
-        return { value: data.data_float }
-      })
+        return [...groupSumCount.values()].map((data) => {
+          return Object.assign(data, { day: new Date(data.date).getDate() })
+        })
+      } else if (this.store("frameSelected") === "frequency") {
+        if(contextData.length === 0) return []
+        return contextData.map(data => { 
+          return { value: data.data_float }
+        })
+      }
     }
   }
 

@@ -36,6 +36,7 @@
     "vite-plugin-ruby": "^2.0.2"
   },
   "dependencies": {
+    "@hotwired/stimulus": "^3.0.1",
     "@hotwired/turbo": "^7.0.0-beta.4",
     "@supabase/supabase-js": "^1.20.0",
     "bowser": "^2.11.0",
@@ -44,8 +45,7 @@
     "debounce": "^1.2.1",
     "perfume.js": "^6.2.0",
     "prismjs": "^1.25.0",
-    "sha.js": "^2.4.11",
-    "stimulus": "^2.0.0"
+    "sha.js": "^2.4.11"
   },
   "jest": {
     "moduleFileExtensions": [
