@@ -22,6 +22,19 @@ export default class extends Controller {
     this.clonedLoader = this.loadingTarget.cloneNode(true)
     subscription(this)
     this.subscribe()
+    this.reconnect()
+  }
+
+  /** 
+   * Handles a repeated Turbo visit to the dashboard page.
+   * 
+   * @instance
+   * @memberof Dashboard.FrameLoaderController
+   **/
+   reconnect() {
+    if (this.store("frameSelected")) {
+      this.editStore("frameSelected", "daily")
+    }
   }
 
   /** 

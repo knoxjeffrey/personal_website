@@ -1,4 +1,4 @@
-import d3 from "~/javascripts/dashboard/LineChart_modules"
+import d3 from "~/javascripts/dashboard/Chart_modules"
 import { 
   targetLineValues, minAxisValues, axisTextValues, axisMeasurementValues, allowClicks
 } from "~/javascripts/dashboard/utils"

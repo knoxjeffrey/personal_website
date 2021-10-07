@@ -1,9 +1,9 @@
 /**
- * @namespace javascripts.dashboard.LineChart_modules
+ * @namespace javascripts.dashboard.Chart_modules
  * @description Load in the require d3 modules for the visualisation
  */
 
-import { extent, leastIndex, max } from "d3-array"
+import { bin, extent, leastIndex, max } from "d3-array"
 import { axisBottom, axisLeft } from "d3-axis"
 import { format } from "d3-format"
 import { interpolateString } from "d3-interpolate"
@@ -12,9 +12,10 @@ import { pointer, select } from "d3-selection"
 import { curveMonotoneX, line } from "d3-shape"
 import { timeFormat } from "d3-time-format"
 import { transition } from "d3-transition"
+import { easeCubicInOut } from "d3-ease"
 
 export default {
-  extent, leastIndex, max,
+  bin, extent, leastIndex, max,
   axisBottom, axisLeft,
   format,
   interpolateString,
@@ -22,5 +23,6 @@ export default {
   pointer, select,
   curveMonotoneX, line,
   timeFormat,
-  transition
+  transition,
+  easeCubicInOut
 }
