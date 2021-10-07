@@ -27,6 +27,7 @@ export default class extends Controller {
   connect() {
     subscription(this)
     this.subscribe()
+    this.editStore("frameLoaded", true)
     this.reconnect()
     this.resize = debounce(this.resize, 250).bind(this)
   }

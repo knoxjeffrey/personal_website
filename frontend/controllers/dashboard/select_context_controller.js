@@ -120,7 +120,7 @@ export default class extends Controller {
    * @memberof Dashboard.SelectContextController
    **/
   storeUpdated(prop, storeId) {
-    if (prop === "selectedDataVizData" && storeId === this.storeIdValue) {
+    if ((prop === "frameLoaded" || prop === "selectedDataVizData") && storeId === this.storeIdValue) {
       this.editStore("contextSelected", this.contextSelected(this.defaultContextValue))
       this.editStore("selectedContextData", this.selectContextData(this.defaultContextValue))
       this.buttonTargets.forEach(buttonTarget => buttonTarget.classList.remove("selected"))

@@ -34,7 +34,7 @@ export default class extends Controller {
     if (prop === "frameSelected") {
       let turboFrame = document.createElement("turbo-frame")
       turboFrame.id = this.store("frameSelected")
-      turboFrame.src = "/dashboards/frames/web-vitals-data"
+      turboFrame.src = "/dashboards/frames/web-vitals-data/"
       turboFrame.appendChild(this.clonedLoader)
 
       this.frameTarget.innerHTML = ""
