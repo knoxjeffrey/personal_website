@@ -1,0 +1,22 @@
+<turbo-frame id="daily">
+  <section data-controller="data-visualisation" data-data-visualisation-store-id-value="vitals_" data-data-visualisation-x-axis-value="day" data-data-visualisation-y-axis-value="value" data-data-visualisation-date-value="date" data-data-visualisation-time-format-value="%a %-d %b" data-action="resize@window->data-visualisation#resize">
+    <%= alert text: "Loading #{loading}", type: :default, html: { class: "line-chart--loading", "data-data-visualisation-target": "loading" } %>
+    <div data-viz="wrapper" class="line-chart" data-data-visualisation-target="visualisation">
+      <% tooltip html: { "data-viz": "tooltip" } do %>
+        <div class="line-chart--tooltip-text">
+          <strong><small><span data-viz="date"></span></small></strong>
+        </div>
+        <div class="line-chart--tooltip-text">
+          <small>Value: <span data-viz="duration"></span></small>
+        </div>
+      <% end %>
+    </div>
+  </section>
+</turbo-frame>
+
+<turbo-frame id="frequency">
+  <section data-controller="histogram" data-histogram-store-id-value="vitals_" data-action="resize@window->histogram#resize">
+    <%= alert text: "Loading #{loading}", type: :default, html: { class: "histogram--loading", "data-histogram-target": "loading" } %>
+    <div data-histogram="wrapper" class="histogram" data-histogram-target="visualisation"></div>
+  </section>
+</turbo-frame>

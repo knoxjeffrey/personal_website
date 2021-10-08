@@ -1,6 +1,6 @@
-import d3 from "~/javascripts/dashboard/LineChart_modules"
+import d3 from "~/javascripts/dashboard/d3_modules"
 import { 
-  targetLineValues, minYAxisValues, yAxisTextValues, yAxisMeasurementValues, allowClicks
+  targetLineValues, minAxisValues, axisTextValues, axisMeasurementValues, allowClicks
 } from "~/javascripts/dashboard/utils"
 
 /**
@@ -113,7 +113,7 @@ export default class LineChart {
     this.dv.yScale = d3.scaleLinear()
       .domain([
         0, d3.max(
-          [minYAxisValues(this.selectedContext), d3.max(this.selectedData.map(data => data[this.yKey]))
+          [minAxisValues(this.selectedContext), d3.max(this.selectedData.map(data => data[this.yKey]))
         ])
       ])
       .range([this.dimensions.boundedHeight, 0])
@@ -202,7 +202,7 @@ export default class LineChart {
         .attr("class", "line-chart--x-axis-label")
         .attr("x", this.dimensions.boundedWidth / 2)
         .attr("y", this.dimensions.margin.bottom - 5)
-        .text(yAxisTextValues(this.selectedContext))
+        .text(axisTextValues(this.selectedContext))
 
     // Setup KPI lines to start from zero on y axis. These will animate into position with kpiLineTransition
     const targetKpiLine = this.dv.bounds.append("line")
@@ -299,7 +299,7 @@ export default class LineChart {
         .text(formatDate(this.dv.dateAccessor(closestDataset)))
 
     this.tooltip.select("[data-viz='duration']")
-        .html(`${closestYValue}${yAxisMeasurementValues(this.selectedContext)}`)
+        .html(`${closestYValue}${axisMeasurementValues(this.selectedContext)}`)
 
     const x = this.dv.xScale(closestXValue) + this.dimensions.margin.left
     const y = this.dv.yScale(closestYValue) + this.dimensions.margin.top

@@ -25,7 +25,14 @@ title: Web Vitals Data
   <% end %>
 </section>
 
-<hr/>
+<hr class="margin-bottom--s" />
+
+<section data-controller="frame" data-frame-store-id-value="vitals_">
+  <% navigation_sub do %>
+    <%= navigation_list_item link: "#", text: "Daily", item_list_element: true, position: 1, active: true, html: { "data-frame-target": "button", "data-action": "click->frame#frameSelected", "data-frame-id-param": "daily", "onclick": "event.preventDefault()" } %>
+    <%= navigation_list_item link: "#", text: "Frequency", item_list_element: true, position: 2, html: { "data-frame-target": "button", "data-action": "click->frame#frameSelected", "data-frame-id-param": "frequency", "onclick": "event.preventDefault()" } %>
+  <% end %>
+</section>
 
 <section class="margin-bottom--m" data-controller="select-context" data-select-context-store-id-value="vitals_" data-select-context-default-context-value="lcp" data-select-context-context-key-value="metric">
   <header>
@@ -38,18 +45,8 @@ title: Web Vitals Data
   <% end %>
 </section>
 
-<section data-controller="data-visualisation" data-data-visualisation-store-id-value="vitals_" data-data-visualisation-x-axis-value="day" data-data-visualisation-y-axis-value="value" data-data-visualisation-date-value="date" data-data-visualisation-time-format-value="%a %-d %b" data-action="resize@window->data-visualisation#resize">
-  <%= alert text: "Loading #{loading}", type: :default, html: { class: "line-chart--loading", "data-data-visualisation-target": "loading" } %>
-  <div data-viz="wrapper" class="line-chart" data-data-visualisation-target="visualisation">
-    <% tooltip html: { "data-viz": "tooltip" } do %>
-      <div class="line-chart--tooltip-text">
-        <strong><small><span data-viz="date"></span></small></strong>
-      </div>
-      <div class="line-chart--tooltip-text">
-        <small>Value: <span data-viz="duration"></span></small>
-      </div>
-    <% end %>
-  </div>
+<section data-controller="frame-loader" data-frame-loader-target="frame" data-frame-loader-store-id-value="vitals_" data-frame-loader-default-frame-value="daily" data-frame-loader-path-value="/dashboards/frames/web-vitals-data/">
+  <%= alert text: "Loading #{loading}", type: :default, html: { "data-frame-loader-target": "loading" } %>
 </section>
 
 <%= vite_async_css "data_viz_css" %>

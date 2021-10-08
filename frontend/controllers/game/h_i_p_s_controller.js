@@ -1,4 +1,4 @@
-import { Controller } from "stimulus"
+import { Controller } from "@hotwired/stimulus"
 import { AES } from "crypto-es/lib/aes"
 import { Utf8 } from 'crypto-es/lib/core.js'
 
