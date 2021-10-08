@@ -3,12 +3,14 @@ import { subscription } from "~/javascripts/store/mixins/subscription"
 
 /**
  * @class Dashboard.FrameLoaderController
- * @classdesc TODO
+ * @classdesc Requests the correct Turbo frame to load in the required data visualisation
  * @extends Controller
  **/
 export default class extends Controller {
   static targets = [ "frame", "loading" ]
   static values = {
+    defaultFrame: String,
+    path: String,
     storeId: String
   }
 
@@ -33,12 +35,12 @@ export default class extends Controller {
    **/
    reconnect() {
     if (this.store("frameSelected")) {
-      this.editStore("frameSelected", "daily")
+      this.editStore("frameSelected", this.defaultFrameValue)
     }
   }
 
   /** 
-   * Generate a Turbo frame and append the loader inside
+   * Generate a Turbo frame to load the correct data visualisation and append the loader inside
    * 
    * @instance
    * @memberof Dashboard.FrameLoaderController
@@ -47,7 +49,7 @@ export default class extends Controller {
     if (prop === "frameSelected") {
       let turboFrame = document.createElement("turbo-frame")
       turboFrame.id = this.store("frameSelected")
-      turboFrame.src = "/dashboards/frames/web-vitals-data/"
+      turboFrame.src = this.pathValue
       turboFrame.appendChild(this.clonedLoader)
 
       this.frameTarget.innerHTML = ""

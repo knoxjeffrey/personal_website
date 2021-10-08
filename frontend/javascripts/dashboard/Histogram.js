@@ -1,4 +1,4 @@
-import d3 from "~/javascripts/dashboard/Chart_modules"
+import d3 from "~/javascripts/dashboard/chart_modules"
 import { targetLineValues, minAxisValues, axisMeasurementValues } from "~/javascripts/dashboard/utils"
 
 export default class Histogram {

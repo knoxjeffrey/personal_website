@@ -45,7 +45,7 @@ title: Web Vitals Data
   <% end %>
 </section>
 
-<section data-controller="frame-loader" data-frame-loader-target="frame" data-frame-loader-store-id-value="vitals_">
+<section data-controller="frame-loader" data-frame-loader-target="frame" data-frame-loader-store-id-value="vitals_" data-frame-loader-default-frame-value="daily" data-frame-loader-path-value="/dashboards/frames/web-vitals-data/">
   <%= alert text: "Loading #{loading}", type: :default, html: { "data-frame-loader-target": "loading" } %>
 </section>
 
