@@ -3,6 +3,12 @@
     <h2 id="Tabs">Tabs</h2>
   </header>
 
+  <% tabs header: "Optional title" do %>
+    <%= tab_list_item text: "Tab 1" %>
+    <%= tab_list_item text: "Active Tab 2", active: true %>
+    <%= tab_list_item text: "Tab 3" %>
+  <% end %>
+
   <% tabs do %>
     <%= tab_list_item text: "Tab 1" %>
     <%= tab_list_item text: "Active Tab 2", active: true %>
