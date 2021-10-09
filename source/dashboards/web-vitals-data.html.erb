@@ -25,7 +25,7 @@ title: Web Vitals Data
   <% end %>
 </section>
 
-<hr class="margin-bottom--s" />
+<hr />
 
 <section data-controller="frame" data-frame-store-id-value="vitals_">
   <% tabs do %>
@@ -36,7 +36,7 @@ title: Web Vitals Data
 
 <section class="margin-bottom--m" data-controller="select-context" data-select-context-store-id-value="vitals_" data-select-context-default-context-value="lcp" data-select-context-context-key-value="metric">
   <header>
-    <h2>Daily Core Web Vitals</h2>
+    <h2>Core Web Vitals</h2>
   </header>
   <% button_group do %>
    <%= button text: "LCP", type: :default, html: { class: "invert selected", "data-select-context-target": "button", "data-action": "click->select-context#contextClicked" } %>

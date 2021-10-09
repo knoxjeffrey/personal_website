@@ -20,7 +20,7 @@ module Components
 
         def build_list_html(opts)
           active = opts[:active] == true ? " active" : ""
-          classes = opts.dig(:html, :class) ? "menu-item#{active} #{opts[:html][:class]}" : "menu-item#{active}"
+          classes = opts.dig(:html, :class) ? "#{active} #{opts[:html][:class]}" : "#{active}"
           opts[:html] ||= {}
           opts[:html][:class] = classes
           opts[:html]
