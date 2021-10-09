@@ -7,7 +7,7 @@ import { subscription } from "~/javascripts/store/mixins/subscription"
  * @extends Controller
  **/
 export default class extends Controller {
-  static targets = [ "button" ]
+  static targets = [ "button", "header" ]
   static values = {
     storeId: String
   }
@@ -33,6 +33,7 @@ export default class extends Controller {
     this.editStore("frameSelected", event.params.id)
     this.buttonTargets.forEach(buttonTarget => buttonTarget.classList.remove("active"))
     event.target.classList.add("active")
+    this.headerTarget.innerHTML = event.params.header
   }
 
   /** 

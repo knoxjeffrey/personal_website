@@ -28,16 +28,16 @@ title: Web Vitals Data
 <hr />
 
 <section data-controller="frame" data-frame-store-id-value="vitals_">
-  <% tabs do %>
-    <%= tab_list_item text: "Daily", active: true, html: { "data-frame-target": "button", "data-action": "click->frame#frameSelected", "data-frame-id-param": "daily", "onclick": "event.preventDefault()" } %>
-    <%= tab_list_item text: "Frequency", html: { "data-frame-target": "button", "data-action": "click->frame#frameSelected", "data-frame-id-param": "frequency", "onclick": "event.preventDefault()" } %>
+  <% tabs header: "Core Web Vitals" do %>
+    <%= tab_list_item text: "Daily", active: true, html: { "data-frame-target": "button", "data-action": "click->frame#frameSelected", "data-frame-id-param": "daily", "data-frame-header-param": "Daily averages" } %>
+    <%= tab_list_item text: "Frequency", html: { "data-frame-target": "button", "data-action": "click->frame#frameSelected", "data-frame-id-param": "frequency", "data-frame-header-param": "Frequency distribution" } %>
   <% end %>
+  <header class="margin-top--m">
+    <h3 data-frame-target="header">Daily averages</h3>
+  </header>
 </section>
 
 <section class="margin-bottom--m" data-controller="select-context" data-select-context-store-id-value="vitals_" data-select-context-default-context-value="lcp" data-select-context-context-key-value="metric">
-  <header>
-    <h2>Core Web Vitals</h2>
-  </header>
   <% button_group do %>
    <%= button text: "LCP", type: :default, html: { class: "invert selected", "data-select-context-target": "button", "data-action": "click->select-context#contextClicked" } %>
    <%= button text: "FID", type: :default, html: { class: "invert", "data-select-context-target": "button", "data-action": "click->select-context#contextClicked" } %>

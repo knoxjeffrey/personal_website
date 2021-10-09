@@ -2,9 +2,12 @@ module Components
   module Tabs
     class TabsComponent < Middleman::Extension
       helpers do
-        def tabs(&block)
+        def tabs(opts=nil, &block)
+          header_text = opts.nil? ? nil : opts[:header]
+          header = header_text ? content_tag(:h2, header_text, class: "terminal-tabs--header") : ""
           concat(
             content_tag(:div, class: "terminal-tabs") do 
+              header+
               content_tag(:ul) do
                 capture_html(&block)
               end

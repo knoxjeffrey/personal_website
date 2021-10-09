@@ -5,6 +5,12 @@
   width: 100%;
 }
 
+.terminal-tabs--header {
+  align-self: start;
+  position: relative;
+  white-space: nowrap;
+}
+
 .terminal-tabs > ul > li {
   padding-left: 0;
 }
