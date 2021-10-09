@@ -32,7 +32,7 @@ export default class extends Controller {
   frameSelected(event) {
     this.editStore("frameSelected", event.params.id)
     this.buttonTargets.forEach(buttonTarget => buttonTarget.classList.remove("active"))
-    event.target.closest("a").classList.add("active")
+    event.target.classList.add("active")
   }
 
   /** 
