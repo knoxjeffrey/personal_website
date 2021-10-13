@@ -7,27 +7,6 @@ title: Dashboards
 
 <div class="components components-grid">
   <aside>
-    <p>A dashboard displaying the build times for this site on Netlify.</p>
-    <p>Keeping a close eye on build times is important because it can be easy to introduce code over time that drives the build time up.</p>
-  </aside>
-  <main>
-    <a href="/dashboards/netlify-build-data/">
-      <%= figure media: image_tag("netlify.jpg", alt: "Netlify logo", title: "Netlify logo", loading: :eager) %>
-    </a>
-  </main>
-</div>
-
-<%= button text: "Visit Netlify builds dashboard",
-           link: true,
-           href: "/dashboards/netlify-build-data/",
-           type: :primary,
-           block: true,
-           html: { class: "margin-top--m" } %>
-
-<hr/>
-
-<div class="components components-grid">
-  <aside>
     <p>A dashboard displaying Real User Monitoring (RUM) data for this site.</p>
     <p>Core Web Vitals reveal the quality of the user experience. These metrics plus other Web Vitals are displayed in the dashboard.</p>
   </aside>
@@ -41,6 +20,27 @@ title: Dashboards
 <%= button text: "Visit Web Vitals dashboard",
            link: true,
            href: "/dashboards/web-vitals-data/",
+           type: :primary,
+           block: true,
+           html: { class: "margin-top--m" } %>
+
+<hr/>
+
+<div class="components components-grid">
+  <aside>
+    <p>A dashboard displaying the build times for this site on Netlify.</p>
+    <p>Keeping a close eye on build times is important because it can be easy to introduce code over time that drives the build time up.</p>
+  </aside>
+  <main>
+    <a href="/dashboards/netlify-build-data/">
+      <%= figure media: image_tag("netlify.jpg", alt: "Netlify logo", title: "Netlify logo", loading: :eager) %>
+    </a>
+  </main>
+</div>
+
+<%= button text: "Visit Netlify builds dashboard",
+           link: true,
+           href: "/dashboards/netlify-build-data/",
            type: :primary,
            block: true,
            html: { class: "margin-top--m" } %>
