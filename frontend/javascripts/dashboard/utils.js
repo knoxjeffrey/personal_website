@@ -78,8 +78,8 @@ export function axisTextValues(context) {
 }
 
 export function metricsInPercentile(data, key, percentile) {
-  const values = data.map((object) => object[key])
-  const sortedValues = sortNumberArray(values)
+  const selectedValues = data.map((object) => object[key])
+  const sortedValues = sortNumberArray(selectedValues)
   const percentileLimit = percentileValue(sortedValues, percentile)
   return data.filter((object) => object[key] <= percentileLimit )
 }

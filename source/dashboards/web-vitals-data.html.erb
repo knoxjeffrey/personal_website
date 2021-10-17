@@ -29,11 +29,11 @@ title: Web Vitals Data
 
 <section data-controller="frame" data-frame-store-id-value="vitals_">
   <% tabs header: "Core Web Vitals" do %>
-    <%= tab_list_item text: "Daily", active: true, html: { "data-frame-target": "button", "data-action": "click->frame#frameSelected", "data-frame-id-param": "daily", "data-frame-header-param": "Daily averages" } %>
+    <%= tab_list_item text: "Daily", active: true, html: { "data-frame-target": "button", "data-action": "click->frame#frameSelected", "data-frame-id-param": "daily", "data-frame-header-param": "Daily 75th percentile averages" } %>
     <%= tab_list_item text: "Frequency", html: { "data-frame-target": "button", "data-action": "click->frame#frameSelected", "data-frame-id-param": "frequency", "data-frame-header-param": "Frequency distribution" } %>
   <% end %>
   <header class="margin-top--m">
-    <h3 data-frame-target="header">Daily averages</h3>
+    <h3 data-frame-target="header">Daily 75th percentile averages</h3>
   </header>
 </section>
 
