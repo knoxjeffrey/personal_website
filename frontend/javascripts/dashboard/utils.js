@@ -76,3 +76,29 @@ export function axisTextValues(context) {
   if (context === "fid") return false
   if (context === "cls") return false
 }
+
+export function metricsInPercentile(data, key, percentile) {
+  const values = data.map((object) => object[key])
+  const sortedValues = sortNumberArray(values)
+  const percentileLimit = percentileValue(sortedValues, percentile)
+  return data.filter((object) => object[key] <= percentileLimit )
+}
+
+function sortNumberArray(arr) {
+  return arr.sort((a, b) => a - b)
+}
+
+function percentileValue(arr, p) {
+  if (arr.length === 0) return 0;
+  if (typeof p !== "number") throw new TypeError("p must be a number");
+  if (p <= 0) return arr[0];
+  if (p >= 1) return arr[arr.length - 1];
+
+  let index = (arr.length - 1) * p,
+      lower = Math.floor(index),
+      upper = lower + 1,
+      weight = index % 1
+
+  if (upper >= arr.length) return arr[lower];
+  return arr[lower] * (1 - weight) + arr[upper] * weight;
+}
