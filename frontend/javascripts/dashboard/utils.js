@@ -77,6 +77,12 @@ export function axisTextValues(context) {
   if (context === "cls") return false
 }
 
+/** 
+ * Return all objects that have the key value within the given percentile
+ *
+ * @function metricsInPercentile
+ * @memberof javascripts.dashboard.utils
+ */
 export function metricsInPercentile(data, key, percentile) {
   const selectedValues = data.map((object) => object[key])
   const sortedValues = sortNumberArray(selectedValues)
@@ -84,10 +90,22 @@ export function metricsInPercentile(data, key, percentile) {
   return data.filter((object) => object[key] <= percentileLimit )
 }
 
+/** 
+ * Sort the numbers from smallest to largest
+ *
+ * @function sortNumberArray
+ * @memberof javascripts.dashboard.utils
+ */
 function sortNumberArray(arr) {
   return arr.sort((a, b) => a - b)
 }
 
+/** 
+ * Get the value for the given percentile
+ *
+ * @function percentileValue
+ * @memberof javascripts.dashboard.utils
+ */
 function percentileValue(arr, p) {
   if (arr.length === 0) return 0;
   if (typeof p !== "number") throw new TypeError("p must be a number");
