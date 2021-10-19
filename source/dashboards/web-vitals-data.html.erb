@@ -2,8 +2,15 @@
 title: Web Vitals Data
 ---
 
-<h1>Web Vitals Data</h1>
+<h1> Core Web Vitals Data</h1>
 <hr/>
+
+<p class="margin-bottom--l">
+  The data presented here is based on the 75th percentile which matches how Google are 
+  <%= link_to "reporting on Core Web Vitals", "https://web.dev/defining-core-web-vitals-thresholds/#choice-of-percentile" %>.
+  This ensures that the data represents a large percentage of visits to the site but isn't overly impacted
+  by outliers.
+</p>
 
 <% content_for :page_head_meta do %>
   <meta name="turbo-cache-control" content="no-cache">
@@ -27,13 +34,26 @@ title: Web Vitals Data
 
 <hr />
 
+<section data-controller="core-vitals-summary" data-core-vitals-summary-store-id-value="vitals_" data-core-vitals-summary-loading-value='<%= loading %>' data-core-vitals-summary-success-class="terminal-alert-success" data-core-vitals-summary-warning-class="terminal-alert-warning" data-core-vitals-summary-error-class="terminal-alert-error", data-core-vitals-summary-unavailable-class="terminal-alert-primary">
+  <header>
+    <h2>Summary</h2>
+  </header>
+  <div class="flex-column">
+    <%= alert text: "LCP #{loading}", type: :default, html: { class: "margin-bottom--s", "data-core-vitals-summary-target": "lcp" } %>
+    <%= alert text: "FID preview #{loading}", type: :default, html: { class: "margin-bottom--s", "data-core-vitals-summary-target": "fid" } %>
+    <%= alert text: "CLS #{loading}", type: :default, html: { class: "margin-bottom--s", "data-core-vitals-summary-target": "cls" } %>
+  </div>
+</section>
+
+<hr/>
+
 <section data-controller="frame" data-frame-store-id-value="vitals_">
-  <% tabs header: "Core Web Vitals" do %>
-    <%= tab_list_item text: "Daily", active: true, html: { "data-frame-target": "button", "data-action": "click->frame#frameSelected", "data-frame-id-param": "daily", "data-frame-header-param": "Daily 75th percentile averages" } %>
+  <% tabs header: "Breakdown" do %>
+    <%= tab_list_item text: "Daily", active: true, html: { "data-frame-target": "button", "data-action": "click->frame#frameSelected", "data-frame-id-param": "daily", "data-frame-header-param": "Daily averages" } %>
     <%= tab_list_item text: "Frequency", html: { "data-frame-target": "button", "data-action": "click->frame#frameSelected", "data-frame-id-param": "frequency", "data-frame-header-param": "Frequency distribution" } %>
   <% end %>
   <header class="margin-top--m">
-    <h3 data-frame-target="header">Daily 75th percentile averages</h3>
+    <h3 data-frame-target="header">Daily averages</h3>
   </header>
 </section>
 
