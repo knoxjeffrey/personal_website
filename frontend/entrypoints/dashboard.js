@@ -1,5 +1,6 @@
 import { Application } from "@hotwired/stimulus"
 
+import coreVitalsSummaryController from "~/controllers/dashboard/core_vitals_summary_controller"
 import dataVisualisationController from "~/controllers/dashboard/data_visualisation_controller"
 import frameController from "~/controllers/dashboard/frame_controller"
 import frameLoaderController from "~/controllers/dashboard/frame_loader_controller"
@@ -11,6 +12,7 @@ import successfulBuildsController from "~/controllers/dashboard/successful_build
 import yearsController from "~/controllers/dashboard/years_controller"
 
 const application = Application.start()
+application.register("core-vitals-summary", coreVitalsSummaryController)
 application.register("data-visualisation", dataVisualisationController)
 application.register("frame", frameController)
 application.register("frame-loader", frameLoaderController)

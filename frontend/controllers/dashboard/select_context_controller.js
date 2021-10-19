@@ -62,7 +62,8 @@ export default class extends Controller {
    * @memberof Dashboard.SelectContextController
    **/
   selectContextData(context) {
-    let contextData =  this.store("selectedDataVizData").filter(data => data[this.contextKeyValue] === context)
+    let selectedDataVizData = !this.store("selectedDataVizData") ? [] : this.store("selectedDataVizData") 
+    let contextData =  selectedDataVizData.filter(data => data[this.contextKeyValue] === context)
     
     if(this.storeIdValue === "builds_") {
       if(contextData.length === 0) return [{ deploy_time: 0, build_number: 0 }]
@@ -70,10 +71,10 @@ export default class extends Controller {
     } else if (this.storeIdValue === "vitals_") {
       if (this.store("frameSelected") === undefined) this.editStore("frameSelected", "daily")
 
+      contextData = metricsInPercentile(contextData, "data_float", 0.75)
       if (this.store("frameSelected") === "daily") {
         if(contextData.length === 0) return [{ value: 0, day: 0 }]
 
-        contextData = metricsInPercentile(contextData, "data_float", 0.75)
         const groupSumCount = contextData.reduce((acc , data) => {
           if (!acc.get(data.date)) {
             acc.set(
