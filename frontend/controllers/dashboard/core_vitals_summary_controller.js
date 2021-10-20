@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 import { subscription } from "~/javascripts/store/mixins/subscription"
 import { 
-  targetLineValues, metricsInPercentile, axisMeasurementValues
+  targetLineValues, metricsInPercentile, axisMeasurementValues, percentage
 } from "~/javascripts/dashboard/utils"
 
 /**
@@ -43,17 +43,64 @@ export default class extends Controller {
   }
 
   /** 
+   * Update the summary details for the mean values and mini stack bar charts
+   * 
+   * @instance
+   * @memberof Dashboard.CoreVitalsSummaryController
+   **/
+  updateSummary(target, text, context) {
+    let contextData =  this.store("selectedDataVizData").filter(data => data.metric === context)
+    contextData = metricsInPercentile(contextData, "data_float", 0.75)
+
+    this.updateMeanCoreVitalsValue(target, text, context, contextData)
+    this.updateContextDistribution(context, contextData)
+    console.log(this.updateContextDistribution(context, contextData))
+  }
+
+  /** 
    * Sets the text for the mean build time and changes the color to match the KPI
    * 
    * @instance
    * @memberof Dashboard.CoreVitalsSummaryController
    **/
-  updateMeanCoreVitalsValue(target, text, context) {
-    const meanCoreVital = this.calculateMeanCoreVital(context)
+  updateMeanCoreVitalsValue(target, text, context, contextData) {
+    const meanCoreVital = this.calculateMeanCoreVital(contextData)
     target.innerHTML = `${text} ${meanCoreVital} ${axisMeasurementValues(context)}`
     this.removeAlertColors(target)
     target.classList.add(this.alertColor(meanCoreVital, context))
   }
+
+  /** 
+   * Update the datavisualisation showing the split of good, okay, bad for the context
+   * 
+   * @instance
+   * @memberof Dashboard.CoreVitalsSummaryController
+   **/
+  updateContextDistribution(context, contextData) {
+    let result
+    const target = targetLineValues(context)
+    const grouped = contextData.reduce((acc , data) => {
+      if (data.data_float <= target.successLineValue) {
+        result = "good"
+      } else if (data.data_float >= target.failLineValue) {
+        result = "poor"
+      } else {
+        result = "needsImprovement"
+      }
+      let preUpdate = { 
+        count: acc.count + 1, good: acc.good, needsImprovement: acc.needsImprovement, poor: acc.poor
+      }
+      preUpdate[result] += 1 
+      return preUpdate
+    }, { count: 0, good: 0, needsImprovement: 0, poor: 0 })
+    return { 
+      good: percentage(grouped.count, grouped.good),
+      needsImprovement: percentage(grouped.count, grouped.needsImprovement),
+      poor: percentage(grouped.count, grouped.poor)
+    }
+  }
+
+
 
   /** 
    * Sets the text whilst waiting for the mean build time
@@ -70,10 +117,7 @@ export default class extends Controller {
    * @instance
    * @memberof Dashboard.CoreVitalsSummaryController
    **/
-   calculateMeanCoreVital(context) {
-    let contextData =  this.store("selectedDataVizData").filter(data => data.metric === context)
-    contextData = metricsInPercentile(contextData, "data_float", 0.75)
-
+   calculateMeanCoreVital(contextData) {
     const totals = contextData.reduce((acc , data) => {
       return { count: acc.count + 1, dataFloat: acc.dataFloat + data.data_float }
     }, { count: 0, dataFloat: 0 })
@@ -121,9 +165,9 @@ export default class extends Controller {
       this.loadingMeanCoreVitalValue(this.clsTarget, "CLS")
     }
     if (prop === "selectedDataVizData" && storeId === this.storeIdValue) {
-      this.updateMeanCoreVitalsValue(this.lcpTarget, "LCP ...", "lcp")
-      this.updateMeanCoreVitalsValue(this.fidTarget, "FID ...", "fid")
-      this.updateMeanCoreVitalsValue(this.clsTarget, "CLS ...", "cls")
+      this.updateSummary(this.lcpTarget, "LCP ...", "lcp")
+      this.updateSummary(this.fidTarget, "FID ...", "fid")
+      this.updateSummary(this.clsTarget, "CLS ...", "cls")
     }
   }
 

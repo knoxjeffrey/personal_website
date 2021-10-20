@@ -120,3 +120,9 @@ function percentileValue(arr, p) {
   if (upper >= arr.length) return arr[lower];
   return arr[lower] * (1 - weight) + arr[upper] * weight;
 }
+
+export function percentage(total, value) {
+  return Math.round(
+    (((value / total) * 100) + Number.EPSILON) * 10
+  ) / 10
+}
