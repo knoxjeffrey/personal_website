@@ -10,7 +10,7 @@ export default class SingleStackedBar {
     }
     this.dimensions = {
       width: parseInt(this.wrapper.style("width"), 10),
-      height: 53,
+      height: 93,
       margin: {
         top: 0,
         right: 0,
@@ -57,10 +57,27 @@ export default class SingleStackedBar {
     this.dv.bounds.selectAll("rect")
       .data(this.selectedData)
       .enter().append("rect")
-      .attr("class", d => `rect-stacked ${d.barClass}`)
+      .attr("class", d => `single-stacked-bar--${d.barClassModifier}`)
       .attr("x", d => this.dv.xScale(d.cumulative))
       .attr("y", 0)
-      .attr("height", this.dimensions.boundedHeight)
+      .attr("height", 53)
       .attr("width", d => this.dv.xScale(d.percentage))
+
+    this.dv.bounds.selectAll(".single-stacked-bar-legend")
+      .data(this.selectedData)
+      .enter().append("rect")
+      .attr("class", d => `single-stacked-bar-legend single-stacked-bar-legend--${d.barClassModifier}`)
+      .attr("x", (d, i) => i * 90)
+      .attr("y", 63)
+      .attr("height", 30)
+      .attr("width", 60)
+
+      this.dv.bounds.selectAll('.single-stacked-bar-percentage')
+      .data(this.selectedData)
+      .enter().append("text")
+      .attr("class", "single-stacked-bar-percentage")
+      .attr("x", (d, i) => (i * 90) + 30)
+      .attr("y", 82)
+      .text(d => `${d.percentage} %`)
   }
 }

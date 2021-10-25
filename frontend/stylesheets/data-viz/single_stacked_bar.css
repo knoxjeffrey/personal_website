@@ -1,5 +1,5 @@
 .single-stacked-bar {
-  height: 53px;
+  height: 93px;
 }
 
 .single-stacked-bar--lcp,
@@ -8,14 +8,23 @@
   display: none;
 }
 
-.single-stacked-bar--good {
+.single-stacked-bar--good,
+.single-stacked-bar-legend--good {
   fill: var(--success-color);
 }
 
-.single-stacked-bar--needsImprovement {
+.single-stacked-bar--needsImprovement,
+.single-stacked-bar-legend--needsImprovement {
   fill: var(--highlight-color);
 }
 
-.single-stacked-bar--poor {
+.single-stacked-bar--poor,
+.single-stacked-bar-legend--poor {
   fill: var(--error-color);
+}
+
+.single-stacked-bar-percentage {
+  fill: var(--invert-font-color);
+  font-size: 0.8em;
+  text-anchor: middle;
 }

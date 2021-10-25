@@ -143,9 +143,9 @@ export default class extends Controller {
     let needsImprovement = percentage(grouped.count, grouped.needsImprovement)
     let poor = percentage(grouped.count, grouped.poor)
     let data = [
-      { percentage: good, cumulative: 0, barClass: "single-stacked-bar--good" },
-      { percentage: needsImprovement, cumulative: good, barClass: "single-stacked-bar--needsImprovement" },
-      { percentage: poor, cumulative: (good + needsImprovement), barClass: "single-stacked-bar--poor" }
+      { percentage: good, cumulative: 0, barClassModifier: "good" },
+      { percentage: needsImprovement, cumulative: good, barClassModifier: "needsImprovement" },
+      { percentage: poor, cumulative: (good + needsImprovement), barClassModifier: "poor" }
     ]
 
     if(this.isDataVizEmpty(context)) {
