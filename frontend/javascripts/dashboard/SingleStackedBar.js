@@ -32,7 +32,10 @@ export default class SingleStackedBar {
   }
 
   updateDataVis(selectedData, selectedContext) {
+    this.selectedData = selectedData
+    this.selectedContext = selectedContext
 
+    this.redrawDataVis()
   }
 
   setScales() {
@@ -75,6 +78,23 @@ export default class SingleStackedBar {
       this.dv.bounds.selectAll('.single-stacked-bar-percentage')
       .data(this.selectedData)
       .enter().append("text")
+      .attr("class", "single-stacked-bar-percentage")
+      .attr("x", (d, i) => (i * 90) + 30)
+      .attr("y", 82)
+      .text(d => `${d.percentage} %`)
+  }
+
+  redrawDataVis() {
+    this.dv.bounds.selectAll("rect")
+      .data(this.selectedData)
+      .attr("class", d => `single-stacked-bar--${d.barClassModifier}`)
+      .attr("x", d => this.dv.xScale(d.cumulative))
+      .attr("y", 0)
+      .attr("height", 53)
+      .attr("width", d => this.dv.xScale(d.percentage))
+
+    this.dv.bounds.selectAll('.single-stacked-bar-percentage')
+      .data(this.selectedData)
       .attr("class", "single-stacked-bar-percentage")
       .attr("x", (d, i) => (i * 90) + 30)
       .attr("y", 82)

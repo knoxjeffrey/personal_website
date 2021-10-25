@@ -151,7 +151,7 @@ export default class extends Controller {
     if(this.isDataVizEmpty(context)) {
       this.singleStackedBar(data, context).createDataVis()
     } else {
-      this.singleStackedBar(data, context).updateDataVis(this.store("selectedContextData"), this.store("contextSelected"))
+      this.singleStackedBar(data, context).updateDataVis(data, context)
     }
   }
 
