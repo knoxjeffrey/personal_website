@@ -40,13 +40,13 @@ title: Web Vitals Data
   </header>
   <div class="flex-column">
     <%= alert text: "LCP #{loading}", type: :default, html: { class: "margin-bottom--s", "data-core-vitals-summary-target": "lcp" } %>
-    <%= alert text: "Loading #{loading}", type: :default, html: { "data-core-vitals-summary-target": "lcpLoader" } %>
+    <%= alert text: "Loading #{loading}", type: :default, html: { class: "single-stacked-bar--loading", "data-core-vitals-summary-target": "lcpLoader" } %>
     <div class="single-stacked-bar single-stacked-bar--lcp margin-bottom--l" data-stacked-bar-lcp="wrapper" data-core-vitals-summary-target="lcpVis"></div>
     <%= alert text: "FID preview #{loading}", type: :default, html: { class: "margin-bottom--s", "data-core-vitals-summary-target": "fid" } %>
-    <%= alert text: "Loading #{loading}", type: :default, html: { "data-core-vitals-summary-target": "fidLoader" } %>
+    <%= alert text: "Loading #{loading}", type: :default, html: { class: "single-stacked-bar--loading", "data-core-vitals-summary-target": "fidLoader" } %>
     <div class="single-stacked-bar single-stacked-bar--fid margin-bottom--l" data-stacked-bar-fid="wrapper" data-core-vitals-summary-target="fidVis"></div>
     <%= alert text: "CLS #{loading}", type: :default, html: { class: "margin-bottom--s", "data-core-vitals-summary-target": "cls" } %>
-    <%= alert text: "Loading #{loading}", type: :default, html: { "data-core-vitals-summary-target": "clsLoader" } %>
+    <%= alert text: "Loading #{loading}", type: :default, html: { class: "single-stacked-bar--loading", "data-core-vitals-summary-target": "clsLoader" } %>
     <div class="single-stacked-bar single-stacked-bar--cls margin-bottom--l" data-stacked-bar-cls="wrapper" data-core-vitals-summary-target="clsVis"></div>
   </div>
 </section>

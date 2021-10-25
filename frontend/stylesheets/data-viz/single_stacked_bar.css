@@ -2,6 +2,10 @@
   height: 93px;
 }
 
+.single-stacked-bar--loading {
+  margin-bottom: 70px;
+}
+
 .single-stacked-bar--lcp,
 .single-stacked-bar--fid,
 .single-stacked-bar--cls {
