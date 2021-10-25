@@ -1,0 +1,21 @@
+.single-stacked-bar {
+  height: 53px;
+}
+
+.single-stacked-bar--lcp,
+.single-stacked-bar--fid,
+.single-stacked-bar--cls {
+  display: none;
+}
+
+.single-stacked-bar--good {
+  fill: var(--success-color);
+}
+
+.single-stacked-bar--needsImprovement {
+  fill: var(--highlight-color);
+}
+
+.single-stacked-bar--poor {
+  fill: var(--error-color);
+}

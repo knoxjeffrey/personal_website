@@ -3,6 +3,7 @@ import { subscription } from "~/javascripts/store/mixins/subscription"
 import { 
   targetLineValues, metricsInPercentile, axisMeasurementValues, percentage
 } from "~/javascripts/dashboard/utils"
+import SingleStackedBar from "~/javascripts/dashboard/SingleStackedBar"
 
 /**
  * @class Dashboard.CoreVitalsSummaryController
@@ -10,7 +11,9 @@ import {
  * @extends Controller
  **/
 export default class extends Controller {
-  static targets = [ "lcp", "fid", "cls" ]
+  static targets = [
+    "lcp", "fid", "cls", "lcpLoader", "fidLoader", "clsLoader", "lcpVis", "fidVis", "clsVis"
+  ]
   static values = {
     loading: String,
     storeId: String
@@ -53,8 +56,50 @@ export default class extends Controller {
     contextData = metricsInPercentile(contextData, "data_float", 0.75)
 
     this.updateMeanCoreVitalsValue(target, text, context, contextData)
+
+    this.singleStackedBarDisplay()
     this.updateContextDistribution(context, contextData)
-    console.log(this.updateContextDistribution(context, contextData))
+  }
+
+  /** 
+   * Checks if the visualisation has been created yet
+   * 
+   * @instance
+   * @memberof Dashboard.CoreVitalsSummaryController
+   **/
+   isDataVizEmpty(context) {
+    return document.querySelector(`[data-stacked-bar-${context}='wrapper']`).getElementsByTagName("svg").length === 0
+  }
+
+  /** 
+   * Creates a new instance of the SingleStackedBar class if not created, otherwise returns the instance
+   * of the class
+   * 
+   * @instance
+   * @memberof Dashboard.CoreVitalsSummaryController
+   **/
+   singleStackedBar(data, context) {
+    if (this[`_singleStackedBar_${context}`] === undefined) {
+      this._windowWidth = window.innerWidth
+      this[`_singleStackedBar_${context}`] = new SingleStackedBar(
+        data,
+        this.store("contextSelected"),
+        `[data-stacked-bar-${context}='wrapper']`
+      )
+    }
+    return this[`_singleStackedBar_${context}`]
+  }
+
+  singleStackedBarDisplay(hasData=true) {
+    let dataVis = hasData ? "block" : "none"
+    let loader = hasData ? "none" : "block"
+
+    this.lcpVisTarget.style.display = dataVis
+    this.fidVisTarget.style.display = dataVis
+    this.clsVisTarget.style.display = dataVis
+    this.lcpLoaderTarget.style.display = loader
+    this.fidLoaderTarget.style.display = loader
+    this.clsLoaderTarget.style.display = loader
   }
 
   /** 
@@ -93,14 +138,22 @@ export default class extends Controller {
       preUpdate[result] += 1 
       return preUpdate
     }, { count: 0, good: 0, needsImprovement: 0, poor: 0 })
-    return { 
-      good: percentage(grouped.count, grouped.good),
-      needsImprovement: percentage(grouped.count, grouped.needsImprovement),
-      poor: percentage(grouped.count, grouped.poor)
+
+    let good = percentage(grouped.count, grouped.good)
+    let needsImprovement = percentage(grouped.count, grouped.needsImprovement)
+    let poor = percentage(grouped.count, grouped.poor)
+    let data = [
+      { percentage: good, cumulative: 0, barClass: "single-stacked-bar--good" },
+      { percentage: needsImprovement, cumulative: good, barClass: "single-stacked-bar--needsImprovement" },
+      { percentage: poor, cumulative: (good + needsImprovement), barClass: "single-stacked-bar--poor" }
+    ]
+
+    if(this.isDataVizEmpty(context)) {
+      this.singleStackedBar(data, context).createDataVis()
+    } else {
+      this.singleStackedBar(data, context).updateDataVis(this.store("selectedContextData"), this.store("contextSelected"))
     }
   }
-
-
 
   /** 
    * Sets the text whilst waiting for the mean build time
@@ -111,6 +164,8 @@ export default class extends Controller {
   loadingMeanCoreVitalValue(target, text) {
     target.innerHTML = `${text} ${this.loadingValue}`
     this.removeAlertColors(target)
+
+    this.singleStackedBarDisplay(false)
   }
 
   /** 
