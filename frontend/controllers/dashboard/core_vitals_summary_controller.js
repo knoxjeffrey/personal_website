@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
+import { debounce } from "debounce"
 import { subscription } from "~/javascripts/store/mixins/subscription"
 import { 
   targetLineValues, metricsInPercentile, axisMeasurementValues, percentage
@@ -29,8 +30,8 @@ export default class extends Controller {
   connect() {
     subscription(this)
     this.subscribe()
-
     this.reconnect()
+    this.resize = debounce(this.resize, 250).bind(this)
   }
 
   /** 
@@ -45,6 +46,18 @@ export default class extends Controller {
     }
   }
 
+  resize() {
+    if (window.innerWidth === this._windowWidth) return
+
+    this._windowWidth = window.innerWidth
+    this.destroySingleStackedBarDisplay();
+
+    ["lcp", "fid", "cls"].forEach((context) => {
+      console.log(this.contextData(context))
+      this.updateContextDistribution(context, this.contextData(context))
+    })
+  }
+
   /** 
    * Update the summary details for the mean values and mini stack bar charts
    * 
@@ -52,13 +65,16 @@ export default class extends Controller {
    * @memberof Dashboard.CoreVitalsSummaryController
    **/
   updateSummary(target, text, context) {
-    let contextData =  this.store("selectedDataVizData").filter(data => data.metric === context)
-    contextData = metricsInPercentile(contextData, "data_float", 0.75)
+    let contextData = this.contextData(context)
 
     this.updateMeanCoreVitalsValue(target, text, context, contextData)
-
     this.singleStackedBarDisplay()
     this.updateContextDistribution(context, contextData)
+  }
+
+  contextData(context) {
+    let data = this.store("selectedDataVizData").filter(data => data.metric === context)
+    return metricsInPercentile(data, "data_float", 0.75)
   }
 
   /** 
