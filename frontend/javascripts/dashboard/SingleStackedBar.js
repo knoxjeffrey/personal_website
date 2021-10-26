@@ -56,7 +56,6 @@ export default class SingleStackedBar {
           "transform",
           `translate(${this.dimensions.margin.left}px, ${this.dimensions.margin.top}px)`
         )
-
     this.dv.bounds.selectAll("rect")
       .data(this.selectedData)
       .enter().append("rect")
@@ -64,6 +63,15 @@ export default class SingleStackedBar {
       .attr("x", d => this.dv.xScale(d.cumulative))
       .attr("y", 0)
       .attr("height", 53)
+      .attr("width", 0)
+
+    this.dv.bounds.selectAll("rect")
+      .data(this.selectedData)
+      .transition()
+      .ease(d3.easeLinear)
+      .delay((d, i) => i === 0 ? 0 : (this.selectedData[i - 1].cumulative/100) * 250)
+      .duration((d, i) => (d.percentage / 100) * 250)
+      .attr("class", d => `single-stacked-bar--${d.barClassModifier}`)
       .attr("width", d => this.dv.xScale(d.percentage))
 
     this.dv.bounds.selectAll(".single-stacked-bar-legend")
@@ -87,17 +95,17 @@ export default class SingleStackedBar {
   redrawDataVis() {
     this.dv.bounds.selectAll("rect")
       .data(this.selectedData)
-      .attr("class", d => `single-stacked-bar--${d.barClassModifier}`)
+      .transition()
+      .duration(250)
+      .ease(d3.easeCubicInOut)
       .attr("x", d => this.dv.xScale(d.cumulative))
-      .attr("y", 0)
-      .attr("height", 53)
       .attr("width", d => this.dv.xScale(d.percentage))
 
     this.dv.bounds.selectAll('.single-stacked-bar-percentage')
       .data(this.selectedData)
-      .attr("class", "single-stacked-bar-percentage")
-      .attr("x", (d, i) => (i * 90) + 30)
-      .attr("y", 82)
+      .transition()
+      .duration(250)
+      .ease(d3.easeCubicInOut)
       .text(d => `${d.percentage} %`)
   }
 }

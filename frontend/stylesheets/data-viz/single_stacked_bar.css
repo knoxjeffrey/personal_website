@@ -12,6 +12,10 @@
   display: none;
 }
 
+.single-stacked-bar rect {
+  animation: fadeIn linear 250ms;
+}
+
 .single-stacked-bar--good,
 .single-stacked-bar-legend--good {
   fill: var(--success-color);
@@ -31,4 +35,10 @@
   fill: var(--invert-font-color);
   font-size: 0.8em;
   text-anchor: middle;
+  animation: fadeIn linear 250ms;
+}
+
+@keyframes fadeIn {
+  0% {opacity:0;}
+  100% {opacity:1;}
 }

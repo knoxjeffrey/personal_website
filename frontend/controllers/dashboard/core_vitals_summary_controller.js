@@ -102,6 +102,13 @@ export default class extends Controller {
     this.clsLoaderTarget.style.display = loader
   }
 
+  destroySingleStackedBarDisplay() {
+    ["lcp", "fid", "cls"].forEach((context) => {
+      this[`${context}VisTarget`].innerHTML = ""
+      this[`_singleStackedBar_${context}`] = undefined
+    })
+  }
+
   /** 
    * Sets the text for the mean build time and changes the color to match the KPI
    * 
@@ -166,6 +173,7 @@ export default class extends Controller {
     this.removeAlertColors(target)
 
     this.singleStackedBarDisplay(false)
+    this.destroySingleStackedBarDisplay()
   }
 
   /** 

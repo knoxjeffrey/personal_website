@@ -12,7 +12,7 @@ import { pointer, select } from "d3-selection"
 import { curveMonotoneX, line } from "d3-shape"
 import { timeFormat } from "d3-time-format"
 import { transition } from "d3-transition"
-import { easeCubicInOut } from "d3-ease"
+import { easeCubicInOut, easeLinear } from "d3-ease"
 
 export default {
   bin, extent, leastIndex, max,
@@ -24,5 +24,5 @@ export default {
   curveMonotoneX, line,
   timeFormat,
   transition,
-  easeCubicInOut
+  easeCubicInOut, easeLinear
 }
