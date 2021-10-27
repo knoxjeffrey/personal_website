@@ -2,7 +2,7 @@ name: Jsdocs
 on:
   push:
     branches:
-      - main
+      - main_Ignore_for_now
 
 jobs:
   generate-jsdocs:
