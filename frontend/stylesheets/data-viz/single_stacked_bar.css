@@ -1,0 +1,44 @@
+.single-stacked-bar {
+  height: 93px;
+}
+
+.single-stacked-bar--loading {
+  margin-bottom: 70px;
+}
+
+.single-stacked-bar--lcp,
+.single-stacked-bar--fid,
+.single-stacked-bar--cls {
+  display: none;
+}
+
+.single-stacked-bar rect {
+  animation: fadeIn linear 250ms;
+}
+
+.single-stacked-bar--good,
+.single-stacked-bar-legend--good {
+  fill: var(--success-color);
+}
+
+.single-stacked-bar--needsImprovement,
+.single-stacked-bar-legend--needsImprovement {
+  fill: var(--highlight-color);
+}
+
+.single-stacked-bar--poor,
+.single-stacked-bar-legend--poor {
+  fill: var(--error-color);
+}
+
+.single-stacked-bar-percentage {
+  fill: var(--invert-font-color);
+  font-size: 0.8em;
+  text-anchor: middle;
+  animation: fadeIn linear 250ms;
+}
+
+@keyframes fadeIn {
+  0% {opacity:0;}
+  100% {opacity:1;}
+}
