@@ -46,6 +46,13 @@ export default class extends Controller {
     }
   }
 
+  /** 
+   * Handles a resize of the screen by width but ignores height changes. Deletes the current
+   * visualisation and the instances of the stacked bar charts so they will be created from scratch again.
+   * 
+   * @instance
+   * @memberof Dashboard.CoreVitalsSummaryController
+   **/
   resize() {
     if (window.innerWidth === this._windowWidth) return
 
@@ -59,12 +66,70 @@ export default class extends Controller {
   }
 
   /** 
-   * Update the summary details for the mean values and mini stack bar charts
+   * Shows the loading indicator for the mean core vital values and hides the stacked bar charts and
+   * then destroys them so they can be created from scratch again when the new data is fetched from
+   * the database.
    * 
    * @instance
    * @memberof Dashboard.CoreVitalsSummaryController
    **/
-  updateSummary(target, text, context) {
+   loadSummary(target, text) {
+    target.innerHTML = `${text} ${this.loadingValue}`
+    this.removeAlertColors(target)
+
+    this.singleStackedBarDisplay(false)
+    this.destroySingleStackedBarDisplay()
+  }
+
+  /** 
+   * Remove all of the color classes for the given target
+   * 
+   * @instance
+   * @memberof Dashboard.CoreVitalsSummaryController
+   **/
+   removeAlertColors(target) {
+    target.classList.remove(this.successClass, this.warningClass, this.errorClass, this.unavailableClass)
+  }
+
+  /** 
+   * Changes the visibility of the stacked bar charts to either show the data vis or a loading indicator
+   * 
+   * @instance
+   * @memberof Dashboard.CoreVitalsSummaryController
+   **/
+   singleStackedBarDisplay(hasData=true) {
+    let dataVis = hasData ? "block" : "none"
+    let loader = hasData ? "none" : "block"
+
+    this.lcpVisTarget.style.display = dataVis
+    this.fidVisTarget.style.display = dataVis
+    this.clsVisTarget.style.display = dataVis
+    this.lcpLoaderTarget.style.display = loader
+    this.fidLoaderTarget.style.display = loader
+    this.clsLoaderTarget.style.display = loader
+  }
+
+  /** 
+   * Destroy stacked bar charts for each context and set them to undefined so they will be created from
+   * scratch again
+   * 
+   * @instance
+   * @memberof Dashboard.CoreVitalsSummaryController
+   **/
+   destroySingleStackedBarDisplay() {
+    ["lcp", "fid", "cls"].forEach((context) => {
+      this[`${context}VisTarget`].innerHTML = ""
+      this[`_singleStackedBar_${context}`] = undefined
+    })
+  }
+
+  /** 
+   * Update the summary details for the mean values and stacked bar charts
+   * 
+   * @instance
+   * @memberof Dashboard.CoreVitalsSummaryController
+   **/
+   updateSummary(target, text, context) {
     let contextData = this.contextData(context)
 
     this.updateMeanCoreVitalsValue(target, text, context, contextData)
@@ -72,9 +137,117 @@ export default class extends Controller {
     this.updateContextDistribution(context, contextData)
   }
 
-  contextData(context) {
+  /** 
+   * Get the data within the 75th percentile of all current results for the given context
+   * 
+   * @instance
+   * @memberof Dashboard.CoreVitalsSummaryController
+   **/
+   contextData(context) {
     let data = this.store("selectedDataVizData").filter(data => data.metric === context)
     return metricsInPercentile(data, "data_float", 0.75)
+  }
+
+  /** 
+   * Sets the text for the mean core vital for the given context and alters to color to indicate whether
+   * it's good, needs improvement or poor.
+   * 
+   * @instance
+   * @memberof Dashboard.CoreVitalsSummaryController
+   **/
+   updateMeanCoreVitalsValue(target, text, context, contextData) {
+    const meanCoreVital = this.calculateMeanCoreVital(contextData)
+    target.innerHTML = `${text} ${meanCoreVital} ${axisMeasurementValues(context)}`
+    this.removeAlertColors(target)
+    target.classList.add(this.alertColor(meanCoreVital, context))
+  }
+
+  /** 
+   * @instance
+   * @memberof Dashboard.CoreVitalsSummaryController
+   **/
+   calculateMeanCoreVital(contextData) {
+    const totals = contextData.reduce((acc , data) => {
+      return { count: acc.count + 1, dataFloat: acc.dataFloat + data.data_float }
+    }, { count: 0, dataFloat: 0 })
+    return totals.count === 0 ? "N/A" :
+                                Math.round(((totals.dataFloat / totals.count) + Number.EPSILON) * 10000) / 10000
+  }
+
+  /** 
+   * Return the color depending on the time in relation to the KPI
+   * 
+   * @instance
+   * @memberof Dashboard.CoreVitalsSummaryController
+   **/
+   alertColor(value, context) {
+    const lineValues = targetLineValues(context)
+
+    if (value == "N/A") return this.unavailableClass
+    if (value <= lineValues.successLineValue) return this.successClass
+    if (value <= lineValues.failLineValue) return this.warningClass
+    return this.errorClass
+  }
+
+  /** 
+   * Update the datavisualisation showing the split of good, okay, bad for the context
+   * 
+   * @instance
+   * @memberof Dashboard.CoreVitalsSummaryController
+   **/
+   updateContextDistribution(context, contextData) {
+    const grouped = this.coreVitalsGroupingCount(context, contextData)
+    const data = this.dataForStackedBarChart(grouped)
+
+    if(this.isDataVizEmpty(context)) {
+      this.singleStackedBar(data, context).createDataVis()
+    } else {
+      this.singleStackedBar(data, context).updateDataVis(data, context)
+    }
+  }
+
+  /** 
+   * Get the total count of results plus the number of results within each context.
+   * 
+   * @instance
+   * @memberof Dashboard.CoreVitalsSummaryController
+   **/
+   coreVitalsGroupingCount(context, contextData) {
+    let result
+    const target = targetLineValues(context)
+    
+    return contextData.reduce((acc , data) => {
+      if (data.data_float <= target.successLineValue) {
+        result = "good"
+      } else if (data.data_float >= target.failLineValue) {
+        result = "poor"
+      } else {
+        result = "needsImprovement"
+      }
+      let preUpdate = { 
+        count: acc.count + 1, good: acc.good, needsImprovement: acc.needsImprovement, poor: acc.poor
+      }
+      preUpdate[result] += 1 
+      return preUpdate
+    }, { count: 0, good: 0, needsImprovement: 0, poor: 0 })
+  }
+
+  /** 
+   * Get the percentage for each context. The cumulative value informs the data viz at which x axis value
+   * the bar should start at. The bar class modifier is used in the CSS to change the bar colour
+   * 
+   * @instance
+   * @memberof Dashboard.CoreVitalsSummaryController
+   **/
+  dataForStackedBarChart(groupedCounts) {
+    const good = percentage(groupedCounts.count, groupedCounts.good)
+    const needsImprovement = percentage(groupedCounts.count, groupedCounts.needsImprovement)
+    const poor = percentage(groupedCounts.count, groupedCounts.poor)
+    return [
+      { percentage: good, cumulative: 0, barClassModifier: "good" },
+      { percentage: needsImprovement, cumulative: good, barClassModifier: "needsImprovement" },
+      { percentage: poor, cumulative: (good + needsImprovement), barClassModifier: "poor" }
+    ]
   }
 
   /** 
@@ -106,142 +279,17 @@ export default class extends Controller {
     return this[`_singleStackedBar_${context}`]
   }
 
-  singleStackedBarDisplay(hasData=true) {
-    let dataVis = hasData ? "block" : "none"
-    let loader = hasData ? "none" : "block"
-
-    this.lcpVisTarget.style.display = dataVis
-    this.fidVisTarget.style.display = dataVis
-    this.clsVisTarget.style.display = dataVis
-    this.lcpLoaderTarget.style.display = loader
-    this.fidLoaderTarget.style.display = loader
-    this.clsLoaderTarget.style.display = loader
-  }
-
-  destroySingleStackedBarDisplay() {
-    ["lcp", "fid", "cls"].forEach((context) => {
-      this[`${context}VisTarget`].innerHTML = ""
-      this[`_singleStackedBar_${context}`] = undefined
-    })
-  }
-
   /** 
-   * Sets the text for the mean build time and changes the color to match the KPI
-   * 
-   * @instance
-   * @memberof Dashboard.CoreVitalsSummaryController
-   **/
-  updateMeanCoreVitalsValue(target, text, context, contextData) {
-    const meanCoreVital = this.calculateMeanCoreVital(contextData)
-    target.innerHTML = `${text} ${meanCoreVital} ${axisMeasurementValues(context)}`
-    this.removeAlertColors(target)
-    target.classList.add(this.alertColor(meanCoreVital, context))
-  }
-
-  /** 
-   * Update the datavisualisation showing the split of good, okay, bad for the context
-   * 
-   * @instance
-   * @memberof Dashboard.CoreVitalsSummaryController
-   **/
-  updateContextDistribution(context, contextData) {
-    let result
-    const target = targetLineValues(context)
-    const grouped = contextData.reduce((acc , data) => {
-      if (data.data_float <= target.successLineValue) {
-        result = "good"
-      } else if (data.data_float >= target.failLineValue) {
-        result = "poor"
-      } else {
-        result = "needsImprovement"
-      }
-      let preUpdate = { 
-        count: acc.count + 1, good: acc.good, needsImprovement: acc.needsImprovement, poor: acc.poor
-      }
-      preUpdate[result] += 1 
-      return preUpdate
-    }, { count: 0, good: 0, needsImprovement: 0, poor: 0 })
-
-    let good = percentage(grouped.count, grouped.good)
-    let needsImprovement = percentage(grouped.count, grouped.needsImprovement)
-    let poor = percentage(grouped.count, grouped.poor)
-    let data = [
-      { percentage: good, cumulative: 0, barClassModifier: "good" },
-      { percentage: needsImprovement, cumulative: good, barClassModifier: "needsImprovement" },
-      { percentage: poor, cumulative: (good + needsImprovement), barClassModifier: "poor" }
-    ]
-
-    if(this.isDataVizEmpty(context)) {
-      this.singleStackedBar(data, context).createDataVis()
-    } else {
-      this.singleStackedBar(data, context).updateDataVis(data, context)
-    }
-  }
-
-  /** 
-   * Sets the text whilst waiting for the mean build time
-   * 
-   * @instance
-   * @memberof Dashboard.CoreVitalsSummaryController
-   **/
-  loadingMeanCoreVitalValue(target, text) {
-    target.innerHTML = `${text} ${this.loadingValue}`
-    this.removeAlertColors(target)
-
-    this.singleStackedBarDisplay(false)
-    this.destroySingleStackedBarDisplay()
-  }
-
-  /** 
-   * @instance
-   * @memberof Dashboard.CoreVitalsSummaryController
-   **/
-   calculateMeanCoreVital(contextData) {
-    const totals = contextData.reduce((acc , data) => {
-      return { count: acc.count + 1, dataFloat: acc.dataFloat + data.data_float }
-    }, { count: 0, dataFloat: 0 })
-    return totals.count === 0 ? "N/A" :
-                                Math.round(((totals.dataFloat / totals.count) + Number.EPSILON) * 10000) / 10000
-    
-  }
-
-  /** 
-   * Remove all of the color classes for the mean build time
-   * 
-   * @instance
-   * @memberof Dashboard.CoreVitalsSummaryController
-   **/
-  removeAlertColors(target) {
-    target.classList.remove(this.successClass, this.warningClass, this.errorClass, this.unavailableClass)
-  }
-
-  /** 
-   * Return the color depending on the time in relation to the KPI
-   * 
-   * @instance
-   * @memberof Dashboard.CoreVitalsSummaryController
-   **/
-  alertColor(value, context) {
-    const lineValues = targetLineValues(context)
-
-    if (value == "N/A") return this.unavailableClass
-    if (value <= lineValues.successLineValue) return this.successClass
-    if (value <= lineValues.failLineValue) return this.warningClass
-    return this.errorClass
-  }
-
-  /** 
-   * Triggered by the store whenever any store data changes. Controls whether the mean build time should
-   * be populated or display the loading indicator
+   * Triggered by the store whenever any store data changes.
    * 
    * @instance
    * @memberof Dashboard.CoreVitalsSummaryController
    **/
   storeUpdated(prop, storeId) {
     if (this.store("fetchingDataVizData")) {
-      this.loadingMeanCoreVitalValue(this.lcpTarget, "LCP")
-      this.loadingMeanCoreVitalValue(this.fidTarget, "FID")
-      this.loadingMeanCoreVitalValue(this.clsTarget, "CLS")
+      this.loadSummary(this.lcpTarget, "LCP")
+      this.loadSummary(this.fidTarget, "FID")
+      this.loadSummary(this.clsTarget, "CLS")
     }
     if (prop === "selectedDataVizData" && storeId === this.storeIdValue) {
       this.updateSummary(this.lcpTarget, "LCP ...", "lcp")

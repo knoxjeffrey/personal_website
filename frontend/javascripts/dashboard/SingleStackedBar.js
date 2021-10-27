@@ -1,5 +1,9 @@
 import d3 from "~/javascripts/dashboard/d3_modules"
 
+/**
+ * @class javascripts.dashboard.SingleStackedBar
+ * @classdesc d3.js single stacked bar chart
+ */
 export default class SingleStackedBar {
   constructor(selectedData, selectedContext, wrapper) {
     this.selectedData = selectedData
@@ -26,11 +30,24 @@ export default class SingleStackedBar {
       - this.dimensions.margin.bottom
   }
 
+  /** 
+   * Called the first time the page is loaded to setup the visualisation
+   *
+   * @instance
+   * @memberof javascripts.dashboard.SingleStackedBar
+   **/
   createDataVis() {
     this.setScales()
     this.initialiseDataVis()
+    this.drawDataVis()
   }
 
+  /** 
+   * When the data set is updated this will cause the visualisation to animate
+   *
+   * @instance
+   * @memberof javascripts.dashboard.SingleStackedBar
+   **/
   updateDataVis(selectedData, selectedContext) {
     this.selectedData = selectedData
     this.selectedContext = selectedContext
@@ -38,14 +55,25 @@ export default class SingleStackedBar {
     this.redrawDataVis()
   }
 
+  /** 
+   * Setup the scales for the visualisation
+   *
+   * @instance
+   * @memberof javascripts.dashboard.SingleStackedBar
+   **/
   setScales() {
     this.dv.xScale = d3.scaleLinear()
       .domain([0, 100])
       .range([0, this.dimensions.boundedWidth])
   }
 
+  /** 
+   * Setup the wrapper and the bounds for the visualisation
+   *
+   * @instance
+   * @memberof javascripts.dashboard.SingleStackedBar
+   **/
   initialiseDataVis() {
-    // Draw canvas
     const wrapper = this.wrapper
       .append("svg")
         .attr("width", this.dimensions.width)
@@ -56,6 +84,17 @@ export default class SingleStackedBar {
           "transform",
           `translate(${this.dimensions.margin.left}px, ${this.dimensions.margin.top}px)`
         )
+  }
+
+  /** 
+   * Animate the rendering of the stack bar chart, the legend and the percentage values within the
+   * legend
+   *
+   * @instance
+   * @memberof javascripts.dashboard.SingleStackedBar
+   **/
+  drawDataVis() { 
+    // Initially set bars in position with no width
     this.dv.bounds.selectAll("rect")
       .data(this.selectedData)
       .enter().append("rect")
@@ -65,13 +104,14 @@ export default class SingleStackedBar {
       .attr("height", 53)
       .attr("width", 0)
 
+    // Transition in the bar width 1 bar at a time with a delay set so the next bar waits for the
+    // preceeding bar to finish animating 
     this.dv.bounds.selectAll("rect")
       .data(this.selectedData)
       .transition()
       .ease(d3.easeLinear)
-      .delay((d, i) => i === 0 ? 0 : (this.selectedData[i - 1].cumulative/100) * 250)
-      .duration((d, i) => (d.percentage / 100) * 250)
-      .attr("class", d => `single-stacked-bar--${d.barClassModifier}`)
+      .delay(d => (d.cumulative / 100) * 250)
+      .duration(d => (d.percentage / 100) * 250)
       .attr("width", d => this.dv.xScale(d.percentage))
 
     this.dv.bounds.selectAll(".single-stacked-bar-legend")
@@ -92,6 +132,13 @@ export default class SingleStackedBar {
       .text(d => `${d.percentage} %`)
   }
 
+  /** 
+   * Animate the bars transitioning to the updated data set and change the percentage values in the
+   * legend
+   *
+   * @instance
+   * @memberof javascripts.dashboard.SingleStackedBar
+   **/
   redrawDataVis() {
     this.dv.bounds.selectAll("rect")
       .data(this.selectedData)
@@ -101,7 +148,7 @@ export default class SingleStackedBar {
       .attr("x", d => this.dv.xScale(d.cumulative))
       .attr("width", d => this.dv.xScale(d.percentage))
 
-    this.dv.bounds.selectAll('.single-stacked-bar-percentage')
+    this.dv.bounds.selectAll(".single-stacked-bar-percentage")
       .data(this.selectedData)
       .transition()
       .duration(250)
