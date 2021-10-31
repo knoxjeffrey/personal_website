@@ -57,6 +57,7 @@ title: Web Vitals Data
   <% tabs header: "Breakdown" do %>
     <%= tab_list_item text: "Daily", active: true, html: { "data-frame-target": "button", "data-action": "click->frame#frameSelected", "data-frame-id-param": "daily", "data-frame-header-param": "Daily averages" } %>
     <%= tab_list_item text: "Frequency", html: { "data-frame-target": "button", "data-action": "click->frame#frameSelected", "data-frame-id-param": "frequency", "data-frame-header-param": "Frequency distribution" } %>
+    <%= tab_list_item text: "Pages", html: { "data-frame-target": "button", "data-action": "click->frame#frameSelected", "data-frame-id-param": "pages", "data-frame-header-param": "Pages" } %>
   <% end %>
   <header class="margin-top--m">
     <h3 data-frame-target="header">Daily averages</h3>

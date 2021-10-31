@@ -100,6 +100,8 @@ export default class extends Controller {
         return contextData.map(data => { 
           return { value: data.data_float }
         })
+      } else if (this.store("frameSelected") === "pages") {
+        console.log(contextData)
       }
     }
   }

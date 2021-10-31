@@ -17,7 +17,8 @@ export default class extends Controller {
   }
 
   /** 
-   * Subscribe to the store. Debounces the method for handling window resizes
+   * Subscribe to the store. Debounces the method for handling window resizes. Trigger `frameLoaded` to
+   * start calculating the data within `SelectContextController`
    * 
    * @instance
    * @memberof Dashboard.HistogramController

@@ -20,3 +20,9 @@
     <div data-histogram="wrapper" class="histogram" data-histogram-target="visualisation"></div>
   </section>
 </turbo-frame>
+
+<turbo-frame id="pages">
+  <section data-controller="pages" data-histogram-store-id-value="vitals_" data-action="resize@window->pages#resize">
+    <%= alert text: "Loading #{loading}", type: :default, html: { class: "pages--loading", "data-pages-target": "loading" } %>
+  </section>
+</turbo-frame>
