@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import { subscription } from "~/javascripts/store/mixins/subscription"
-import { targetLineValues } from "~/javascripts/dashboard/utils"
+import { targetLineValues, axisMeasurementValues } from "~/javascripts/dashboard/utils"
 
 /**
  * @class Dashboard.PagesController
@@ -27,24 +27,43 @@ export default class extends Controller {
     this.editStore("frameLoaded", true)
   }
 
+  /** 
+   * Display the pages with failing Core Web Vitals, otherwise show a success message
+   * 
+   * @instance
+   * @memberof Dashboard.PagesController
+   **/
   populatePageInformation() {
     if(this.store("selectedContextData").length) return this.failingPages()
     this.noFailingPages()
   }
 
+  /** 
+   * List all the pages with failing Core Web Vitals and the mean score
+   * 
+   * @instance
+   * @memberof Dashboard.PagesController
+   **/
   failingPages() {
     this.visualisationTarget.innerHTML = ""
     this.store("selectedContextData").forEach((page) => {
       const failValue = targetLineValues(this.store("contextSelected")).failLineValue
       const colorClass = page.value > failValue ? this.errorClass : this.warningClass
+      const units = axisMeasurementValues(this.store("contextSelected"))
 
       let successMessage = document.createElement("div")
       successMessage.classList = `terminal-alert ${colorClass}`
-      successMessage.innerHTML = `${page.path} ... ${page.value}`
+      successMessage.innerHTML = `${page.path} ... ${page.value}${units}`
       this.visualisationTarget.appendChild(successMessage)
     })
   }
 
+  /** 
+   * No failing Core Web Vitals so display congratulations
+   * 
+   * @instance
+   * @memberof Dashboard.PagesController
+   **/
   noFailingPages() {
     let successMessage = document.createElement("div")
     successMessage.classList = "terminal-alert terminal-alert-success"
@@ -55,7 +74,7 @@ export default class extends Controller {
   }
 
   /** 
-   * 
+   * Show/hide the loader and the data measurements
    * 
    * @instance
    * @memberof Dashboard.PagesController
