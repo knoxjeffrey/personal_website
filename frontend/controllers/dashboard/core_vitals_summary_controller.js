@@ -60,7 +60,6 @@ export default class extends Controller {
     this.destroySingleStackedBarDisplay();
 
     ["lcp", "fid", "cls"].forEach((context) => {
-      console.log(this.contextData(context))
       this.updateContextDistribution(context, this.contextData(context))
     })
   }

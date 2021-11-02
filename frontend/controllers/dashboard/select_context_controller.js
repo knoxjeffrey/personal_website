@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import { subscription } from "~/javascripts/store/mixins/subscription"
-import { metricsInPercentile } from "~/javascripts/dashboard/utils"
+import { targetLineValues, metricsInPercentile } from "~/javascripts/dashboard/utils"
 
 /**
  * @class Dashboard.SelectContextController
@@ -101,7 +101,34 @@ export default class extends Controller {
           return { value: data.data_float }
         })
       } else if (this.store("frameSelected") === "pages") {
-        console.log(contextData)
+        if(contextData.length === 0) return []
+
+        const groupSumCount = contextData.reduce((acc , data) => {
+          if (!acc.get(data.path)) {
+            acc.set(
+              data.path, { path: data.path, metric: data.metric, data_float: data.data_float, count: 1 }
+            )
+            return acc
+          }
+          const pathContent = acc.get(data.path)
+          pathContent.data_float += data.data_float
+          pathContent.count += 1
+          return acc
+        }, new Map())
+
+        for (let result of groupSumCount.values()) {
+          result.value = Math.round(((result.data_float/result.count) + Number.EPSILON) * 10000) / 10000
+        }
+
+        const failingCoreVitals = [...groupSumCount.values()].filter((data) => {
+          return data.value > targetLineValues(context).successLineValue
+        })
+
+        const highestToLowest = failingCoreVitals.slice().sort(
+          (VitalsA, VitalsB) => VitalsB.value - VitalsA.value
+        )
+
+        return highestToLowest
       }
     }
   }

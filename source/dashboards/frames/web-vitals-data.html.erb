@@ -22,7 +22,8 @@
 </turbo-frame>
 
 <turbo-frame id="pages">
-  <section data-controller="pages" data-histogram-store-id-value="vitals_" data-action="resize@window->pages#resize">
+  <section data-controller="pages" data-pages-store-id-value="vitals_" data-pages-warning-class="terminal-alert-warning" data-pages-error-class="terminal-alert-error">
     <%= alert text: "Loading #{loading}", type: :default, html: { class: "pages--loading", "data-pages-target": "loading" } %>
+    <div data-pages-target="visualisation"></div>
   </section>
 </turbo-frame>
