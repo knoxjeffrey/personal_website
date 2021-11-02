@@ -65,9 +65,12 @@ export default class extends Controller {
    * @memberof Dashboard.PagesController
    **/
   noFailingPages() {
+    const passValue = targetLineValues(this.store("contextSelected")).successLineValue
+    const units = axisMeasurementValues(this.store("contextSelected"))
+
     let successMessage = document.createElement("div")
     successMessage.classList = "terminal-alert terminal-alert-success"
-    successMessage.innerHTML = "Congratulations, all pages pass Core Web Vitals!"
+    successMessage.innerHTML = `Congratulations, all pages average ${passValue}${units} or less for ${this.store("contextSelected").toUpperCase()}!`
 
     this.visualisationTarget.innerHTML = ""
     this.visualisationTarget.appendChild(successMessage)
