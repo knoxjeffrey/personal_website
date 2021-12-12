@@ -12,7 +12,7 @@ module Netlify
       "frame-src 'self' app.netlify.com;",
       "object-src 'self';",
       "connect-src 'self' data: wss: *.jeffreyknox.dev commento.io;",
-      "script-src 'self' 'unsafe-eval' 'unsafe-inline' blob: *.jeffreyknox.dev *.commento.io netlify-cdp-loader.netlify.app;"
+      "script-src 'self' 'unsafe-eval' 'unsafe-inline' blob: *.jeffreyknox.dev *.commento.io netlify-cdp-loader.netlify.app library.illuminatr.io;"
     ]
 
     ALL_PAGES_HEADERS = [
