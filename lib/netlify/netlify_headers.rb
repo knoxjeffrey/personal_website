@@ -11,7 +11,7 @@ module Netlify
       "style-src 'self' 'unsafe-inline' data: blob: *.commento.io;",
       "frame-src 'self' app.netlify.com;",
       "object-src 'self';",
-      "connect-src 'self' data: wss: *.jeffreyknox.dev commento.io;",
+      "connect-src 'self' data: wss: *.jeffreyknox.dev commento.io library.illuminatr.io;",
       "script-src 'self' 'unsafe-eval' 'unsafe-inline' blob: *.jeffreyknox.dev *.commento.io netlify-cdp-loader.netlify.app library.illuminatr.io;"
     ]
 
