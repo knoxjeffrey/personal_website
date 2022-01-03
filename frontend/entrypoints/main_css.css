@@ -5,5 +5,12 @@
 @import "~/stylesheets/utilities";
 
 .container:not(:first-child) {
-  display: block;
+  /* display: block; */
+  clip: auto; 
+  clip-path: none;
+  height: 100%;
+  overflow: visible;
+  position: relative;
+  white-space: normal; 
+  width: 100%;
 }
