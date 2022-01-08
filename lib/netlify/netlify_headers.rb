@@ -22,7 +22,7 @@ module Netlify
       "Permissions-Policy: accelerometer=(), camera=(),  encrypted-media=(),  geolocation=(),  gyroscope=(),  magnetometer=(),  microphone=(),  midi=(),  payment=(),  usb=()",
       "Referrer-Policy: no-referrer-when-downgrade",
       "X-XSS-Protection: 1; mode=block",
-      "Link: <https://www.jeffreyknox.dev/vite/assets/main_css.css.50576505.css>; rel='preconnect'"
+      "Link: <https://www.jeffreyknox.dev/vite/assets/main_css.css.50576505.css>; rel='preload'"
     ]
 
     BASIC_AUTH_HEADERS = [
