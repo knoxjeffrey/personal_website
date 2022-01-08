@@ -156,3 +156,39 @@ and you can see that I now have some content rendering on the page a rather impr
 On larger sites this can take more time to implement but I feel the results are certainly worth it and hopefully you'll see more users sticking around to read your awesome content!
 
 Please let me know if you've done something similar, or if you have any questions at all about this article. I always love to hear how others are improving the performance of their sites.
+
+## Update 8th Jan 2021
+
+I recently received a Twitter message from [@chsweb](https://twitter.com/chsweb) about trying out a more accessible approach than using `display: none;` in my `early_paint_css.css` file ([see the thread here](https://twitter.com/chsweb/status/1477632314540802052)). This totally makes sense because hiding the content to eliminate FOUC and help CLS only makes sense for sighted users. No point punishing users with screen readers by initially making the content unreachable.
+
+Jono pointed me to an article about [hiding content accessibly](https://www.scottohara.me/blog/2017/04/14/inclusively-hidden.html) and I altered my `early_paint_css.css` file to be as follows:
+
+<% highlight code: "css" do %>
+.container:not(:first-child) {
+  clip: rect(0 0 0 0); 
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap; 
+  width: 1px;
+}
+<% end %>
+
+and then altering the asynchronously loaded main CSS file to be
+
+<% highlight code: "css" do %>
+.container:not(:first-child) {
+  clip: auto; 
+  clip-path: none;
+  height: 100%;
+  overflow: visible;
+  position: relative;
+  white-space: normal; 
+  width: 100%;
+}
+<% end %>
+
+to make the content visible again. I tested things locally and it functioned exactly the same and lab tests showed there was no negative CLS impact. I made the change 6 days ago and have been keeping an eye on my own [Core Web Vitals dashboard](https://www.jeffreyknox.dev/dashboards/web-vitals-data/) and performance still looks great!
+
+I'm very happy with this approach and I hope the article on hiding in an accessible way helps others to take this approach as well. 
