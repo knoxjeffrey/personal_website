@@ -30,9 +30,9 @@ module Netlify
     # Header rules per path
     def path_headers
       [
-        {path: "/*.html", headers: ALL_PAGES_HEADERS},
-        {path: "/assets/*", headers: HASHED_ASSETS_HEADERS},
-        {path: "/vite/assets/*", headers: HASHED_ASSETS_HEADERS}
+        {path: "/*", headers: ALL_PAGES_HEADERS},
+        {path: "/assets/*", headers: ALL_PAGES_HEADERS + HASHED_ASSETS_HEADERS},
+        {path: "/vite/assets/*", headers: ALL_PAGES_HEADERS + HASHED_ASSETS_HEADERS}
       ]
     end
 
