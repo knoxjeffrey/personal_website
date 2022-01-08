@@ -1,4 +1,4 @@
-require "./lib/netlify/netlify_headers.rb"
+require "./lib/netlify/netlify_headers"
 
 module Netlify
   # NetlifyHeadersBuilder joins all of the headers in NetlifyHeaders into a format for Netlify and copies
@@ -30,9 +30,9 @@ module Netlify
     # Header rules per path
     def path_headers
       [
-        { path: "/*", headers: ALL_PAGES_HEADERS },
-        { path: "/assets/*", headers: ALL_PAGES_HEADERS + HASHED_ASSETS_HEADERS },
-        { path: "/vite/assets/*", headers: ALL_PAGES_HEADERS + HASHED_ASSETS_HEADERS }
+        {path: "/*", headers: ALL_PAGES_HEADERS},
+        {path: "/assets/*", headers: ALL_PAGES_HEADERS + HASHED_ASSETS_HEADERS},
+        {path: "/vite/assets/*", headers: ALL_PAGES_HEADERS + HASHED_ASSETS_HEADERS}
       ]
     end
 
