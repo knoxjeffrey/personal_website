@@ -21,9 +21,7 @@ module Netlify
       "X-Content-Type-Options: nosniff",
       "Permissions-Policy: accelerometer=(), camera=(),  encrypted-media=(),  geolocation=(),  gyroscope=(),  magnetometer=(),  microphone=(),  midi=(),  payment=(),  usb=()",
       "Referrer-Policy: no-referrer-when-downgrade",
-      "X-XSS-Protection: 1; mode=block",
-      "Link: <https://www.jeffreyknox.dev/vite/assets/main_css.css.50576505.css>; rel='preload'",
-      "Link: <https://www.jeffreyknox.dev/vite/assets/components_css.css.7ac0fdf3.css>; rel='preload'"
+      "X-XSS-Protection: 1; mode=block"
     ]
 
     BASIC_AUTH_HEADERS = [
