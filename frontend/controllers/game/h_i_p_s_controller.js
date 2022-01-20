@@ -25,7 +25,9 @@ export default class HIPSController extends Controller {
    * @memberof Game.HIPSController
    * @returns {void} N/A
    * */
-  submit() {
+  submit(e) {
+    e.preventDefault()
+    
     if (this.answerTarget.value === "128aes") {
       this.errorTarget.style.display = "none"
       const bytes = AES.decrypt(this.unlockTarget.innerHTML, "128aes")
