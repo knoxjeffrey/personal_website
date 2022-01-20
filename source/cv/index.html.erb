@@ -9,9 +9,9 @@ title: Jeff Knox CV
 
 <p>
   I'm a senior software engineer with over <%= ((Date.today - Date.new(2015, 8, 1))/365).floor %> years
-  experience and currently work at <%= link_to "FreeAgent", "https://www.freeagent.com/" %> in the Front
-  End Architecture team. Prior to working with FreeAgent, I was Head of Development at a digital agency
-  called <%= link_to "Primate", "http://primate.co.uk/" %>.
+  experience and currently work at <%= link_to "Stora", "https://stora.co/" %>. Prior to working with Stora,
+  I was a senior software engineer in the Front End Architecture team at <%= link_to "FreeAgent", "https://www.freeagent.com/" %>
+  and before that I was Head of Development at a digital agency called <%= link_to "Primate", "http://primate.co.uk/" %>.
 </p>
 
 <p>
@@ -38,7 +38,12 @@ title: Jeff Knox CV
 <h2>Career</h2>
 
 <% timeline do %>
-  <%= alert text: "Apr 2021 - Present", type: :primary, html: { class: "margin-bottom--s" } %>
+  <%= alert text: "Nov 2021 - Present", type: :primary, html: { class: "margin-bottom--s" } %>
+  <% card title: "Senior Software Engineer for Stora" do %>
+    More to follow soon! 
+  <% end %>
+
+  <%= alert text: "Apr 2021 - Nov 2021", type: :primary, html: { class: "margin-bottom--s" } %>
   <% card title: "Senior Software Engineer for FreeAgent" do %>
     Part of a small group of engineers setting up a new Front End Architecture team at FreeAgent. Our
     initial responsibility is to gradually port legacy JavaScript to a single, modern build pipeline.
