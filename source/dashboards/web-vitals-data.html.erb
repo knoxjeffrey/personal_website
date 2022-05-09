@@ -6,75 +6,11 @@ title: Web Vitals Data
 <hr/>
 
 <p class="margin-bottom--l">
-  The data presented here is based on the 75th percentile which matches how Google are 
-  <%= link_to "reporting on Core Web Vitals", "https://web.dev/defining-core-web-vitals-thresholds/#choice-of-percentile" %>.
-  This ensures that the data represents a large percentage of visits to the site but isn't overly impacted
-  by outliers.
+  <%= alert text: %{
+      I'm happy to say that this little bit of experimenting with a Core Web Vitals dashboard has turned into a full product called
+      #{link_to "illuminatr", "https://www.illuminatr.io/"}! Follow the link to check it out and start shining a light on the user
+      experience of your real-life customers by measuring Core Web Vitals for their visits.
+    },
+    type: :default %>
+  
 </p>
-
-<% content_for :page_head_meta do %>
-  <meta name="turbo-cache-control" content="no-cache">
-<% end %>
-
-<section class="margin-bottom--m" data-controller="years" data-years-store-id-value="vitals_" data-years-function-value="vitals_data_years_and_months" data-years-status-value="loading">
-  <% button_group do %>
-    <div data-years-target="buttonGroup">
-      <%= button text: "#{loading contained: true}", type: :default, html: { class: "invert", "data-years-target": "button", "data-action": "click->years#yearClicked" } %>
-    </div>
-  <% end %>
-</section>
-
-<section data-controller="months" data-months-store-id-value="vitals_" data-months-function-value="vitals_data_for_year_and_month" data-months-year-selected-value="0">
-  <% button_group do %>
-    <div data-months-target="buttonGroup">
-      <%= button text: "#{loading contained: true}", type: :default, html: { class: "invert", "data-months-target": "button", "data-action": "click->months#monthClicked" } %>
-    </div>
-  <% end %>
-</section>
-
-<hr />
-
-<section data-controller="core-vitals-summary" data-core-vitals-summary-store-id-value="vitals_" data-core-vitals-summary-loading-value='<%= loading %>' data-core-vitals-summary-success-class="terminal-alert-success" data-core-vitals-summary-warning-class="terminal-alert-warning" data-core-vitals-summary-error-class="terminal-alert-error", data-core-vitals-summary-unavailable-class="terminal-alert-primary" data-action="resize@window->core-vitals-summary#resize">
-  <header>
-    <h2>Summary</h2>
-  </header>
-  <div class="flex-column">
-    <%= alert text: "LCP #{loading}", type: :default, html: { class: "margin-bottom--s", "data-core-vitals-summary-target": "lcp" } %>
-    <%= alert text: "Loading #{loading}", type: :default, html: { class: "single-stacked-bar--loading", "data-core-vitals-summary-target": "lcpLoader" } %>
-    <div class="single-stacked-bar single-stacked-bar--lcp margin-bottom--l" data-stacked-bar-lcp="wrapper" data-core-vitals-summary-target="lcpVis"></div>
-    <%= alert text: "FID preview #{loading}", type: :default, html: { class: "margin-bottom--s", "data-core-vitals-summary-target": "fid" } %>
-    <%= alert text: "Loading #{loading}", type: :default, html: { class: "single-stacked-bar--loading", "data-core-vitals-summary-target": "fidLoader" } %>
-    <div class="single-stacked-bar single-stacked-bar--fid margin-bottom--l" data-stacked-bar-fid="wrapper" data-core-vitals-summary-target="fidVis"></div>
-    <%= alert text: "CLS #{loading}", type: :default, html: { class: "margin-bottom--s", "data-core-vitals-summary-target": "cls" } %>
-    <%= alert text: "Loading #{loading}", type: :default, html: { class: "single-stacked-bar--loading", "data-core-vitals-summary-target": "clsLoader" } %>
-    <div class="single-stacked-bar single-stacked-bar--cls margin-bottom--l" data-stacked-bar-cls="wrapper" data-core-vitals-summary-target="clsVis"></div>
-  </div>
-</section>
-
-<hr/>
-
-<section data-controller="frame" data-frame-store-id-value="vitals_">
-  <% tabs header: "Breakdown" do %>
-    <%= tab_list_item text: "Daily", active: true, html: { "data-frame-target": "button", "data-action": "click->frame#frameSelected", "data-frame-id-param": "daily", "data-frame-header-param": "Daily averages" } %>
-    <%= tab_list_item text: "Frequency", html: { "data-frame-target": "button", "data-action": "click->frame#frameSelected", "data-frame-id-param": "frequency", "data-frame-header-param": "Frequency distribution" } %>
-    <%= tab_list_item text: "Pages", html: { "data-frame-target": "button", "data-action": "click->frame#frameSelected", "data-frame-id-param": "pages", "data-frame-header-param": "Pages failing Core Web Vitals" } %>
-  <% end %>
-  <header class="margin-top--m">
-    <h3 data-frame-target="header">Daily averages</h3>
-  </header>
-</section>
-
-<section class="margin-bottom--m" data-controller="select-context" data-select-context-store-id-value="vitals_" data-select-context-default-context-value="lcp" data-select-context-context-key-value="metric">
-  <% button_group do %>
-   <%= button text: "LCP", type: :default, html: { class: "invert selected", "data-select-context-target": "button", "data-action": "click->select-context#contextClicked" } %>
-   <%= button text: "FID", type: :default, html: { class: "invert", "data-select-context-target": "button", "data-action": "click->select-context#contextClicked" } %>
-   <%= button text: "CLS", type: :default, html: { class: "invert", "data-select-context-target": "button", "data-action": "click->select-context#contextClicked" } %>
-  <% end %>
-</section>
-
-<section data-controller="frame-loader" data-frame-loader-target="frame" data-frame-loader-store-id-value="vitals_" data-frame-loader-default-frame-value="daily" data-frame-loader-path-value="/dashboards/frames/web-vitals-data/">
-  <%= alert text: "Loading #{loading}", type: :default, html: { "data-frame-loader-target": "loading" } %>
-</section>
-
-<%= vite_async_css "data_viz_css" %>
-<%= vite_javascript_tag "dashboard", "data-turbo-track": "reload", defer: true %>
